@@ -35,6 +35,13 @@ async function test() {
       'merkle root matching?',
       actualMerkleRoot.equals(expectedMerkleRoot).toBoolean()
     );
+    let path = m.getProof(0);
+    if (path) {
+      path.forEach((p) => {
+        console.log(p.direction.toString());
+        console.log(p.hash.toString());
+      });
+    }
 
     console.log('Checking valid proof from all elements in the tree');
     nodeData.forEach((el, index) => {
