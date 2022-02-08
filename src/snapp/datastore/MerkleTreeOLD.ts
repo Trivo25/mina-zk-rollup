@@ -82,28 +82,42 @@ export class Node {
     }
   }
 }
+
+class MerkleTree extends Node {
+  dataBlobs: Field[];
+
+  constructor(
+    left: Node | undefined,
+    right: Node | undefined,
+    hash: Field,
+    dataBlobs: Field[]
+  ) {
+    super(left, right, hash);
+    this.dataBlobs = dataBlobs;
+  }
+}
 export class MerkleTreeFactory {
   /**
    * Creates and returns a new tree based on an list of data blobs
    * @param dataBlocks List of data blobs
    * @returns a Merkle tree
    */
-  static treeFromList(dataBlocks: Field[]): Node {
+  static treeFromList(dataBlobs: Field[]): MerkleTree {
     let childNodes: Node[] = [];
 
-    dataBlocks.forEach((el) => {
+    dataBlobs.forEach((el) => {
       childNodes.push(new Node(undefined, undefined, Poseidon.hash([el])));
     });
 
-    return this.buildTree(childNodes);
+    return this.buildTree(childNodes, dataBlobs);
   }
 
   /**
    * Builds the tree
-   * @param children List of children Node
+   * @param children List of children hash Nodes
    * @returns a Merkle tree
    */
-  private static buildTree(children: Node[]): Node {
+  static buildTree(children: Node[], dataBlobs: Field[]): MerkleTree {
     let parents: Node[] = [];
 
     while (children.length != 1) {
@@ -129,7 +143,13 @@ export class MerkleTreeFactory {
       children = parents;
       parents = [];
     }
-    return children[0];
+    let rootNode: Node = children[0];
+    return new MerkleTree(
+      rootNode.left,
+      rootNode.right,
+      rootNode.hash,
+      dataBlobs
+    );
   }
   /**
    * Checks if an element exists in a Merkle tree that leads to a root
@@ -147,19 +167,4 @@ export class MerkleTreeFactory {
   ): boolean {
     return true;
   }
-}
-// for debugging purposes
-test();
-async function test() {
-  await isReady;
-  let nodeData = [Field(0), Field(1), Field(2), Field(3)];
-  let a = Poseidon.hash([Poseidon.hash([Field(0)]), Poseidon.hash([Field(1)])]);
-  let b = Poseidon.hash([Poseidon.hash([Field(2)]), Poseidon.hash([Field(3)])]);
-  let root = Poseidon.hash([a, b]);
-  let t = MerkleTreeFactory.treeFromList(nodeData);
-  // console.log(root.toString());
-  // console.log(t.getHash().toString());
-  t.print();
-
-  shutdown();
 }
