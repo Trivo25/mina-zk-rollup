@@ -118,22 +118,30 @@ export class MerkleStore {
   ): boolean {
     // ! TODO: re write proof validation in a circuit compatibile way
 
+    // NOTE: can probably remove this?
     if (merklePath.length === 0) {
       return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
     }
 
     var proofHash: Field = targetHash;
     for (let x = 0; x < merklePath.length; x++) {
-      if (merklePath[x].direction.equals(Field(0)).toBoolean()) {
-        // then the sibling is a left node
-        proofHash = Poseidon.hash([merklePath[x].hash, proofHash]);
-      } else if (merklePath[x].direction.equals(Field(1)).toBoolean()) {
-        // then the sibling is a right node
-        proofHash = Poseidon.hash([proofHash, merklePath[x].hash]);
-      } else {
-        // no left or right designation exists, merklePath is invalid
-        return false;
-      }
+      proofHash = Circuit.if(
+        merklePath[x].direction.equals(Field(0)),
+        Poseidon.hash([merklePath[x].hash, proofHash]),
+        proofHash
+      );
+      proofHash = Circuit.if(
+        merklePath[x].direction.equals(Field(1)),
+        Poseidon.hash([proofHash, merklePath[x].hash]),
+        proofHash
+      );
+      // if (merklePath[x].direction.equals(Field(0)).toBoolean()) {
+      //   proofHash = Poseidon.hash([merklePath[x].hash, proofHash]);
+      // } else if (merklePath[x].direction.equals(Field(1)).toBoolean()) {
+      //   proofHash = Poseidon.hash([proofHash, merklePath[x].hash]);
+      // } else {
+      //   return false;
+      // }
     }
 
     return proofHash.equals(merkleRoot).toBoolean();
