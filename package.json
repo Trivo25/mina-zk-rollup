@@ -1,0 +1,32 @@
+{
+  "name": "mina-zk-rollup",
+  "version": "0.1.4",
+  "description": "",
+  "author": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "testw": "jest --watch",
+    "coverage": "jest --coverage",
+    "build": "tsc -p tsconfig.json",
+    "prepare": "husky install",
+    "format": "prettier --write --ignore-unknown **/*"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "husky": "^7.0.1",
+    "jest": "^27.0.6",
+    "lint-staged": "^11.0.1",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  },
+  "lint-staged": {
+    "**/*": [
+      "prettier --write --ignore-unknown"
+    ]
+  }
+}
