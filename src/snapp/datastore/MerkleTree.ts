@@ -1,12 +1,12 @@
 import { Field, Poseidon } from 'snarkyjs';
 
-// MAJOR TODO: rework everything with Field logic
+// MAJOR TODO: rework everything with Field and Circuit compatibile logic
 export interface Tree {
   leaves: Field[];
   levels: Field[][];
 }
 
-export class MerkleTree {
+export class MerkleStore {
   tree: Tree;
   constructor() {
     this.tree = {
@@ -15,12 +15,14 @@ export class MerkleTree {
     };
   }
 
+  // Adds data blobs to the tree structure
   addLeaves(valuesArray: Field[]) {
     valuesArray.forEach((value: Field) => {
       this.tree.leaves.push(Poseidon.hash([value]));
     });
   }
 
+  // builds a tree from its leaves
   makeTree() {
     let leafCount: number = this.tree.leaves.length;
     if (leafCount > 0) {
@@ -80,6 +82,7 @@ export class MerkleTree {
 
   // Takes a proof array, a target hash value, and a merkle root
   // Checks the validity of the proof and return true or false
+  // NOTE: this should happen on chain
   validateProof(proof: any, targetHash: Field, merkleRoot: Field): boolean {
     if (proof.length === 0) {
       return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root

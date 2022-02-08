@@ -1,13 +1,13 @@
 import * as assert from 'assert';
 import { isReady, Poseidon, Field, shutdown, Bool } from 'snarkyjs';
 
-import { MerkleTree, Tree } from './snapp/datastore/MerkleTree.js';
+import { MerkleStore, Tree } from './snapp/datastore/MerkleTree.js';
 
 // for debugging purposes
 test();
 async function test() {
   await isReady;
-  let m = new MerkleTree();
+  let m = new MerkleStore();
 
   let nodeData = [Field(0), Field(1), Field(2), Field(3), Field(4)];
 
