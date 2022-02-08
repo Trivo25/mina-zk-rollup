@@ -15,14 +15,19 @@ export class MerkleStore {
     };
   }
 
-  // Adds data blobs to the tree structure
-  addLeaves(valuesArray: Field[]) {
-    valuesArray.forEach((value: Field) => {
+  /**
+   * Adds the hashes of an array of data
+   * @param dataArray Data leafes
+   */
+  addLeaves(dataArray: Field[]) {
+    dataArray.forEach((value: Field) => {
       this.tree.leaves.push(Poseidon.hash([value]));
     });
   }
 
-  // builds a tree from its leaves
+  /**
+   * Builds the merkle tree based on pre-initialized leafes
+   */
   makeTree() {
     let leafCount: number = this.tree.leaves.length;
     if (leafCount > 0) {
@@ -35,7 +40,10 @@ export class MerkleStore {
     }
   }
 
-  // Returns the merkle root value for the tree
+  /**
+   * Returns the merkle proof
+   * @returns Merkle root, if not undefined
+   */
   getMerkleRoot(): Field | undefined {
     if (this.tree.levels.length === 0) {
       return undefined;
@@ -43,7 +51,11 @@ export class MerkleStore {
     return this.tree.levels[0][0];
   }
 
-  // Returns the proof for a leaf at the given index as an array of merkle siblings in hex format
+  /**
+   * Returns a merkle proof/path of an element at a given index
+   * @param index of element
+   * @returns merkle path or undefined
+   */
   getProof(index: number): any | undefined {
     let currentRowIndex: number = this.tree.levels.length - 1;
     if (index < 0 || index > this.tree.levels[currentRowIndex].length - 1) {
@@ -80,24 +92,33 @@ export class MerkleStore {
     return proof;
   }
 
-  // Takes a proof array, a target hash value, and a merkle root
-  // Checks the validity of the proof and return true or false
-  // NOTE: this should happen on chain
-  validateProof(proof: any, targetHash: Field, merkleRoot: Field): boolean {
-    if (proof.length === 0) {
-      return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
+  /**
+   * NOTE: this should happen on-chain in a circuit
+   * Validates a merkle proof
+   * @param merklePath Merkle path leading to the root
+   * @param leafHash Hash of element that needs validation
+   * @param merkleRoot Root of the merkle tree
+   * @returns true when the merkle path matches the merkle root
+   */
+  static validateProof(
+    merklePath: any,
+    leafHash: Field,
+    merkleRoot: Field
+  ): boolean {
+    if (merklePath.length === 0) {
+      return leafHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
     }
 
-    var proofHash: Field = targetHash;
-    for (let x = 0; x < proof.length; x++) {
-      if (proof[x].left) {
+    var proofHash: Field = leafHash;
+    for (let x = 0; x < merklePath.length; x++) {
+      if (merklePath[x].left) {
         // then the sibling is a left node
-        proofHash = Poseidon.hash([proof[x].left, proofHash]);
-      } else if (proof[x].right) {
+        proofHash = Poseidon.hash([merklePath[x].left, proofHash]);
+      } else if (merklePath[x].right) {
         // then the sibling is a right node
-        proofHash = Poseidon.hash([proofHash, proof[x].right]);
+        proofHash = Poseidon.hash([proofHash, merklePath[x].right]);
       } else {
-        // no left or right designation exists, proof is invalid
+        // no left or right designation exists, merklePath is invalid
         return false;
       }
     }
@@ -105,9 +126,11 @@ export class MerkleStore {
     return proofHash.equals(merkleRoot).toBoolean();
   }
 
-  // Calculates the next level of node when building the merkle tree
-  // These values are calcalated off of the current highest level, level 0 and will be prepended to the levels array
-  calculateNextLevel() {
+  /**
+   * Calculates new levels of the merkle tree structure, helper function
+   * @returns Level of the merkle tree
+   */
+  private calculateNextLevel(): Field[] {
     let nodes: Field[] = [];
     let topLevel: Field[] = this.tree.levels[0];
     let topLevelCount: number = topLevel.length;
@@ -123,6 +146,9 @@ export class MerkleStore {
     return nodes;
   }
 
+  /**
+   * Prints each levels of the tree
+   */
   printTree() {
     console.log('printing tree');
     console.log('-----------------------------------------');
