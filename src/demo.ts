@@ -39,7 +39,7 @@ async function test() {
     console.log('Checking valid proof from all elements in the tree');
     nodeData.forEach((el, index) => {
       console.log(
-        m.validateProof(
+        MerkleStore.validateProof(
           m.getProof(index),
           Poseidon.hash([el]),
           expectedMerkleRoot

@@ -1,4 +1,4 @@
-import { Field, Poseidon } from 'snarkyjs';
+import { Bool, Circuit, Field, Poseidon } from 'snarkyjs';
 
 // MAJOR TODO: rework everything with Field and Circuit compatibile logic
 export interface Tree {
@@ -57,6 +57,8 @@ export class MerkleStore {
    * @returns merkle path or undefined
    */
   getProof(index: number): any | undefined {
+    // ! TODO: re write proof structure in a circuit friendly way
+
     let currentRowIndex: number = this.tree.levels.length - 1;
     if (index < 0 || index > this.tree.levels[currentRowIndex].length - 1) {
       return undefined; // the index it out of the bounds of the leaf array
@@ -102,14 +104,16 @@ export class MerkleStore {
    */
   static validateProof(
     merklePath: any,
-    leafHash: Field,
+    targetHash: Field,
     merkleRoot: Field
   ): boolean {
+    // ! TODO: re write proof validation in a circuit compatibile way
+
     if (merklePath.length === 0) {
-      return leafHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
+      return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
     }
 
-    var proofHash: Field = leafHash;
+    var proofHash: Field = targetHash;
     for (let x = 0; x < merklePath.length; x++) {
       if (merklePath[x].left) {
         // then the sibling is a left node
