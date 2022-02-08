@@ -13,6 +13,7 @@
     "coverage": "jest --coverage",
     "build": "tsc -p tsconfig.json",
     "prepare": "husky install",
+    "demo": "npx tsc && node ./build/demo.js",
     "format": "prettier --write --ignore-unknown **/*"
   },
   "devDependencies": {
@@ -28,5 +29,8 @@
     "**/*": [
       "prettier --write --ignore-unknown"
     ]
+  },
+  "dependencies": {
+    "snarkyjs": "^0.2.0"
   }
 }

@@ -1,6 +1,5 @@
 // TODO: remove
 /* eslint-disable no-unused-vars */
-
 import {
   Field,
   isReady,
@@ -10,9 +9,7 @@ import {
   arrayProp,
 } from 'snarkyjs';
 
-export { Node, MerkleTreeFactory };
-
-class Node {
+export class Node {
   left: Node | undefined;
   right: Node | undefined;
   hash: Field;
@@ -85,7 +82,7 @@ class Node {
     }
   }
 }
-class MerkleTreeFactory {
+export class MerkleTreeFactory {
   /**
    * Creates and returns a new tree based on an list of data blobs
    * @param dataBlocks List of data blobs

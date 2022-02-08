@@ -1,15 +1,12 @@
 import { isReady, shutdown, Field, Poseidon } from 'snarkyjs';
 import { MerkleTreeFactory } from '../src/snapp/merkle_tree/MerkleTree';
-
 describe('MerkleTree.ts', () => {
   beforeEach(async () => {
     await isReady;
   });
-
   afterAll(() => {
     shutdown();
   });
-
   it('Should form a merkle tree correctly', () => {
     let nodeData = [Field(0), Field(1), Field(2), Field(3)];
     let a = Poseidon.hash([

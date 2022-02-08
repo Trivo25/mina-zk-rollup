@@ -1,6 +1,4 @@
 'use strict';
-// TODO: remove
-/* eslint-disable no-unused-vars */
 var __awaiter =
   (this && this.__awaiter) ||
   function (thisArg, _arguments, P, generator) {
@@ -136,6 +134,8 @@ var __generator =
   };
 exports.__esModule = true;
 exports.MerkleTreeFactory = exports.Node = void 0;
+// TODO: remove
+/* eslint-disable no-unused-vars */
 var snarkyjs_1 = require('snarkyjs');
 var Node = /** @class */ (function () {
   function Node(left, right, hash) {
@@ -269,25 +269,25 @@ function test() {
         case 1:
           _a.sent();
           nodeData = [
-            (0, snarkyjs_1.Field)(0),
-            (0, snarkyjs_1.Field)(1),
-            (0, snarkyjs_1.Field)(2),
-            (0, snarkyjs_1.Field)(3),
+            snarkyjs_1.Field(0),
+            snarkyjs_1.Field(1),
+            snarkyjs_1.Field(2),
+            snarkyjs_1.Field(3),
           ];
           a = snarkyjs_1.Poseidon.hash([
-            snarkyjs_1.Poseidon.hash([(0, snarkyjs_1.Field)(0)]),
-            snarkyjs_1.Poseidon.hash([(0, snarkyjs_1.Field)(1)]),
+            snarkyjs_1.Poseidon.hash([snarkyjs_1.Field(0)]),
+            snarkyjs_1.Poseidon.hash([snarkyjs_1.Field(1)]),
           ]);
           b = snarkyjs_1.Poseidon.hash([
-            snarkyjs_1.Poseidon.hash([(0, snarkyjs_1.Field)(2)]),
-            snarkyjs_1.Poseidon.hash([(0, snarkyjs_1.Field)(3)]),
+            snarkyjs_1.Poseidon.hash([snarkyjs_1.Field(2)]),
+            snarkyjs_1.Poseidon.hash([snarkyjs_1.Field(3)]),
           ]);
           root = snarkyjs_1.Poseidon.hash([a, b]);
           t = MerkleTreeFactory.treeFromList(nodeData);
           // console.log(root.toString());
           // console.log(t.getHash().toString());
           t.print();
-          (0, snarkyjs_1.shutdown)();
+          snarkyjs_1.shutdown();
           return [2 /*return*/];
       }
     });
