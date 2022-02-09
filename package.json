@@ -9,7 +9,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest",
     "testw": "jest --watch",
     "coverage": "jest --coverage",
     "build": "tsc -p tsconfig.json",
