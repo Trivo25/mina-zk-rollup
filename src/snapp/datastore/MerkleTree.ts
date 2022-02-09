@@ -25,6 +25,15 @@ export class MerkleStore {
       levels: [],
     };
   }
+  /**
+   * clears the tree
+   */
+  clear() {
+    this.tree = {
+      leaves: [],
+      levels: [],
+    };
+  }
 
   /**
    * Adds the hashes of an array of data
@@ -35,6 +44,21 @@ export class MerkleStore {
     dataArray.forEach((value: Field) => {
       this.tree.leaves.push(hash ? Poseidon.hash([value]) : value);
     });
+  }
+
+  /**
+   * Finds the index of a given element
+   * @param element to find
+   * @returns index or undefined
+   */
+  getIndex(element: Field): number | undefined {
+    this.tree.leaves.forEach((el, i) => {
+      if (el === element) {
+        return i;
+      }
+    });
+
+    return undefined;
   }
 
   /**
