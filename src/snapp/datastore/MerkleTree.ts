@@ -1,12 +1,23 @@
-import { Field, Poseidon } from 'snarkyjs';
+import { Bool, Circuit, Field, Poseidon } from 'snarkyjs';
 
-// MAJOR TODO: rework everything with Field logic
+// MAJOR TODO: rework everything with Field and Circuit compatibile logic
 export interface Tree {
   leaves: Field[];
   levels: Field[][];
 }
 
-export class MerkleTree {
+/**
+ *A MerklePathElement has the following structure:
+ * direction: Field - Direction of the node, Field(0) for left, Field(1) for right
+ * hash: Field - Hash of the node
+ * With a list of MerklePathElements you can recreate the merkle root for a specific leaf
+ */
+export type MerklePathElement = {
+  direction: Field;
+  hash: Field;
+};
+
+export class MerkleStore {
   tree: Tree;
   constructor() {
     this.tree = {
@@ -15,12 +26,20 @@ export class MerkleTree {
     };
   }
 
-  addLeaves(valuesArray: Field[]) {
-    valuesArray.forEach((value: Field) => {
-      this.tree.leaves.push(Poseidon.hash([value]));
+  /**
+   * Adds the hashes of an array of data
+   * @param dataArray Data leafes
+   * @param hash if true elements in the array will be Poseidon hashed
+   */
+  addLeaves(dataArray: Field[], hash: boolean = true) {
+    dataArray.forEach((value: Field) => {
+      this.tree.leaves.push(hash ? Poseidon.hash([value]) : value);
     });
   }
 
+  /**
+   * Builds the merkle tree based on pre-initialized leafes
+   */
   makeTree() {
     let leafCount: number = this.tree.leaves.length;
     if (leafCount > 0) {
@@ -33,7 +52,10 @@ export class MerkleTree {
     }
   }
 
-  // Returns the merkle root value for the tree
+  /**
+   * Returns the merkle proof
+   * @returns Merkle root, if not undefined
+   */
   getMerkleRoot(): Field | undefined {
     if (this.tree.levels.length === 0) {
       return undefined;
@@ -41,14 +63,19 @@ export class MerkleTree {
     return this.tree.levels[0][0];
   }
 
-  // Returns the proof for a leaf at the given index as an array of merkle siblings in hex format
-  getProof(index: number): any | undefined {
+  /**
+   * Returns a merkle proof/path of an element at a given index
+   * @param index of element
+   * @returns merkle path or undefined
+   */
+  getProof(index: number): MerklePathElement[] {
     let currentRowIndex: number = this.tree.levels.length - 1;
     if (index < 0 || index > this.tree.levels[currentRowIndex].length - 1) {
-      return undefined; // the index it out of the bounds of the leaf array
+      return []; // the index it out of the bounds of the leaf array
     }
 
-    let proof: any = [];
+    let path: MerklePathElement[] = [];
+
     for (let x = currentRowIndex; x > 0; x--) {
       let currentLevelNodeCount: number = this.tree.levels[x].length;
       // skip if this is an odd end node
@@ -64,47 +91,69 @@ export class MerkleTree {
       let isRightNode: number = index % 2;
       let siblingIndex: number = isRightNode ? index - 1 : index + 1;
 
-      let sibling: any = {};
-      // NOTE I wanted to do this with an Enum Direction.RIGHT, Direction.LEFT, but it didn't wanna let me do it
-      let siblingPosition: string = isRightNode ? 'left' : 'right';
+      let siblingPosition: Field = isRightNode ? Field(0) : Field(1);
       let siblingValue: Field = this.tree.levels[x][siblingIndex];
-      sibling[siblingPosition] = siblingValue;
 
-      proof.push(sibling);
+      let sibling: MerklePathElement = {
+        direction: siblingPosition,
+        hash: siblingValue,
+      };
+
+      path.push(sibling);
 
       index = Math.floor(index / 2); // set index to the parent index
     }
 
-    return proof;
+    return path;
   }
 
-  // Takes a proof array, a target hash value, and a merkle root
-  // Checks the validity of the proof and return true or false
-  validateProof(proof: any, targetHash: Field, merkleRoot: Field): boolean {
-    if (proof.length === 0) {
+  /**
+   * Validates a merkle proof
+   * @param merklePath Merkle path leading to the root
+   * @param leafHash Hash of element that needs validation
+   * @param merkleRoot Root of the merkle tree
+   * @returns true when the merkle path matches the merkle root
+   */
+  static validateProof(
+    merklePath: MerklePathElement[],
+    targetHash: Field,
+    merkleRoot: Field
+  ): boolean {
+    // NOTE: can probably remove this?
+    if (merklePath.length === 0) {
       return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
     }
 
     var proofHash: Field = targetHash;
-    for (let x = 0; x < proof.length; x++) {
-      if (proof[x].left) {
-        // then the sibling is a left node
-        proofHash = Poseidon.hash([proof[x].left, proofHash]);
-      } else if (proof[x].right) {
-        // then the sibling is a right node
-        proofHash = Poseidon.hash([proofHash, proof[x].right]);
-      } else {
-        // no left or right designation exists, proof is invalid
-        return false;
-      }
+    for (let x = 0; x < merklePath.length; x++) {
+      proofHash = Circuit.if(
+        merklePath[x].direction.equals(Field(0)),
+        Poseidon.hash([merklePath[x].hash, proofHash]),
+        proofHash
+      );
+      proofHash = Circuit.if(
+        merklePath[x].direction.equals(Field(1)),
+        Poseidon.hash([proofHash, merklePath[x].hash]),
+        proofHash
+      );
+      // old code below
+      // if (merklePath[x].direction.equals(Field(0)).toBoolean()) {
+      //   proofHash = Poseidon.hash([merklePath[x].hash, proofHash]);
+      // } else if (merklePath[x].direction.equals(Field(1)).toBoolean()) {
+      //   proofHash = Poseidon.hash([proofHash, merklePath[x].hash]);
+      // } else {
+      //   return false;
+      // }
     }
 
     return proofHash.equals(merkleRoot).toBoolean();
   }
 
-  // Calculates the next level of node when building the merkle tree
-  // These values are calcalated off of the current highest level, level 0 and will be prepended to the levels array
-  calculateNextLevel() {
+  /**
+   * Calculates new levels of the merkle tree structure, helper function
+   * @returns Level of the merkle tree
+   */
+  private calculateNextLevel(): Field[] {
     let nodes: Field[] = [];
     let topLevel: Field[] = this.tree.levels[0];
     let topLevelCount: number = topLevel.length;
@@ -120,6 +169,9 @@ export class MerkleTree {
     return nodes;
   }
 
+  /**
+   * Prints each levels of the tree
+   */
   printTree() {
     console.log('printing tree');
     console.log('-----------------------------------------');
