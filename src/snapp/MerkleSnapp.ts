@@ -69,7 +69,13 @@ async function test() {
 
   // creating a new merkle'ized off chain storage
 
-  let leaves: Field[] = [Field(0), Field(1), Field(2), Field(3), Field(4)];
+  // let leaves: Field[] = [Field(0), Field(1), Field(2), Field(3), Field(4)];
+
+  // having some more data
+  let leaves: Field[] = [];
+  for (let i = 0; i < 100; i++) {
+    leaves.push(Field(Math.floor(Math.random() * 1000)));
+  }
 
   let merkleTree: MerkleStore = new MerkleStore();
   merkleTree.addLeaves(leaves);
@@ -99,12 +105,16 @@ async function test() {
   await Mina.transaction(account1, async () => {
     let snapp = new MerkleSnapp(snappPubKey);
 
-    let merklePath = merkleTree.getProof(2);
+    // make the contract verify every leaf inside the original leaves array
+    leaves.forEach(async (leaf, i) => {
+      let res = await snapp.validateProof(
+        merkleTree.getProof(i),
+        Poseidon.hash([leaf])
+      );
 
-    let res = await snapp.validateProof(merklePath, Poseidon.hash([leaves[2]]));
-
-    Circuit.asProver(() => {
-      console.log('is proof correct?', res.toBoolean());
+      Circuit.asProver(() => {
+        console.log(`existance of ${leaf.toString()}`, res.toBoolean());
+      });
     });
   })
     .send()
