@@ -6,6 +6,12 @@ export interface Tree {
   levels: Field[][];
 }
 
+/**
+ *A MerklePathElement has the following structure:
+ * direction: Field - Direction of the node, Field(0) for left, Field(1) for right
+ * hash: Field - Hash of the node
+ * With a list of MerklePathElements you can recreate the merkle root for a specific leaf
+ */
 export type MerklePathElement = {
   direction: Field;
   hash: Field;
@@ -23,10 +29,11 @@ export class MerkleStore {
   /**
    * Adds the hashes of an array of data
    * @param dataArray Data leafes
+   * @param hash if true elements in the array will be Poseidon hashed
    */
-  addLeaves(dataArray: Field[]) {
+  addLeaves(dataArray: Field[], hash: boolean = true) {
     dataArray.forEach((value: Field) => {
-      this.tree.leaves.push(Poseidon.hash([value]));
+      this.tree.leaves.push(hash ? Poseidon.hash([value]) : value);
     });
   }
 
@@ -62,8 +69,6 @@ export class MerkleStore {
    * @returns merkle path or undefined
    */
   getProof(index: number): MerklePathElement[] {
-    // ! TODO: re write proof structure in a circuit friendly way
-
     let currentRowIndex: number = this.tree.levels.length - 1;
     if (index < 0 || index > this.tree.levels[currentRowIndex].length - 1) {
       return []; // the index it out of the bounds of the leaf array
@@ -86,7 +91,6 @@ export class MerkleStore {
       let isRightNode: number = index % 2;
       let siblingIndex: number = isRightNode ? index - 1 : index + 1;
 
-      // NOTE I wanted to do this with an Enum Direction.RIGHT, Direction.LEFT, but it didn't wanna let me do it
       let siblingPosition: Field = isRightNode ? Field(0) : Field(1);
       let siblingValue: Field = this.tree.levels[x][siblingIndex];
 
@@ -104,7 +108,6 @@ export class MerkleStore {
   }
 
   /**
-   * NOTE: this should happen on-chain in a circuit
    * Validates a merkle proof
    * @param merklePath Merkle path leading to the root
    * @param leafHash Hash of element that needs validation
@@ -116,8 +119,6 @@ export class MerkleStore {
     targetHash: Field,
     merkleRoot: Field
   ): boolean {
-    // ! TODO: re write proof validation in a circuit compatibile way
-
     // NOTE: can probably remove this?
     if (merklePath.length === 0) {
       return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
@@ -135,6 +136,7 @@ export class MerkleStore {
         Poseidon.hash([proofHash, merklePath[x].hash]),
         proofHash
       );
+      // old code below
       // if (merklePath[x].direction.equals(Field(0)).toBoolean()) {
       //   proofHash = Poseidon.hash([merklePath[x].hash, proofHash]);
       // } else if (merklePath[x].direction.equals(Field(1)).toBoolean()) {
