@@ -1,17 +1,17 @@
 import { Field, CircuitValue, Poseidon } from 'snarkyjs';
 
-import { MerklePathElement, MerkleStore } from './MerkleTree.js';
+import { MerklePathElement, MerkleTree } from './MerkleTree.js';
 
 // NOTE should the key also be Hashable or only the value?
 export class KeyedDataStore<K, V extends CircuitValue> {
   // the merkle tree doesnt store the actual data, its only a layer ontop of the dataStore map
 
   dataStore: Map<K, V>;
-  merkleTree: MerkleStore;
+  merkleTree: MerkleTree;
 
   constructor() {
     this.dataStore = new Map<K, V>();
-    this.merkleTree = new MerkleStore();
+    this.merkleTree = new MerkleTree();
   }
 
   /**
@@ -20,7 +20,7 @@ export class KeyedDataStore<K, V extends CircuitValue> {
    * @returns true if successful
    */
   fromData(dataBlobs: Map<K, V>): boolean {
-    this.merkleTree = new MerkleStore();
+    this.merkleTree = new MerkleTree();
 
     let leaves: Field[] = [];
     for (let [key, value] of dataBlobs.entries()) {
@@ -43,7 +43,7 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     targetHash: Field,
     merkleRoot: Field
   ): boolean {
-    return MerkleStore.validateProof(merklePath, targetHash, merkleRoot);
+    return MerkleTree.validateProof(merklePath, targetHash, merkleRoot);
   }
 
   /**

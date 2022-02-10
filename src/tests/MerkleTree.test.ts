@@ -1,5 +1,5 @@
 import { isReady, shutdown, Field, Poseidon } from 'snarkyjs';
-import { MerkleStore } from '../snapp/datastore/MerkleTree';
+import { MerkleTree } from '../snapp/datastore/MerkleTree';
 
 describe('MerkleTree.ts', () => {
   beforeEach(async () => {
@@ -16,9 +16,9 @@ describe('MerkleTree.ts', () => {
       leaves.push(Field(Math.floor(Math.random() * 1000)));
     }
 
-    let merkleTree: MerkleStore = new MerkleStore();
+    let merkleTree: MerkleTree = new MerkleTree();
     merkleTree.addLeaves(leaves);
-    merkleTree.makeTree();
+
     // make the contract verify every leaf inside the original leaves array
 
     let merkleRoot: any = merkleTree.getMerkleRoot();
@@ -26,7 +26,7 @@ describe('MerkleTree.ts', () => {
     expect(merkleRoot).not.toBe(undefined);
 
     leaves.forEach(async (leaf, i) => {
-      let res = MerkleStore.validateProof(
+      let res = MerkleTree.validateProof(
         merkleTree.getProof(i),
         Poseidon.hash([leaf]),
         merkleRoot

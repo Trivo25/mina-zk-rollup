@@ -17,7 +17,7 @@ export type MerklePathElement = {
   hash: Field;
 };
 
-export class MerkleStore {
+export class MerkleTree {
   tree: Tree;
   constructor() {
     this.tree = {
@@ -42,7 +42,7 @@ export class MerkleStore {
    * @return {MerkleStore} Merkle store
    */
   static fromDataLeaves(dataArray: Field[], hash = true): MerkleStore {
-    let merkleStore = new MerkleStore();
+    let merkleStore = new MerkleTree();
 
     merkleStore.addLeaves(dataArray, hash);
     return merkleStore;

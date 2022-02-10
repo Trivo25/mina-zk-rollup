@@ -15,7 +15,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { MerkleStore, Tree } from './datastore/MerkleTree.js';
+import { MerkleTree, Tree } from './datastore/MerkleTree.js';
 
 class MerkleSnapp extends SmartContract {
   @state(Field) merkleRoot = State<Field>();
@@ -77,7 +77,7 @@ async function test() {
     leaves.push(Field(Math.floor(Math.random() * 1000)));
   }
 
-  let merkleTree: MerkleStore = new MerkleStore();
+  let merkleTree: MerkleTree = new MerkleTree();
   merkleTree.addLeaves(leaves);
 
   await Mina.transaction(account1, async () => {

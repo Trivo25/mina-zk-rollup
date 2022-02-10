@@ -12,7 +12,7 @@ import {
   CircuitValue,
 } from 'snarkyjs';
 
-import { MerkleStore, Tree } from './snapp/datastore/MerkleTree.js';
+import { MerkleTree, Tree } from './snapp/datastore/MerkleTree.js';
 
 import { KeyedDataStore } from './snapp/datastore/KeyedDataStore.js';
 
@@ -124,7 +124,7 @@ function keyedDataStoreDemo() {
 }
 
 function merkleTreeDemo() {
-  let m = new MerkleStore();
+  let m = new MerkleTree();
   let nodeData = [];
 
   for (let index = 0; index <= 4; index++) {
@@ -162,7 +162,7 @@ function merkleTreeDemo() {
     console.log('Checking valid proof from all elements in the tree');
     nodeData.forEach((el, index) => {
       console.log(
-        MerkleStore.validateProof(
+        MerkleTree.validateProof(
           m.getProof(index),
           Poseidon.hash([el]),
           actualMerkleRoot === undefined ? Field(0) : actualMerkleRoot // TODO: fix
