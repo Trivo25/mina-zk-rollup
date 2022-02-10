@@ -18,13 +18,29 @@ import { KeyedDataStore } from './snapp/datastore/KeyedDataStore.js';
 
 import { DataStack } from './snapp/datastore/DataStack.js';
 
+class Account extends CircuitValue {
+  @prop balance: UInt64;
+  @prop publicKey: PublicKey;
+
+  constructor(balance: UInt64, publicKey: PublicKey) {
+    super();
+    this.balance = balance;
+    this.publicKey = publicKey;
+  }
+
+  // NOTE: there seems to be an issue with the default toFields() method ?
+  toFields(): Field[] {
+    return this.balance.toFields().concat(this.publicKey.toFields());
+  }
+}
+
 // for debugging purposes
 test();
 async function test() {
   await isReady;
 
-  dataStackDemo();
-  //keyedDataStoreDemo();
+  //dataStackDemo();
+  keyedDataStoreDemo();
 
   //merkleTreeDemo();
 
@@ -53,21 +69,6 @@ function dataStackDemo() {
 
 function keyedDataStoreDemo() {
   // dummy account
-  class Account extends CircuitValue {
-    @prop balance: UInt64;
-    @prop publicKey: PublicKey;
-
-    constructor(balance: UInt64, publicKey: PublicKey) {
-      super();
-      this.balance = balance;
-      this.publicKey = publicKey;
-    }
-
-    // NOTE: there seems to be an issue with the default toFields() method ?
-    toFields(): Field[] {
-      return this.balance.toFields().concat(this.publicKey.toFields());
-    }
-  }
 
   let store = new KeyedDataStore<String, Account>();
   let dataLeaves = new Map<String, Account>();
@@ -97,8 +98,24 @@ function keyedDataStoreDemo() {
   dataLeaves.set('C', accountCnew);
 
   let ok = store.fromData(dataLeaves);
+
+  let accountD = new Account(
+    UInt64.fromNumber(330),
+    PrivateKey.random().toPublicKey()
+  );
+  // store.set('A', accountA);
+  // store.set('B', accountB);
+  store.set('C', accountC);
+  // store.set('D', accountD);
+
   //store.set('C', accountCnew);
   console.log('ok?', ok);
+  store.merkleTree.printTree();
+
+  for (let [key, value] of store.dataStore) {
+    console.log(key + ' ' + value.balance.toString());
+  }
+
   let root = store.getMerkleRoot();
   if (root !== undefined) {
     console.log('root ', root.toString());

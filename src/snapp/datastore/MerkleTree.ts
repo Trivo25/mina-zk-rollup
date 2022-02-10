@@ -80,7 +80,7 @@ export class MerkleTree {
   /**
    * Builds the merkle tree based on pre-initialized leafes
    */
-  private makeTree() {
+  makeTree() {
     let leafCount: number = this.tree.leaves.length;
     if (leafCount > 0) {
       // skip this whole process if there are no leaves added to the tree
