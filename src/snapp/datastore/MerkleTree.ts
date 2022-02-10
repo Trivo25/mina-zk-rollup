@@ -37,8 +37,8 @@ export class MerkleStore {
 
   /**
    * Adds the hashes of an array of data
-   * @param dataArray Data leafes
-   * @param hash if true elements in the array will be Poseidon hashed
+   * @param {Field[]} dataArray Data leafes
+   * @param {boolean} hash if true elements in the array will be Poseidon hashed
    */
   addLeaves(dataArray: Field[], hash: boolean = true) {
     dataArray.forEach((value: Field) => {
@@ -48,8 +48,8 @@ export class MerkleStore {
 
   /**
    * Finds the index of a given element
-   * @param element to find
-   * @returns index or undefined
+   * @param {number} element to find
+   * @returns {number | undefined} index or undefined
    */
   getIndex(element: Field): number | undefined {
     this.tree.leaves.forEach((el, i) => {
@@ -78,7 +78,7 @@ export class MerkleStore {
 
   /**
    * Returns the merkle proof
-   * @returns Merkle root, if not undefined
+   * @returns {Field | undefined} Merkle root, if not undefined
    */
   getMerkleRoot(): Field | undefined {
     if (this.tree.levels.length === 0) {
@@ -89,8 +89,8 @@ export class MerkleStore {
 
   /**
    * Returns a merkle proof/path of an element at a given index
-   * @param index of element
-   * @returns merkle path or undefined
+   * @param {number} index of element
+   * @returns {MerklePathElement[] | undefined} merkle path or undefined
    */
   getProof(index: number): MerklePathElement[] {
     let currentRowIndex: number = this.tree.levels.length - 1;
@@ -133,10 +133,10 @@ export class MerkleStore {
 
   /**
    * Validates a merkle proof
-   * @param merklePath Merkle path leading to the root
-   * @param leafHash Hash of element that needs validation
-   * @param merkleRoot Root of the merkle tree
-   * @returns true when the merkle path matches the merkle root
+   * @param {MerklePathElement[]} merklePath Merkle path leading to the root
+   * @param {Field} leafHash Hash of element that needs validation
+   * @param {Field} merkleRoot Root of the merkle tree
+   * @returns {boolean} true when the merkle path matches the merkle root
    */
   static validateProof(
     merklePath: MerklePathElement[],
@@ -175,7 +175,7 @@ export class MerkleStore {
 
   /**
    * Calculates new levels of the merkle tree structure, helper function
-   * @returns Level of the merkle tree
+   * @returns {Field[]} Level of the merkle tree
    */
   private calculateNextLevel(): Field[] {
     let nodes: Field[] = [];
