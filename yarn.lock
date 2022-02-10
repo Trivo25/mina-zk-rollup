@@ -510,6 +510,13 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@o1labs/client-sdk@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@o1labs/client-sdk/-/client-sdk-1.0.1.tgz#5b2824a52fd0e839873791e4a5949aa5197a2ed1"
+  integrity sha512-fHAmY31WIKuXIgMohyf5kJkjNGNqco965YwE2Td4k+IJRswO2ymaIK2Uo4CSp8UqivGzF02i7oJJhzyWWViN5Q==
+  dependencies:
+    "@types/node" "^13.7.0"
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.npmjs.org/@sinonjs/commons/-/commons-1.8.3.tgz"
@@ -620,6 +627,11 @@
   version "16.3.3"
   resolved "https://registry.npmjs.org/@types/node/-/node-16.3.3.tgz"
   integrity sha512-8h7k1YgQKxKXWckzFCMfsIwn0Y61UK6tlD6y2lOb3hTOIMlK3t9/QwHOhc81TwU+RMf0As5fj7NPjroERCnejQ==
+
+"@types/node@^13.7.0":
+  version "13.13.52"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.52.tgz#03c13be70b9031baaed79481c0c0cfb0045e53f7"
+  integrity sha512-s3nugnZumCC//n4moGGe6tkNMyYEdaDBitVjwPxXmR5lnMG5dHePinH2EdxkG3Rh1ghFHHixAG4NJhpJW1rthQ==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
