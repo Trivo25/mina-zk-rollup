@@ -39,6 +39,11 @@ function keyedDataStoreDemo() {
       this.balance = balance;
       this.publicKey = publicKey;
     }
+
+    // NOTE: there seems to be an issue with the default toFields() method ?
+    toFields(): Field[] {
+      return this.balance.toFields().concat(this.publicKey.toFields());
+    }
   }
 
   let store = new KeyedDataStore<String, Account>();
@@ -69,15 +74,32 @@ function keyedDataStoreDemo() {
   if (root !== undefined) {
     console.log('root ', root.toString());
 
-    let proof = store.getProof(accountA);
-    console.log(proof);
-    let res = store.validateProof(
-      proof,
-      Poseidon.hash(accountA.toFields()),
-      root
+    console.log(
+      'is member? ',
+      store.validateProof(
+        store.getProof(accountA),
+        Poseidon.hash(accountA.toFields()),
+        root
+      )
     );
 
-    console.log('is member? ', res.toString());
+    console.log(
+      'is member? ',
+      store.validateProof(
+        store.getProof(accountB),
+        Poseidon.hash(accountB.toFields()),
+        root
+      )
+    );
+
+    console.log(
+      'is member? ',
+      store.validateProof(
+        store.getProof(accountC),
+        Poseidon.hash(accountC.toFields()),
+        root
+      )
+    );
   }
 }
 
@@ -105,7 +127,7 @@ function merkleTreeDemo() {
   m.makeTree();
 
   let actualMerkleRoot = m.getMerkleRoot();
-  if (actualMerkleRoot != undefined) {
+  if (actualMerkleRoot !== undefined) {
     console.log(
       'merkle root matching?',
       actualMerkleRoot.equals(expectedMerkleRoot).toBoolean()
@@ -124,7 +146,7 @@ function merkleTreeDemo() {
         MerkleStore.validateProof(
           m.getProof(index),
           Poseidon.hash([el]),
-          expectedMerkleRoot
+          actualMerkleRoot === undefined ? Field(0) : actualMerkleRoot // TODO: fix
         )
       );
     });

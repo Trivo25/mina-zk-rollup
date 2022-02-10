@@ -66,13 +66,15 @@ export class MerkleStore {
    * @returns {number | undefined} index or undefined
    */
   getIndex(element: Field): number | undefined {
+    let result = undefined;
     this.tree.leaves.forEach((el, i) => {
-      if (el === element) {
-        return i;
+      if (el.equals(element).toBoolean()) {
+        result = i;
+        return;
       }
     });
 
-    return undefined;
+    return result;
   }
 
   /**

@@ -4,12 +4,14 @@ import { MerklePathElement, MerkleStore } from './MerkleTree.js';
 
 // NOTE should the key also be Hashable or only the value?
 export class KeyedDataStore<K, V extends CircuitValue> {
+  // the merkle tree doesnt store the actual data, its only a layer ontop of the dataStore map
+
   dataStore: Map<K, V>;
-  merkleTree: MerkleStore | undefined;
+  merkleTree: MerkleStore;
 
   constructor() {
     this.dataStore = new Map<K, V>();
-    this.merkleTree = undefined;
+    this.merkleTree = new MerkleStore();
   }
 
   fromData(dataBlobs: Map<K, V>): boolean {
@@ -34,25 +36,19 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     targetHash: Field,
     merkleRoot: Field
   ): boolean {
-    if (this.merkleTree === undefined) {
-      return false;
-    }
     return MerkleStore.validateProof(merklePath, targetHash, merkleRoot);
   }
 
   getMerkleRoot(): Field | undefined {
-    if (this.merkleTree === undefined) {
-      return undefined;
-    }
     return this.merkleTree.getMerkleRoot();
   }
 
   getProof(value: V): MerklePathElement[] {
-    if (this.merkleTree === undefined) {
-      return [];
-    }
-    let index = this.merkleTree.getIndex(Poseidon.hash(value.toFields()));
-    console.log(index);
+    console.log('hash', Poseidon.hash(value.toFields()).toString());
+    let index: number | undefined = this.merkleTree.getIndex(
+      Poseidon.hash(value.toFields())
+    );
+    console.log('index', index);
     if (index === undefined) {
       return [];
     }
@@ -65,9 +61,6 @@ export class KeyedDataStore<K, V extends CircuitValue> {
 
   set(key: K, value: V): boolean {
     // TODO: update merkle tree
-    if (this.merkleTree === undefined) {
-      return false;
-    }
 
     let index = this.merkleTree.getIndex(Poseidon.hash(value.toFields()));
     if (index !== undefined) {
