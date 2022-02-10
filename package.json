@@ -13,13 +13,11 @@
     "testw": "jest --watch",
     "coverage": "jest --coverage",
     "build": "tsc -p tsconfig.json",
-    "prepare": "husky install",
     "demo": "npx tsc && node ./build/demo.js",
     "format": "prettier --write --ignore-unknown **/*"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
-    "husky": "^7.0.1",
     "jest": "^27.0.6",
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.2",
