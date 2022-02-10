@@ -17,7 +17,7 @@ import {
 
 import { MerkleTree, Tree } from '../lib/merkle_proof/MerkleTree.js';
 
-class MerkleSnapp extends SmartContract {
+class RollupSnapp extends SmartContract {
   @state(Field) merkleRoot = State<Field>();
 
   deploy(initialBalance: UInt64, merkleRoot: Field) {
@@ -83,7 +83,7 @@ async function test() {
   merkleTree.addLeaves(leaves);
 
   await Mina.transaction(account1, async () => {
-    let snapp = new MerkleSnapp(snappPubKey);
+    let snapp = new RollupSnapp(snappPubKey);
 
     const amount = UInt64.fromNumber(1000000);
     const p = await Party.createSigned(account2);
@@ -104,7 +104,7 @@ async function test() {
   // console.log('initial state: ' + snappState);
 
   await Mina.transaction(account1, async () => {
-    let snapp = new MerkleSnapp(snappPubKey);
+    let snapp = new RollupSnapp(snappPubKey);
 
     // make the contract verify every leaf inside the original leaves array
     leaves.forEach(async (leaf, i) => {
