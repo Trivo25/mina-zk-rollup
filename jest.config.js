@@ -14,6 +14,7 @@ export default {
   },
   resolver: '<rootDir>/resolver.cjs',
   transformIgnorePatterns: [
+    '<rootDir>/node_modules/(?!tslib)',
     '<rootDir>/node_modules/(?!snarkyjs/node_modules/tslib)',
   ],
 };
