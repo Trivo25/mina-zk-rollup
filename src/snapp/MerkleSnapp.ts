@@ -26,6 +26,8 @@ class MerkleSnapp extends SmartContract {
     this.merkleRoot.set(merkleRoot);
   }
 
+  @method async validateRollupProof() {}
+
   @method async validateProof(merklePath: any, leafHash: Field): Promise<Bool> {
     // merkle root from inside the smart contract
     let merkleRoot = await this.merkleRoot.get();
