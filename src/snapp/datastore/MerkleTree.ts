@@ -36,6 +36,20 @@ export class MerkleStore {
   }
 
   /**
+   * Static function that returns a Merkle store
+   * @param {Field[]} dataArray Data leafes
+   * @param {boolean} hash if true elements in the array will be Poseidon hashed
+   * @return {MerkleStore} Merkle store
+   */
+  static fromDataLeaves(dataArray: Field[], hash = true): MerkleStore {
+    let merkleStore = new MerkleStore();
+
+    merkleStore.addLeaves(dataArray, hash);
+    merkleStore.makeTree();
+    return merkleStore;
+  }
+
+  /**
    * Adds the hashes of an array of data
    * @param {Field[]} dataArray Data leafes
    * @param {boolean} hash if true elements in the array will be Poseidon hashed
