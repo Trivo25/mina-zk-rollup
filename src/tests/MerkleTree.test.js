@@ -11,17 +11,17 @@ describe('MerkleTree.ts', () => {
   });
 
   it('Should form a merkle tree correctly', () => {
-    let leaves: Field[] = [];
+    let leaves = [];
     for (let i = 0; i < 100; i++) {
       leaves.push(Field(Math.floor(Math.random() * 1000)));
     }
 
-    let merkleTree: MerkleTree = new MerkleTree();
+    let merkleTree = new MerkleTree();
     merkleTree.addLeaves(leaves);
 
     // make the contract verify every leaf inside the original leaves array
 
-    let merkleRoot: any = merkleTree.getMerkleRoot();
+    let merkleRoot = merkleTree.getMerkleRoot();
     console.log(merkleRoot);
     expect(merkleRoot).not.toBe(undefined);
 
