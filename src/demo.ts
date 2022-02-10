@@ -39,8 +39,8 @@ test();
 async function test() {
   await isReady;
 
-  //dataStackDemo();
-  keyedDataStoreDemo();
+  dataStackDemo();
+  //keyedDataStoreDemo();
 
   //merkleTreeDemo();
 
