@@ -1,7 +1,7 @@
 import { CircuitValue, Poseidon } from 'snarkyjs';
-import { MerkleTree } from './MerkleTree';
+import { MerkleTree } from './MerkleTree.js';
 
-class DataStore<V extends CircuitValue> {
+export class DataStack<V extends CircuitValue> {
   dataStore: Array<V>;
   merkleTree: MerkleTree;
 
@@ -15,21 +15,27 @@ class DataStore<V extends CircuitValue> {
     let poppedElement = this.dataStore.pop();
     leaves.pop();
     this.merkleTree.clear();
-    this.merkleTree.addLeaves(leaves);
+    this.merkleTree.addLeaves(leaves, false);
     return poppedElement;
   }
 
   push(value: V): number {
-    this.merkleTree.addLeaves(value.toFields(), true);
+    this.merkleTree.addLeaves([Poseidon.hash(value.toFields())], false);
 
     return this.dataStore.push(value);
   }
 
-  shift() {}
+  // shift() {}
 
-  unshift() {}
+  // unshift() {}
 
-  splice() {}
+  // splice() {}
+
+  // forEach(callback: (v: V, index: number, array: V[]) => void) {
+  //   this.dataStore.forEach(callback);
+
+  //   // TODO: update merkle tree just in case
+  // }
 
   getProof() {}
 }

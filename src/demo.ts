@@ -16,16 +16,39 @@ import { MerkleTree, Tree } from './snapp/datastore/MerkleTree.js';
 
 import { KeyedDataStore } from './snapp/datastore/KeyedDataStore.js';
 
+import { DataStack } from './snapp/datastore/DataStack.js';
+
 // for debugging purposes
 test();
 async function test() {
   await isReady;
 
-  keyedDataStoreDemo();
+  dataStackDemo();
+  //keyedDataStoreDemo();
 
   //merkleTreeDemo();
 
   shutdown();
+}
+
+function dataStackDemo() {
+  let stack = new DataStack();
+  stack.merkleTree.printTree();
+
+  let a = PrivateKey.random().toPublicKey();
+  let b = PrivateKey.random().toPublicKey();
+  let c = PrivateKey.random().toPublicKey();
+
+  stack.push(a);
+  stack.push(b);
+  stack.push(c);
+  stack.merkleTree.printTree();
+  stack.pop();
+  stack.merkleTree.printTree();
+
+  stack.dataStore.forEach((el) => {
+    console.log(el);
+  });
 }
 
 function keyedDataStoreDemo() {
@@ -47,7 +70,6 @@ function keyedDataStoreDemo() {
   }
 
   let store = new KeyedDataStore<String, Account>();
-
   let dataLeaves = new Map<String, Account>();
 
   let accountA = new Account(
@@ -75,6 +97,7 @@ function keyedDataStoreDemo() {
   dataLeaves.set('C', accountCnew);
 
   let ok = store.fromData(dataLeaves);
+  //store.set('C', accountCnew);
   console.log('ok?', ok);
   let root = store.getMerkleRoot();
   if (root !== undefined) {

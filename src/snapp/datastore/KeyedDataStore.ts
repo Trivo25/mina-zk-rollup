@@ -109,6 +109,7 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     } else {
       // element doesnt exist already, need to be created
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())]);
+      this.dataStore.delete(key);
       this.dataStore.set(key, value);
     }
 
