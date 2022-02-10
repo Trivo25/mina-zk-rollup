@@ -29,7 +29,11 @@ export class DataStack<V extends CircuitValue> {
 
   // unshift() {}
 
-  // splice() {}
+  splice(start: number, deleteCount?: number | undefined) {
+    this.merkleTree.tree.leaves.splice(start, deleteCount);
+    this.merkleTree.makeTree();
+    return this.dataStore.splice(start, deleteCount);
+  }
 
   // forEach(callback: (v: V, index: number, array: V[]) => void) {
   //   this.dataStore.forEach(callback);
