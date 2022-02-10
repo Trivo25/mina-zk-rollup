@@ -15,7 +15,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { MerkleTree, Tree } from './datastore/MerkleTree.js';
+import { MerkleTree, Tree } from '../merkle_proof/MerkleTree.js';
 
 class MerkleSnapp extends SmartContract {
   @state(Field) merkleRoot = State<Field>();
