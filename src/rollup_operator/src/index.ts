@@ -1,4 +1,9 @@
-import config from 'config';
+import { startREST } from './api/controller.js';
 
-const dbConfig = config.get('test');
-console.log(dbConfig);
+init();
+
+function init() {
+  console.log('Starting REST server');
+
+  startREST();
+}

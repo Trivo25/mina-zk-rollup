@@ -1,0 +1,3 @@
+class RollupOperator {
+  transactionPool: any;
+}
