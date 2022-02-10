@@ -41,7 +41,7 @@ export class MerkleTree {
    * @param {boolean} hash if true elements in the array will be Poseidon hashed
    * @return {MerkleStore} Merkle store
    */
-  static fromDataLeaves(dataArray: Field[], hash = true): MerkleStore {
+  static fromDataLeaves(dataArray: Field[], hash = true): MerkleTree {
     let merkleStore = new MerkleTree();
 
     merkleStore.addLeaves(dataArray, hash);
