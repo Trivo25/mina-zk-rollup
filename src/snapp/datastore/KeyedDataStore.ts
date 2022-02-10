@@ -15,11 +15,6 @@ export class KeyedDataStore<K, V extends CircuitValue> {
   }
 
   fromData(dataBlobs: Map<K, V>): boolean {
-    // this.merkleTree = MerkleTreeFactory.buildTree(dataBlobs.values);
-    // if (this.merkleTree === undefined) {
-    //   return false;
-    // }
-
     this.merkleTree = new MerkleStore();
 
     let leaves: Field[] = [];
@@ -43,17 +38,17 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     return this.merkleTree.getMerkleRoot();
   }
 
-  getProof(value: V): MerklePathElement[] {
-    // TODO: get proof by key, by value
-    console.log('hash', Poseidon.hash(value.toFields()).toString());
-    let index: number | undefined = this.merkleTree.getIndex(
-      Poseidon.hash(value.toFields())
-    );
-    console.log('index', index);
-    if (index === undefined) {
+  getProofByKey(key: K): MerklePathElement[] {
+    let value = this.dataStore.get(key);
+    if (value === undefined) {
       return [];
     }
-    return this.merkleTree.getProof(index);
+
+    return this.getProof(Poseidon.hash(value.toFields()));
+  }
+
+  getProofByValue(value: V): MerklePathElement[] {
+    return this.getProof(Poseidon.hash(value.toFields()));
   }
 
   get(key: K): V | undefined {
@@ -81,5 +76,13 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     }
 
     return true;
+  }
+
+  getProof(hash: Field): MerklePathElement[] {
+    let index: number | undefined = this.merkleTree.getIndex(hash);
+    if (index === undefined) {
+      return [];
+    }
+    return this.merkleTree.getProof(index);
   }
 }

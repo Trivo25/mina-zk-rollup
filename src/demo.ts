@@ -83,7 +83,7 @@ function keyedDataStoreDemo() {
     console.log(
       'is member? ',
       store.validateProof(
-        store.getProof(accountA),
+        store.getProof(Poseidon.hash(accountA.toFields())),
         Poseidon.hash(accountA.toFields()),
         root
       )
@@ -92,7 +92,7 @@ function keyedDataStoreDemo() {
     console.log(
       'is member? ',
       store.validateProof(
-        store.getProof(accountB),
+        store.getProof(Poseidon.hash(accountB.toFields())),
         Poseidon.hash(accountB.toFields()),
         root
       )
@@ -101,7 +101,7 @@ function keyedDataStoreDemo() {
     console.log(
       'is member? ',
       store.validateProof(
-        store.getProof(accountC),
+        store.getProof(Poseidon.hash(accountC.toFields())),
         Poseidon.hash(accountC.toFields()),
         root
       )
@@ -110,7 +110,7 @@ function keyedDataStoreDemo() {
     console.log(
       'is member? ',
       store.validateProof(
-        store.getProof(accountCnew),
+        store.getProof(Poseidon.hash(accountCnew.toFields())),
         Poseidon.hash(accountCnew.toFields()),
         root
       )
