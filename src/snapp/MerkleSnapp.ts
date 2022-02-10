@@ -30,7 +30,7 @@ class MerkleSnapp extends SmartContract {
     // merkle root from inside the smart contract
     let merkleRoot = await this.merkleRoot.get();
 
-    // ! if is probably not good here?
+    // ! 'if' is probably not good here?
     if (merklePath.length === 0) {
       return leafHash.equals(merkleRoot);
     }
@@ -79,7 +79,6 @@ async function test() {
 
   let merkleTree: MerkleStore = new MerkleStore();
   merkleTree.addLeaves(leaves);
-  merkleTree.makeTree();
 
   await Mina.transaction(account1, async () => {
     let snapp = new MerkleSnapp(snappPubKey);

@@ -45,7 +45,6 @@ export class MerkleStore {
     let merkleStore = new MerkleStore();
 
     merkleStore.addLeaves(dataArray, hash);
-    merkleStore.makeTree();
     return merkleStore;
   }
 
@@ -58,6 +57,7 @@ export class MerkleStore {
     dataArray.forEach((value: Field) => {
       this.tree.leaves.push(hash ? Poseidon.hash([value]) : value);
     });
+    this.makeTree();
   }
 
   /**
@@ -80,7 +80,7 @@ export class MerkleStore {
   /**
    * Builds the merkle tree based on pre-initialized leafes
    */
-  makeTree() {
+  private makeTree() {
     let leafCount: number = this.tree.leaves.length;
     if (leafCount > 0) {
       // skip this whole process if there are no leaves added to the tree

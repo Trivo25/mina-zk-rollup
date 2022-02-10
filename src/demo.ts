@@ -68,6 +68,12 @@ function keyedDataStoreDemo() {
   );
   dataLeaves.set('C', accountC);
 
+  let accountCnew = new Account(
+    UInt64.fromNumber(330),
+    PrivateKey.random().toPublicKey()
+  );
+  dataLeaves.set('C', accountCnew);
+
   let ok = store.fromData(dataLeaves);
   console.log('ok?', ok);
   let root = store.getMerkleRoot();
@@ -100,7 +106,21 @@ function keyedDataStoreDemo() {
         root
       )
     );
+
+    console.log(
+      'is member? ',
+      store.validateProof(
+        store.getProof(accountCnew),
+        Poseidon.hash(accountCnew.toFields()),
+        root
+      )
+    );
   }
+
+  console.log('C ', store.get('C')?.equals(accountCnew).toBoolean());
+  console.log('B ', store.get('B')?.equals(accountB).toBoolean());
+  console.log('A ', store.get('A')?.equals(accountA).toBoolean());
+  console.log('C not C_old', store.get('C')?.equals(accountC).toBoolean());
 }
 
 function merkleTreeDemo() {
@@ -124,7 +144,6 @@ function merkleTreeDemo() {
 
   let expectedMerkleRoot = Poseidon.hash([h_CABCD, h_E]);
   m.addLeaves(nodeData);
-  m.makeTree();
 
   let actualMerkleRoot = m.getMerkleRoot();
   if (actualMerkleRoot !== undefined) {

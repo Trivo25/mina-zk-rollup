@@ -27,7 +27,7 @@ export class KeyedDataStore<K, V extends CircuitValue> {
       leaves.push(Poseidon.hash(value.toFields()));
     }
     this.merkleTree.addLeaves(leaves, false);
-    this.merkleTree.makeTree();
+    this.dataStore = dataBlobs;
     return true;
   }
 
@@ -44,6 +44,7 @@ export class KeyedDataStore<K, V extends CircuitValue> {
   }
 
   getProof(value: V): MerklePathElement[] {
+    // TODO: get proof by key, by value
     console.log('hash', Poseidon.hash(value.toFields()).toString());
     let index: number | undefined = this.merkleTree.getIndex(
       Poseidon.hash(value.toFields())
@@ -60,8 +61,6 @@ export class KeyedDataStore<K, V extends CircuitValue> {
   }
 
   set(key: K, value: V): boolean {
-    // TODO: update merkle tree
-
     let index = this.merkleTree.getIndex(Poseidon.hash(value.toFields()));
     if (index !== undefined) {
       // element already exists in merkle tree
@@ -72,12 +71,13 @@ export class KeyedDataStore<K, V extends CircuitValue> {
       this.merkleTree.clear();
       this.merkleTree.addLeaves(leaves);
       // rebuilds the tree
-      this.merkleTree.makeTree();
+
+      this.dataStore.delete(key);
+      this.dataStore.set(key, value);
     } else {
       // element doesnt exist already, need to be created
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())]);
-      // rebuilds the tree
-      this.merkleTree.makeTree();
+      this.dataStore.set(key, value);
     }
 
     return true;
