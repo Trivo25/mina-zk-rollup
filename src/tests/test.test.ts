@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 
 import { Field } from 'snarkyjs';
 import { test } from '../src/ex';
