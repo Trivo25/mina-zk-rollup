@@ -8,3 +8,6 @@ coverage
 
 # System
 .DS_Store
+
+
+.nyc_output
