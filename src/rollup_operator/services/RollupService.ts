@@ -18,10 +18,11 @@ class RequestService extends Service {
       payload: minaPayload,
     };
 
-    if (MinaSDK.verifyMessage(signed)) {
-      return true;
+    try {
+      return MinaSDK.verifyMessage(signed);
+    } catch {
+      return false;
     }
-    return false;
   }
 }
 
