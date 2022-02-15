@@ -2,10 +2,11 @@ import express from 'express';
 
 import Service from '../services/Service.js';
 
-class Controller {
-  service: Service;
+// generics here save me some time of checking instanceof s ervice
+class Controller<ServiceType extends Service> {
+  service: ServiceType;
 
-  constructor(service: Service) {
+  constructor(service: ServiceType) {
     this.service = service;
     this.hello = this.hello.bind(this);
   }

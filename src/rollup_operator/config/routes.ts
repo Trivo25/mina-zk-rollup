@@ -1,7 +1,7 @@
 import express from 'express';
 
-import RequestController from '../controllers/RequestController.js';
+import RollupController from '../controllers/RollupController.js';
 
 export default (server: express.Application) => {
-  server.post(`/hello`, RequestController.hello);
+  server.post(`/rollup/verify`, RollupController.verify);
 };
