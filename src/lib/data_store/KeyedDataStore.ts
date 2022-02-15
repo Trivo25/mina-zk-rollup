@@ -93,8 +93,6 @@ export class KeyedDataStore<K, V extends CircuitValue> {
    * @returns true if successful
    */
   set(key: K, value: V) {
-    console.log('set');
-
     let entry: V | undefined = this.dataStore.get(key);
     if (entry === undefined) {
       // key is new

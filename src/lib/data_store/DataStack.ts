@@ -25,6 +25,10 @@ export class DataStack<V extends CircuitValue> {
     return this.dataStore.push(value);
   }
 
+  size(): number {
+    return this.dataStore.length;
+  }
+
   // shift() {}
 
   // unshift() {}
