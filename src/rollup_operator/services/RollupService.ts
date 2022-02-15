@@ -6,6 +6,11 @@ class RequestService extends Service {
     super();
   }
 
+  /**
+   * Verifies a signature
+   * @param signature Signature to verify
+   * @returns true if signature is valid
+   */
   verify(signature: ISignature): boolean {
     try {
       let minaSignature: MinaSDK.signature = {

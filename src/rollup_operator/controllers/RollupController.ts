@@ -30,7 +30,6 @@ class RollupController extends Controller<RollupService> {
         payload: success,
       });
     } catch (err) {
-      console.log(err);
       return res.status(400).send({
         error: EnumError.BrokenSignature,
         payload: false,
