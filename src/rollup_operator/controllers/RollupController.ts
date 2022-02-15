@@ -15,17 +15,33 @@ class RollupController extends Controller<RollupService> {
     req: express.Request,
     res: express.Response
   ): Promise<express.Response> {
-    let signature: ISignature = {
-      publicKey: req.body.publicKey,
-      signature: req.body.signature,
-      payload: req.body.payload,
-    };
-    let success = this.service.verify(signature);
-    let reponse: IHTTPResponse = {
-      error: success ? undefined : EnumError.InvalidSignature,
-      payload: success,
-    };
-    return res.status(success ? 200 : 400).send(reponse);
+    try {
+      let signature: ISignature = {
+        publicKey: req.body.publicKey,
+        signature: {
+          field: req.body.signature.field,
+          scalar: req.body.signature.scalar,
+        },
+        payload: req.body.payload,
+      };
+      let success: boolean = this.service.verify(signature);
+      return res.status(success ? 200 : 400).send({
+        error: success ? undefined : EnumError.InvalidSignature,
+        payload: success,
+      });
+    } catch (err) {
+      return res.status(400).send({
+        error: EnumError.BrokenSignature,
+        payload: false,
+      });
+    }
+  }
+
+  async transferFunds(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
+    return res.status(200).send();
   }
 }
 
