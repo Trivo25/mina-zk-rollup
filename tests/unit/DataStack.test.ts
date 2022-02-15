@@ -24,6 +24,8 @@ describe('DataStack', () => {
   });
 
   it('should construct DataStack', () => {
+    // TODO: cleanup tests
+    // TODO: test more edge cases
     let stack = new DataStack();
 
     let a = PrivateKey.random().toPublicKey();

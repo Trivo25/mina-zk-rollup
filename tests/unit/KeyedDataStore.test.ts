@@ -41,6 +41,8 @@ describe('KeyedDataStore', () => {
   });
 
   it('should construct KeyedDataStore', () => {
+    // TODO: cleanup tests
+    // TODO: test more edge cases
     let store = new KeyedDataStore<String, Account>();
     let dataLeaves = new Map<String, Account>();
 

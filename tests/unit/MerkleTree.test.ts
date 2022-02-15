@@ -23,6 +23,8 @@ describe('MerkleTree unit test', () => {
   });
 
   it('should construct and proof a merkle tree', () => {
+    // TODO: cleanup tests
+    // TODO: test more edge cases
     let merkleTree = new MerkleTree();
     let nodeData = [];
 
