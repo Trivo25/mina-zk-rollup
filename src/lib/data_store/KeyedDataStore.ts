@@ -93,19 +93,22 @@ export class KeyedDataStore<K, V extends CircuitValue> {
    * @returns true if successful
    */
   set(key: K, value: V) {
+    console.log('set');
     let index = this.merkleTree.getIndex(Poseidon.hash(value.toFields()));
+    console.log(index);
     if (index !== undefined) {
       console.log('already exists');
       // element already exists in merkle tree, just change the entry so the order doesnt get mixed up
       this.merkleTree.tree.leaves[index] = Poseidon.hash(value.toFields());
-
+      console.log(index);
+      console.log(this.merkleTree.tree.leaves.length);
       // rebuilds the tree
       this.merkleTree.clear();
       this.merkleTree.makeTree();
 
       this.dataStore.set(key, value);
     } else {
-      // element doesnt exist already, need to be created
+      // element doesnt exist, needs to be created
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())], false);
       this.dataStore.set(key, value);
     }

@@ -13,7 +13,7 @@
     "test:coverage": "nyc npm run test",
     "test2": "nyc --all --reporter=html --reporter=text  mocha --require ts-node/register ./tests/**/*.test.ts --exit",
     "build": "tsc -p tsconfig.json",
-    "demo": "npx tsc && node ./build/demo.js",
+    "demo": "npx tsc && node ./build/src/demo.js",
     "format": "prettier --write --ignore-unknown **/*",
     "vue:dev": "vite",
     "vue:build": "vue-tsc --noEmit && vite build",

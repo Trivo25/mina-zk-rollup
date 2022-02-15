@@ -1,7 +1,16 @@
 import { assert, expect } from 'chai';
 import { before, describe } from 'mocha';
+import {
+  CircuitValue,
+  Field,
+  isReady,
+  Poseidon,
+  prop,
+  PublicKey,
+  shutdown,
+  UInt64,
+} from 'snarkyjs';
 
-import { Field, isReady, Poseidon, shutdown } from 'snarkyjs';
 import { MerkleTree, Tree } from '../../src/lib/merkle_proof/MerkleTree';
 
 describe('MerkleTree unit test', () => {
@@ -13,7 +22,7 @@ describe('MerkleTree unit test', () => {
     shutdown();
   });
 
-  it('pass', () => {
+  it('should construct and proof a merkle tree', () => {
     let merkleTree = new MerkleTree();
     let nodeData = [];
 
