@@ -14,6 +14,7 @@ import {
 
 import { KeyedDataStore } from '../../src/lib/data_store/KeyedDataStore';
 
+// demo purposes
 class Account extends CircuitValue {
   @prop balance: UInt64;
   @prop publicKey: PublicKey;
