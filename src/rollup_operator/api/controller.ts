@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 const PORT = 8000;
 
-import { transfer, withdraw } from './handlers/handlers.js';
+import { transfer, withdraw } from './endpoints/handlers.js';
 
 export function startREST() {
   app.get('/transfer', transfer);
