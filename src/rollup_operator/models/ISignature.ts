@@ -1,4 +1,4 @@
-interface Signature {
+interface ISignature {
   publicKey: string;
   signature: {
     field: string;

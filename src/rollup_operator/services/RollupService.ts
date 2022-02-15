@@ -6,7 +6,7 @@ class RequestService extends Service {
     super();
   }
 
-  verify(signature: Signature): boolean {
+  verify(signature: ISignature): boolean {
     let minaSignature: MinaSDK.signature = {
       field: signature.signature.field,
       scalar: signature.signature.scalar,
