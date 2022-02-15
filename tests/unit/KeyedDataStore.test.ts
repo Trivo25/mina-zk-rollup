@@ -65,42 +65,22 @@ describe('KeyedDataStore', () => {
       UInt64.fromNumber(330),
       PrivateKey.random().toPublicKey()
     );
-    dataLeaves.set('C', accountCnew);
 
-    // let ok = store.fromData(dataLeaves);
-    // assert(ok, "coudln't successfully build KeyedDataStore!");
+    let ok = store.fromData(dataLeaves);
+    assert(ok, "couldn't successfully build KeyedDataStore!");
 
-    store.set('A', accountA);
-    store.set('B', accountB);
-    store.set('C', accountC);
     store.set('C', accountCnew);
-    let accountD = new Account(
-      UInt64.fromNumber(330),
-      PrivateKey.random().toPublicKey()
-    );
-    // store.set('A', accountA);
-    // store.set('B', accountB);
-    // console.log('HELLO');
-    // store.set('C', accountC);
-    // store.set('D', accountD);
-
-    //store.set('C', accountCnew);
-    // store.merkleTree.printTree();
-
-    // for (let [key, value] of store.dataStore) {
-    //   console.log(key + ' ' + value.balance.toString());
-    // }
 
     let root = store.getMerkleRoot();
     assert(root !== undefined, 'merkle root is undefiend!');
-    // console.log('root ', root.toString());
 
     assert(
       store.validateProof(
         store.getProof(Poseidon.hash(accountA.toFields())),
         Poseidon.hash(accountA.toFields()),
         root === undefined ? Field(0) : root
-      )
+      ),
+      "Expected entry couldn't be found"
     );
 
     assert(
@@ -108,7 +88,8 @@ describe('KeyedDataStore', () => {
         store.getProof(Poseidon.hash(accountB.toFields())),
         Poseidon.hash(accountB.toFields()),
         root === undefined ? Field(0) : root
-      )
+      ),
+      "Expected entry couldn't be found"
     );
 
     assert(
@@ -116,19 +97,34 @@ describe('KeyedDataStore', () => {
         store.getProof(Poseidon.hash(accountCnew.toFields())),
         Poseidon.hash(accountCnew.toFields()),
         root === undefined ? Field(0) : root
-      )
+      ),
+      "Expected entry couldn't be found"
     );
 
-    store.merkleTree.tree.leaves.forEach((el) => {
-      console.log(el);
-    });
-    store.dataStore.forEach((el) => {
-      console.log(el);
-    });
+    assert(
+      store.validateProof(
+        store.getProof(Poseidon.hash(accountC.toFields())),
+        Poseidon.hash(accountC.toFields()),
+        root === undefined ? Field(0) : root
+      ) === false,
+      'Entry was expected not to be included but exists'
+    );
 
-    assert(store.get('C')?.equals(accountCnew).toBoolean());
-    assert(store.get('B')?.equals(accountB).toBoolean());
-    assert(store.get('A')?.equals(accountA).toBoolean());
-    assert(store.get('C')?.equals(accountC).toBoolean() === false);
+    assert(
+      store.get('C')?.equals(accountCnew).toBoolean(),
+      'Was expected to find value for key'
+    );
+    assert(
+      store.get('B')?.equals(accountB).toBoolean(),
+      'Was expected to find value for key'
+    );
+    assert(
+      store.get('A')?.equals(accountA).toBoolean(),
+      'Was expected to find value for key'
+    );
+    assert(
+      store.get('C')?.equals(accountC).toBoolean() === false,
+      'Value was expected not to exist'
+    );
   });
 });
