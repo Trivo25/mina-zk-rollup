@@ -34,15 +34,23 @@ class Account extends CircuitValue {
   }
 }
 
+class Test {
+  static t: number = 1;
+}
+
 // for debugging purposes
 test();
 async function test() {
   await isReady;
 
   //dataStackDemo();
-  keyedDataStoreDemo();
+  //keyedDataStoreDemo();
 
   //merkleTreeDemo();
+
+  console.log(Test.t);
+  Test.t++;
+  console.log(Test.t);
 
   shutdown();
 }
