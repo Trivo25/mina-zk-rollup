@@ -12,6 +12,7 @@ class RequestService extends Service {
         field: signature.signature.field,
         scalar: signature.signature.scalar,
       };
+
       let minaPayload: MinaSDK.signable = signature.payload;
       let signed: MinaSDK.signed<string> = {
         publicKey: signature.publicKey,
