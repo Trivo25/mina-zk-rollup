@@ -67,17 +67,21 @@ describe('KeyedDataStore', () => {
     );
     dataLeaves.set('C', accountCnew);
 
-    let ok = store.fromData(dataLeaves);
-    assert(ok, "coudln't successfully build KeyedDataStore!");
+    // let ok = store.fromData(dataLeaves);
+    // assert(ok, "coudln't successfully build KeyedDataStore!");
 
+    store.set('A', accountA);
+    store.set('B', accountB);
+    store.set('C', accountC);
+    store.set('C', accountCnew);
     let accountD = new Account(
       UInt64.fromNumber(330),
       PrivateKey.random().toPublicKey()
     );
     // store.set('A', accountA);
     // store.set('B', accountB);
-    console.log('HELLO');
-    store.set('C', accountC);
+    // console.log('HELLO');
+    // store.set('C', accountC);
     // store.set('D', accountD);
 
     //store.set('C', accountCnew);
@@ -109,8 +113,8 @@ describe('KeyedDataStore', () => {
 
     assert(
       store.validateProof(
-        store.getProof(Poseidon.hash(accountC.toFields())),
-        Poseidon.hash(accountC.toFields()),
+        store.getProof(Poseidon.hash(accountCnew.toFields())),
+        Poseidon.hash(accountCnew.toFields()),
         root === undefined ? Field(0) : root
       )
     );
@@ -122,9 +126,9 @@ describe('KeyedDataStore', () => {
       console.log(el);
     });
 
-    assert(store.get('C')?.equals(accountCnew).toBoolean() === false);
+    assert(store.get('C')?.equals(accountCnew).toBoolean());
     assert(store.get('B')?.equals(accountB).toBoolean());
     assert(store.get('A')?.equals(accountA).toBoolean());
-    assert(store.get('C')?.equals(accountC).toBoolean());
+    assert(store.get('C')?.equals(accountC).toBoolean() === false);
   });
 });
