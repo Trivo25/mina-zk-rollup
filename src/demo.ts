@@ -12,11 +12,11 @@ import {
   CircuitValue,
 } from 'snarkyjs';
 
-import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree.js';
+import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
 
-import { KeyedDataStore } from './lib/data_store/KeyedDataStore.js';
+import { KeyedDataStore } from './lib/data_store/KeyedDataStore';
 
-import { DataStack } from './lib/data_store/DataStack.js';
+import { DataStack } from './lib/data_store/DataStack';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;

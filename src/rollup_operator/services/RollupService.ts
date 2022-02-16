@@ -1,7 +1,7 @@
-import Service from './Service.js';
+import Service from './Service';
 import * as MinaSDK from '@o1labs/client-sdk';
-import ISignature from '../models/ISignature.js';
-import ITransaction from '../models/ITransaction.js';
+import ISignature from '../models/ISignature';
+import ITransaction from '../models/ITransaction';
 
 class RequestService extends Service {
   constructor() {

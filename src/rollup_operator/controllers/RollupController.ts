@@ -1,12 +1,12 @@
 import express from 'express';
 
-import Controller from './Controller.js';
-import RollupService from '../services/RollupService.js';
+import Controller from './Controller';
+import RollupService from '../services/RollupService';
 
-import EnumError from '../models/EnumError.js';
+import EnumError from '../models/EnumError';
 
-import ISignature from '../models/ISignature.js';
-import ITransaction from '../models/ITransaction.js';
+import ISignature from '../models/ISignature';
+import ITransaction from '../models/ITransaction';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {

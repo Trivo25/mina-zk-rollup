@@ -1,6 +1,6 @@
 import express from 'express';
 
-import Service from '../services/Service.js';
+import Service from '../services/Service';
 
 // generics here save me some time of checking instanceof s ervice
 class Controller<ServiceType extends Service> {

@@ -1,25 +1,13 @@
-import { assert, expect } from 'chai';
-import { before, describe, it } from 'mocha';
-import {
-  CircuitValue,
-  Field,
-  isReady,
-  Poseidon,
-  PrivateKey,
-  prop,
-  PublicKey,
-  shutdown,
-  UInt64,
-} from 'snarkyjs';
+import { isReady, PrivateKey, shutdown } from 'snarkyjs';
 
 import { DataStack } from '../../src/lib/data_store/DataStack';
 
 describe('DataStack', () => {
-  before(async () => {
+  beforeAll(async () => {
     await isReady;
   });
 
-  after(async () => {
+  afterAll(async () => {
     shutdown();
   });
 
@@ -38,13 +26,13 @@ describe('DataStack', () => {
     expect(stack.size() === 2);
     stack.push(c);
     expect(stack.size() === 3);
-    assert(stack.pop() === c);
+    expect(stack.pop() === c);
     expect(stack.size() === 2);
 
-    assert(stack.pop() === b);
+    expect(stack.pop() === b);
     expect(stack.size() === 1);
 
-    assert(stack.pop() === a);
+    expect(stack.pop() === a);
     expect(stack.size() === 0);
   });
 });

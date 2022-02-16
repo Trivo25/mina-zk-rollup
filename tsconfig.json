@@ -1,16 +1,24 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
     "target": "ES2019",
-    "module": "ES2020",
+    "module": "es2022",
+    "lib": ["dom", "esnext"],
     "outDir": "./build",
-    "rootDir": "./",
-    "declaration": true,
+    "rootDir": ".",
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowJs": true,
+    "declaration": true,
+    "sourceMap": false,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true
   },
-  "exclude": ["./src/**/*.test.ts", "./build"]
+  "include": ["./src"],
+  "exclude": ["./src/**/*.test.ts"]
 }

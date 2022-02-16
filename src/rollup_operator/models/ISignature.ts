@@ -1,4 +1,4 @@
-import EnumSignatureType from './EnumSignatureType.js';
+import EnumSignatureType from './EnumSignatureType';
 interface ISignature {
   publicKey: string;
   signature: {

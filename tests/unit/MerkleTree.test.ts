@@ -1,5 +1,3 @@
-import { assert, expect } from 'chai';
-import { before, describe } from 'mocha';
 import {
   CircuitValue,
   Field,
@@ -14,11 +12,11 @@ import {
 import { MerkleTree, Tree } from '../../src/lib/merkle_proof/MerkleTree';
 
 describe('MerkleTree unit test', () => {
-  before(async () => {
+  beforeAll(async () => {
     await isReady;
   });
 
-  after(async () => {
+  afterAll(async () => {
     shutdown();
   });
 
@@ -48,19 +46,15 @@ describe('MerkleTree unit test', () => {
 
     let actualMerkleRoot = merkleTree.getMerkleRoot();
 
-    assert(
-      actualMerkleRoot?.equals(expectedMerkleRoot).toBoolean(),
-      'Merkle root is not matching expected merkle root!'
-    );
+    expect(actualMerkleRoot?.equals(expectedMerkleRoot).toBoolean());
 
     nodeData.forEach((el, index) => {
-      assert(
+      expect(
         MerkleTree.validateProof(
           merkleTree.getProof(index),
           Poseidon.hash([el]),
           actualMerkleRoot === undefined ? Field(0) : actualMerkleRoot
-        ),
-        `Merkle path is not valid for index ${index} and element ${el}`
+        )
       );
     });
   });
