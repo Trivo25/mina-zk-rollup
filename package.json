@@ -35,8 +35,7 @@
     "config": "^3.3.7",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
-    "pg": "^8.7.3",
-    "vue": "^3.2.25"
+    "pg": "^8.7.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
