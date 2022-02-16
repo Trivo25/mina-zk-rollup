@@ -32,10 +32,10 @@ class RollupSnapp extends SmartContract {
     // merkle root from inside the smart contract
     let merkleRoot = await this.merkleRoot.get();
 
-    // ! 'if' is probably not good here?
-    if (merklePath.length === 0) {
-      return leafHash.equals(merkleRoot);
-    }
+    // // ! 'if' is probably not good here?
+    // if (merklePath.length === 0) {
+    //   return leafHash.equals(merkleRoot);
+    // }
 
     var proofHash: Field = leafHash;
     for (let x = 0; x < merklePath.length; x++) {
