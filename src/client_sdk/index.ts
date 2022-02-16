@@ -4,7 +4,7 @@
 */
 
 import * as MinaSDK from '@o1labs/client-sdk';
-import { getPaymentPayload, signRollupPayment } from './lib/Transfer.js';
+import { getPaymentPayload, signRollupPayment } from './lib/Transfer';
 
 let keys = MinaSDK.genKeys();
 
