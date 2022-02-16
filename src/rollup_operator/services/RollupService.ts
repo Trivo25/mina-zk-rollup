@@ -4,7 +4,6 @@ import ISignature from '../interfaces/ISignature';
 import ITransaction from '../interfaces/ITransaction';
 import EnumError from '../interfaces/EnumError';
 import TransactionPool from '../setup/TransactionPool';
-import { transaction } from 'snarkyjs/dist/server/lib/mina';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../interfaces/Events';
@@ -12,6 +11,19 @@ import Events from '../interfaces/Events';
 class RequestService extends Service {
   constructor() {
     super();
+  }
+
+  static produceRollupBlock() {
+    console.log(
+      `producing a new rollup block with ${
+        TransactionPool.getInstance().length
+      } transctions`
+    );
+
+    let transactionsToProcess: Array<ITransaction> = new Array<ITransaction>();
+    Object.assign(transactionsToProcess, TransactionPool.getInstance());
+    TransactionPool.getInstance().length = 0;
+    console.log(transactionsToProcess);
   }
 
   /**

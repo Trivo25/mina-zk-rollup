@@ -88,9 +88,7 @@ class RollupController extends Controller<RollupService> {
       hash: undefined,
     };
 
-    console.log(
-      `from ${transaction.from} to ${transaction.to} amount ${transaction.amount} memo ${transaction.memo} nonce ${transaction.nonce}`
-    );
+    console.log(`new incoming transaction request`);
 
     let processorReponse: string | EnumError =
       this.service.processTransaction(transaction);

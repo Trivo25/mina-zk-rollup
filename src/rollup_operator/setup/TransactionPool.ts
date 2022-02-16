@@ -4,7 +4,7 @@ class TransactionPool {
   static instance: Array<ITransaction> | undefined;
 
   constructor() {
-    throw new Error('Use Connection.getInstance() instead!');
+    throw new Error(`Use ${this}.getInstance() instead!`);
   }
 
   static getInstance() {

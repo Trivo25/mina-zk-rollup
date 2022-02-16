@@ -1,5 +1,6 @@
 import events from 'events';
 import Events from '../interfaces/Events';
+import RollupService from '../services/RollupService';
 
 class EventHandler {
   static instance: events.EventEmitter | undefined;
@@ -22,9 +23,7 @@ class EventHandler {
     }
 
     EventHandler.instance.on(Events.PENDING_TRANSACTION_POOL_FULL, () => {
-      console.log(
-        'The pending transaction stack is full, a rollup block can now be produced'
-      );
+      RollupService.produceRollupBlock();
     });
   }
 }
