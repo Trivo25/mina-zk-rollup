@@ -1,5 +1,5 @@
 import { CircuitValue, Poseidon } from 'snarkyjs';
-import { MerkleTree } from '../merkle_proof/MerkleTree.js';
+import { MerkleTree } from '../merkle_proof/MerkleTree';
 
 export class DataStack<V extends CircuitValue> {
   dataStore: Array<V>;

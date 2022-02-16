@@ -1,6 +1,6 @@
 import { Field, CircuitValue, Poseidon } from 'snarkyjs';
 
-import { MerklePathElement, MerkleTree } from '../merkle_proof/MerkleTree.js';
+import { MerklePathElement, MerkleTree } from '../merkle_proof/MerkleTree';
 
 // NOTE should the key also be Hashable or only the value?
 export class KeyedDataStore<K, V extends CircuitValue> {

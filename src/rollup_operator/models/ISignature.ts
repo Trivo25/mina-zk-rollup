@@ -1,5 +1,5 @@
-import EnumSignatureType from './EnumSignatureType.js';
-interface ISignature {
+import EnumSignatureType from './EnumSignatureType';
+export default interface ISignature {
   publicKey: string;
   signature: {
     field: string;
@@ -8,8 +8,6 @@ interface ISignature {
   type: EnumSignatureType;
   payload: string;
 }
-
-export default ISignature;
 
 /*
 Example payload    

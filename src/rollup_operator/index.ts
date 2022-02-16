@@ -1,8 +1,8 @@
 import 'dotenv/config';
 
-import Connection from './config/database.js';
-import server from './config/server.js';
-import ITransaction from './models/ITransaction.js';
+import Connection from './config/database';
+import server from './config/server';
+import ITransaction from './models/ITransaction';
 
 const PORT = process.env.PORT || 5000;
 

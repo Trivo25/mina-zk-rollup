@@ -4,72 +4,55 @@
   "description": "",
   "author": "",
   "license": "Apache-2.0",
-  "keywords": [],
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "keywords": [
+    "mina-snapp",
+    "mina-zk-app",
+    "mina-dapp"
+  ],
   "type": "module",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
   "scripts": {
-    "test": "mocha -r ts-node/register tests/**/*.test.ts",
-    "test:coverage": "nyc npm run test",
-    "test2": "nyc --all --reporter=html --reporter=text  mocha --require ts-node/register ./tests/**/*.test.ts --exit",
-    "build": "tsc -p tsconfig.json",
     "demo": "npx tsc && node ./build/src/demo.js",
     "operator:demo": "npx tsc && node ./build/src/rollup_operator/index.js",
+    "build": "tsc -p tsconfig.json",
+    "coverage": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --coverage",
     "format": "prettier --write --ignore-unknown **/*",
-    "vue:dev": "vite",
-    "vue:build": "vue-tsc --noEmit && vite build",
-    "vue:preview": "vite preview"
-  },
-  "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@types/chai": "^4.3.0",
-    "@types/express": "^4.17.13",
-    "@types/mocha": "^9.1.0",
-    "@types/pg": "^8.6.4",
-    "@vitejs/plugin-vue": "^2.2.0",
-    "autoprefixer": "^10.4.2",
-    "chai": "^4.3.6",
-    "lint-staged": "^11.0.1",
-    "mocha": "^9.2.0",
-    "nyc": "^15.1.0",
-    "postcss": "^8.4.6",
-    "prettier": "^2.3.2",
-    "tailwindcss": "^3.0.20",
-    "ts-node": "^10.5.0",
-    "typescript": "^4.3.5",
-    "vite": "^2.8.0",
-    "vue-tsc": "^0.29.8"
-  },
-  "nyc": {
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "check-coverage": true,
-    "all": true,
-    "include": [
-      "src/**/!(*.test.*).[tj]s?(x)"
-    ],
-    "exclude": [
-      "src/_tests_/**/*.*"
-    ],
-    "reporter": [
-      "html",
-      "lcov",
-      "text",
-      "text-summary"
-    ],
-    "report-dir": "coverage"
+    "prepare": "husky install",
+    "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js",
+    "testw": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --watch",
+    "lint": "npx eslint src/* --fix"
   },
   "lint-staged": {
     "**/*": [
+      "eslint src/* --fix",
       "prettier --write --ignore-unknown"
     ]
   },
   "dependencies": {
+    "snarkyjs": "^0.2.0",
     "@o1labs/client-sdk": "^1.0.1",
     "config": "^3.3.7",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
     "pg": "^8.7.3",
-    "snarkyjs": "^0.2.0",
     "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
+    "eslint": "^8.7.0",
+    "eslint-plugin-snarkyjs": "^0.1.0",
+    "husky": "^7.0.1",
+    "jest": "^27.3.1",
+    "lint-staged": "^11.0.1",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.5.2",
+    "@types/express": "^4.17.13",
+    "@types/pg": "^8.6.4"
   }
 }

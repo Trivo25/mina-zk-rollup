@@ -9,7 +9,5 @@ coverage
 # System
 .DS_Store
 
-
-.nyc_output
-
-.env
+# Never commit keys to Git!
+keys

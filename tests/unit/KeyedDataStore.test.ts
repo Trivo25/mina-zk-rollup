@@ -1,5 +1,3 @@
-import { assert, expect } from 'chai';
-import { before, describe, it } from 'mocha';
 import {
   CircuitValue,
   Field,
@@ -32,11 +30,11 @@ class Account extends CircuitValue {
 }
 
 describe('KeyedDataStore', () => {
-  before(async () => {
+  beforeAll(async () => {
     await isReady;
   });
 
-  after(async () => {
+  afterAll(async () => {
     shutdown();
   });
 
@@ -70,64 +68,48 @@ describe('KeyedDataStore', () => {
     );
 
     let ok = store.fromData(dataLeaves);
-    assert(ok, "couldn't successfully build KeyedDataStore!");
+    expect(ok);
 
     store.set('C', accountCnew);
 
     let root = store.getMerkleRoot();
-    assert(root !== undefined, 'merkle root is undefiend!');
+    expect(root !== undefined);
 
-    assert(
+    expect(
       store.validateProof(
         store.getProof(Poseidon.hash(accountA.toFields())),
         Poseidon.hash(accountA.toFields()),
         root === undefined ? Field(0) : root
-      ),
-      "Expected entry couldn't be found"
+      )
     );
 
-    assert(
+    expect(
       store.validateProof(
         store.getProof(Poseidon.hash(accountB.toFields())),
         Poseidon.hash(accountB.toFields()),
         root === undefined ? Field(0) : root
-      ),
-      "Expected entry couldn't be found"
+      )
     );
 
-    assert(
+    expect(
       store.validateProof(
         store.getProof(Poseidon.hash(accountCnew.toFields())),
         Poseidon.hash(accountCnew.toFields()),
         root === undefined ? Field(0) : root
-      ),
-      "Expected entry couldn't be found"
+      )
     );
 
-    assert(
+    expect(
       store.validateProof(
         store.getProof(Poseidon.hash(accountC.toFields())),
         Poseidon.hash(accountC.toFields()),
         root === undefined ? Field(0) : root
-      ) === false,
-      'Entry was expected not to be included but exists'
+      ) === false
     );
 
-    assert(
-      store.get('C')?.equals(accountCnew).toBoolean(),
-      'Was expected to find value for key'
-    );
-    assert(
-      store.get('B')?.equals(accountB).toBoolean(),
-      'Was expected to find value for key'
-    );
-    assert(
-      store.get('A')?.equals(accountA).toBoolean(),
-      'Was expected to find value for key'
-    );
-    assert(
-      store.get('C')?.equals(accountC).toBoolean() === false,
-      'Value was expected not to exist'
-    );
+    expect(store.get('C')?.equals(accountCnew).toBoolean());
+    expect(store.get('B')?.equals(accountB).toBoolean());
+    expect(store.get('A')?.equals(accountA).toBoolean());
+    expect(store.get('C')?.equals(accountC).toBoolean() === false);
   });
 });

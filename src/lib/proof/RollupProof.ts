@@ -1,3 +1,4 @@
+export {};
 // @proofSystem
 // class RollupProof extends ProofWithInput<RollupStateTransition> {
 //   @branch static processDeposit(
