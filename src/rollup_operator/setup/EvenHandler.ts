@@ -18,10 +18,10 @@ class EventHandler {
 
   static setEvents() {
     if (EventHandler.instance === undefined) {
-      throw new Error('Use EvenHandler.getInstance() instead!');
+      throw new Error(`Use ${this}.getInstance() instead!`);
     }
 
-    EventHandler.instance.on(Events.PENDING_TRANSACTION_STACK_FULL, () => {
+    EventHandler.instance.on(Events.PENDING_TRANSACTION_POOL_FULL, () => {
       console.log(
         'The pending transaction stack is full, a rollup block can now be produced'
       );

@@ -6,6 +6,8 @@ import EnumError from '../interfaces/EnumError';
 import TransactionPool from '../setup/TransactionPool';
 import { transaction } from 'snarkyjs/dist/server/lib/mina';
 import { sha256 } from '../../lib/sha256';
+import EventHandler from '../setup/EvenHandler';
+import Events from '../interfaces/Events';
 
 class RequestService extends Service {
   constructor() {
@@ -48,7 +50,16 @@ class RequestService extends Service {
     }
     transaction.hash = sha256(JSON.stringify(transaction.signature));
 
-    TransactionPool.getInstance().push(transaction);
+    let poolSize = TransactionPool.getInstance().push(transaction);
+
+    // TODO: use config for block size
+    // NOTE: define a more precise way to produce blocks; either by filling up a block or producing a block every x hours/minutes
+    // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
+    // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
+    // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
+    if (poolSize >= 5) {
+      EventHandler.getInstance().emit(Events.PENDING_TRANSACTION_POOL_FULL);
+    }
 
     return transaction.hash!;
   }
