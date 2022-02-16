@@ -8,4 +8,5 @@ export default (server: express.Application) => {
   server.post(`/rollup/transferFunds`, RollupController.transferFunds);
 
   server.get(`/query/transactionPool`, QueryController.getTransactionPool);
+  server.get(`/query/stats`, QueryController.stats);
 };

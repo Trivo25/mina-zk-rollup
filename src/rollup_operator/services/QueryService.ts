@@ -10,6 +10,15 @@ class QueryService extends Service {
   getTransactionPool(): ITransaction[] {
     return TransactionPool.getInstance();
   }
+
+  stats(): any {
+    // just some dummy data
+    return {
+      average_tps: 14,
+      uptime: '3d 4h 32m',
+      pending_transactions_count: TransactionPool.getInstance().length,
+    };
+  }
 }
 
 export default QueryService;
