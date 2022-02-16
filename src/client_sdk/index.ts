@@ -4,22 +4,20 @@
 */
 
 import * as MinaSDK from '@o1labs/client-sdk';
+import { getPaymentPayload, signRollupPayment } from './lib/Transfer.js';
 
 let keys = MinaSDK.genKeys();
 
-let tx: ITransaction = {
-  from: keys.publicKey,
-  to: MinaSDK.genKeys().publicKey,
-  amount: 100,
-  nonce: 0,
-  memo: 'some memo',
-};
-let signed = MinaSDK.signMessage(JSON.stringify(tx), keys);
+let payload = getPaymentPayload(
+  keys.publicKey,
+  MinaSDK.genKeys().publicKey,
+  100,
+  0,
+  ''
+);
 
-console.log(keys.publicKey);
-console.log(signed);
-console.log('payload');
-// need to escape " with \" because otherwise sign would be broken
-let escaped = JSON.stringify(tx).replace(/"/g, '\\"');
-console.log(escaped);
+let signedPayment = signRollupPayment(payload, keys);
+
+console.log(signedPayment);
+
 export {};
