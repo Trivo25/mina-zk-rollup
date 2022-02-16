@@ -39,10 +39,10 @@ class RollupController extends Controller<RollupService> {
         type: req.body.type,
         payload: req.body.payload,
       };
-      let success: boolean = this.service.verify(signature);
-      return res.status(success ? 200 : 400).send({
-        error: success ? undefined : EnumError.InvalidSignature,
-        payload: success,
+      let veriferResponse: boolean | EnumError = this.service.verify(signature);
+      return res.status(veriferResponse === true ? 200 : 400).send({
+        error: veriferResponse === true ? undefined : veriferResponse,
+        payload: veriferResponse,
       });
     } catch (err) {
       return res.status(400).send({
@@ -80,9 +80,15 @@ class RollupController extends Controller<RollupService> {
       `from ${transaction.from} to ${transaction.to} amount ${transaction.amount} memo ${transaction.memo} nonce ${transaction.nonce}`
     );
 
-    this.service.processTransaction(transaction, signature);
+    let processorReponse: boolean | EnumError = this.service.processTransaction(
+      transaction,
+      signature
+    );
 
-    return res.status(200).send();
+    return res.status(processorReponse === true ? 200 : 400).send({
+      error: processorReponse === true ? undefined : processorReponse,
+      payload: processorReponse,
+    });
   }
 }
 
