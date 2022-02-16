@@ -1,5 +1,7 @@
 import Service from './Service.js';
 import * as MinaSDK from '@o1labs/client-sdk';
+import ISignature from '../models/ISignature.js';
+import ITransaction from '../models/ITransaction.js';
 
 class RequestService extends Service {
   constructor() {
@@ -30,6 +32,8 @@ class RequestService extends Service {
       return false;
     }
   }
+
+  processTransaction(transaction: ITransaction, signature: ISignature) {}
 }
 
 export default RequestService;
