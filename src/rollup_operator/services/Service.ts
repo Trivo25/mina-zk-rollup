@@ -2,7 +2,7 @@ class Service {
   constructor() {}
 
   hello() {
-    return 'Hello dasdasd asd asd asda sdad ad';
+    return 'hello';
   }
 }
 

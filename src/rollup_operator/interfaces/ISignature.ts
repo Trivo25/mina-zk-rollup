@@ -1,11 +1,9 @@
-import EnumSignatureType from './EnumSignatureType';
 export default interface ISignature {
   publicKey: string;
   signature: {
     field: string;
     scalar: string;
   };
-  type: EnumSignatureType;
   payload: string;
 }
 

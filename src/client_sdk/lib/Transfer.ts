@@ -1,5 +1,5 @@
 import * as MinaSDK from '@o1labs/client-sdk';
-import ITransaction from '../../rollup_operator/models/ITransaction';
+import ITransaction from '../../rollup_operator/interfaces/ITransaction';
 
 export function getPaymentPayload(
   from: string,
@@ -14,6 +14,9 @@ export function getPaymentPayload(
     amount: amount,
     nonce: nonce,
     memo: memo,
+    signature: undefined,
+    time_received: undefined,
+    hash: undefined,
   };
 }
 

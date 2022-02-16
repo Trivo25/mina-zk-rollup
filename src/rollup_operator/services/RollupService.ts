@@ -1,8 +1,11 @@
 import Service from './Service';
 import * as MinaSDK from '@o1labs/client-sdk';
-import ISignature from '../models/ISignature';
-import ITransaction from '../models/ITransaction';
-import EnumError from '../models/EnumError';
+import ISignature from '../interfaces/ISignature';
+import ITransaction from '../interfaces/ITransaction';
+import EnumError from '../interfaces/EnumError';
+import TransactionPool from '../setup/TransactionPool';
+import { transaction } from 'snarkyjs/dist/server/lib/mina';
+import { sha256 } from '../../lib/sha256';
 
 class RequestService extends Service {
   constructor() {
@@ -34,17 +37,20 @@ class RequestService extends Service {
     }
   }
 
-  processTransaction(
-    transaction: ITransaction,
-    signature: ISignature
-  ): boolean | EnumError {
-    // verify signature so no faulty signatre makes it into the pool
+  processTransaction(transaction: ITransaction): string | EnumError {
+    // verify signature so no faulty signature makes it into the pool
 
-    if (!MinaSDK.verifyMessage(signature)) {
+    if (
+      transaction.signature === undefined ||
+      !MinaSDK.verifyMessage(transaction.signature!)
+    ) {
       return EnumError.InvalidSignature;
     }
+    transaction.hash = sha256(JSON.stringify(transaction.signature));
 
-    return true;
+    TransactionPool.getInstance().push(transaction);
+
+    return transaction.hash!;
   }
 }
 
