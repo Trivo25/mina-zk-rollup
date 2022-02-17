@@ -1,16 +1,10 @@
 import express from 'express';
-
 import Controller from './Controller';
 import RollupService from '../services/RollupService';
-
-import EnumError from '../interfaces/EnumError';
-
-import ISignature from '../interfaces/ISignature';
-import ITransaction from '../interfaces/ITransaction';
-
-import { base58Encode } from '../../lib/base58';
-
-import { sha256 } from '../../lib/sha256';
+import EnumError from '../../lib/models/interfaces/EnumError';
+import ISignature from '../../lib/models/interfaces/ISignature';
+import ITransaction from '../../lib/models/interfaces/ITransaction';
+import IPublicKey from '../../lib/models/interfaces/IPublicKey';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {
@@ -23,27 +17,20 @@ class RollupController extends Controller<RollupService> {
     req: express.Request,
     res: express.Response
   ): Promise<express.Response> {
-    /*
-    Example payload    
-    {
-      "publicKey": "B62qmNsne47XJamGRsmckG6L16QZu7cGCA7avTEi4zCzPzxmmXgAj7w",
-      "signature": {
-        "field": "7797250386283974212481778052523307015056807928189716961253856328756529747873",
-        "scalar": "7843613972680634670880673355411715345749981823944101735387873769093458498464"
-      },
-      "payload": "{\"message\":\"Hello\"}"
-    }
-    */
     try {
       let signature: ISignature = {
-        publicKey: req.body.publicKey,
-        signature: {
-          field: req.body.signature.field,
-          scalar: req.body.signature.scalar,
-        },
-        payload: req.body.payload,
+        r: req.body.signature.r,
+        s: req.body.signature.s,
       };
-      let veriferResponse: boolean | EnumError = this.service.verify(signature);
+
+      let payload = req.body.payload;
+      let publicKey: IPublicKey = req.body.publicKey;
+
+      let veriferResponse: boolean | EnumError = this.service.verify(
+        signature,
+        payload,
+        publicKey
+      );
 
       let isSuccess = typeof veriferResponse === 'boolean';
       return res.status(veriferResponse === true ? 200 : 400).send({
@@ -67,40 +54,36 @@ class RollupController extends Controller<RollupService> {
     res: express.Response
   ): Promise<express.Response> {
     let signature: ISignature = {
-      publicKey: req.body.publicKey,
-      signature: {
-        field: req.body.signature.field,
-        scalar: req.body.signature.scalar,
-      },
-      payload: req.body.payload,
+      r: req.body.signature.r,
+      s: req.body.signature.s,
     };
-
-    let jsonObj = JSON.parse(req.body.payload);
 
     let transaction: ITransaction = {
-      from: jsonObj.from,
-      to: jsonObj.to,
-      amount: jsonObj.amount,
-      nonce: jsonObj.nonce,
-      memo: jsonObj.memo,
+      from: req.body.from,
+      to: req.body.to,
+      amount: req.body.amount,
+      nonce: req.body.nonce,
+      publicKey: req.body.publicKey,
+      payload: req.body.payload,
       signature: signature,
-      time_received: Date.now().toString(),
-      hash: undefined,
     };
+
+    //console.log(transaction);
 
     console.log(`new incoming transaction request`);
 
-    let processorReponse: string | EnumError =
+    let processorReponse: boolean | EnumError =
       this.service.processTransaction(transaction);
 
-    let isSuccess = typeof processorReponse === 'string';
-    return res.status(isSuccess ? 200 : 400).send({
-      error: isSuccess ? undefined : processorReponse,
-      payload: isSuccess
-        ? {
-            transaction_hash: processorReponse,
-          }
-        : undefined,
+    return res.status(processorReponse ? 200 : 400).send({
+      error:
+        typeof processorReponse === 'boolean' ? undefined : processorReponse,
+      payload:
+        typeof processorReponse === 'boolean'
+          ? {
+              transaction_hash: processorReponse,
+            }
+          : undefined,
     });
   }
 }
