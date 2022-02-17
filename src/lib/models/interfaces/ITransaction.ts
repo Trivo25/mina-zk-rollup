@@ -9,4 +9,5 @@ export default interface ITransaction {
   publicKey: IPublicKey;
   payload: string[];
   signature: ISignature;
+  hash?: string;
 }
