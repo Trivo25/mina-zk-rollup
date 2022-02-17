@@ -1,12 +1,11 @@
+import IPublicKey from './IPublicKey';
 import ISignature from './ISignature';
 
-export default interface ITtransaction {
+export default interface ITransaction {
   from: string;
   to: string;
   amount: number;
   nonce: number;
-  memo: string;
+  publicKey: IPublicKey;
   signature: ISignature | undefined;
-  time_received: string | undefined;
-  hash: string | undefined;
 }

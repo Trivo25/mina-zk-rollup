@@ -1,4 +1,4 @@
-import ITransaction from '../interfaces/ITransaction';
+import ITransaction from '../../lib/models/interfaces/ITransaction';
 
 class TransactionPool {
   static instance: Array<ITransaction> | undefined;

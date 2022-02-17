@@ -1,28 +1,53 @@
 import * as MinaSDK from '@o1labs/client-sdk';
-import ITransaction from '../../rollup_operator/interfaces/ITransaction';
+import { PrivateKey, Signature } from 'snarkyjs';
+
+import ITransaction from '../../lib/models/interfaces/ITransaction';
+import ISignature from '../../lib/models/interfaces/ISignature';
+
+import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
 
 export function getPaymentPayload(
+  tx: RollupTransaction,
   from: string,
-  to: string,
-  amount: number,
-  nonce: number,
-  memo: string
+  to: string
 ): ITransaction {
   return {
     from: from,
     to: to,
-    amount: amount,
-    nonce: nonce,
-    memo: memo,
+    amount: parseInt(tx.amount.toString()),
+    nonce: parseInt(tx.nonce.toString()),
+    publicKey: {
+      g: {
+        x: tx.sender.g.x.toString(),
+        y: tx.sender.g.x.toString(),
+      },
+    },
     signature: undefined,
-    time_received: undefined,
-    hash: undefined,
   };
 }
 
 export function signRollupPayment(
+  rollupTx: RollupTransaction,
   tx: ITransaction,
-  keys: MinaSDK.keypair
-): MinaSDK.signed<string> {
-  return MinaSDK.signMessage(JSON.stringify(tx), keys);
+  privateKey: PrivateKey
+): ITransaction {
+  let s: Signature = Signature.create(privateKey, rollupTx.toFields());
+  let pubKey = privateKey.toPublicKey();
+  let signature: ISignature = {
+    publicKey: {
+      g: {
+        x: pubKey.g.x.toString(),
+        y: pubKey.g.y.toString(),
+      },
+    },
+    signature: {
+      r: s.r.toJSON()!.toString(),
+      s: s.s.toJSON()!.toString(),
+    },
+    payload: rollupTx.toFields().map((x) => x.toString()),
+  };
+
+  tx.signature = signature;
+
+  return tx;
 }

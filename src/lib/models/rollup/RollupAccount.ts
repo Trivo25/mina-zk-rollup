@@ -11,7 +11,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-export default class Account extends CircuitValue {
+export default class RollupAccount extends CircuitValue {
   @prop balance: UInt64;
   @prop nonce: UInt32;
   @prop publicKey: PublicKey;

@@ -1,4 +1,4 @@
-import { CircuitValue, Poseidon } from 'snarkyjs';
+import { CircuitValue, Field, Poseidon } from 'snarkyjs';
 import { MerkleTree } from '../merkle_proof/MerkleTree';
 
 export class DataStack<V extends CircuitValue> {
@@ -49,5 +49,7 @@ export class DataStack<V extends CircuitValue> {
   //   // TODO: update merkle tree just in case
   // }
 
-  getProof() {}
+  getMerkleRoot(): Field | undefined {
+    return this.merkleTree.getMerkleRoot();
+  }
 }

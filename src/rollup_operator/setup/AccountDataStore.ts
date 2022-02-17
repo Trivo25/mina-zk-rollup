@@ -1,6 +1,6 @@
 import { KeyedDataStore } from '../../lib/data_store/KeyedDataStore';
 
-import Account from '../../lib/models/Account';
+import Account from '../../lib/models/rollup/RollupAccount';
 
 class AccountDataStore {
   static instance: KeyedDataStore<string, Account> | undefined;

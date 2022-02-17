@@ -1,12 +1,15 @@
 import Service from './Service';
 import * as MinaSDK from '@o1labs/client-sdk';
-import ISignature from '../interfaces/ISignature';
-import ITransaction from '../interfaces/ITransaction';
-import EnumError from '../interfaces/EnumError';
+import ISignature from '../../lib/models/interfaces/ISignature';
+import ITransaction from '../../lib/models/interfaces/ITransaction';
+import EnumError from '../../lib/models/interfaces/EnumError';
 import TransactionPool from '../setup/TransactionPool';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
-import Events from '../interfaces/Events';
+import Events from '../../lib/models/interfaces/Events';
+import { Field, PublicKey, Signature } from 'snarkyjs';
+import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
+import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 
 class RequestService extends Service {
   constructor() {
@@ -33,19 +36,21 @@ class RequestService extends Service {
    */
   verify(signature: ISignature): boolean | EnumError {
     try {
-      let minaSignature: MinaSDK.signature = {
-        field: signature.signature.field,
-        scalar: signature.signature.scalar,
-      };
+      // let minaSignature: MinaSDK.signature = {
+      //   field: signature.signature.r,
+      //   scalar: signature.signature.s,
+      // };
 
-      let minaPayload: MinaSDK.signable = signature.payload;
-      let signed: MinaSDK.signed<string> = {
-        publicKey: signature.publicKey,
-        signature: minaSignature,
-        payload: minaPayload,
-      };
+      // let minaPayload: MinaSDK.signable = signature.payload;
+      // let signed: MinaSDK.signed<string> = {
+      //   publicKey: signature.publicKey,
+      //   signature: minaSignature,
+      //   payload: minaPayload,
+      // };
 
-      return MinaSDK.verifyMessage(signed) ? true : EnumError.InvalidSignature;
+      // return MinaSDK.verifyMessage(signed) ? true : EnumError.InvalidSignature;
+      return true;
+      // eslint-disable-next-line no-unreachable
     } catch {
       return EnumError.BrokenSignature;
     }
@@ -54,12 +59,24 @@ class RequestService extends Service {
   processTransaction(transaction: ITransaction): string | EnumError {
     // verify signature so no faulty signature makes it into the pool
 
-    if (
-      transaction.signature === undefined ||
-      !MinaSDK.verifyMessage(transaction.signature!)
-    ) {
+    if (transaction.publicKey !== transaction.signature!.publicKey) {
+      return EnumError.SigNotMatchPub;
+    }
+
+    let signature = signatureFromInterface(transaction.signature!);
+    console.log(signature.toJSON());
+    // ! TODO make sure the sig pub key is the same as the from public key!
+
+    let pubKey: PublicKey = publicKeyFromInterface(transaction.publicKey);
+    let message: Field[] = transaction.signature!.payload.map((f) => Field(f));
+
+    if (signature === undefined) {
       return EnumError.InvalidSignature;
     }
+    if (!signature.verify(pubKey, message)) {
+      return EnumError.InvalidSignature;
+    }
+
     transaction.hash = sha256(JSON.stringify(transaction.signature));
 
     let poolSize = TransactionPool.getInstance().push(transaction);
@@ -73,7 +90,8 @@ class RequestService extends Service {
       EventHandler.getInstance().emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 
-    return transaction.hash!;
+    // return transaction.hash!;
+    return '';
   }
 }
 

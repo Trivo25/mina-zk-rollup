@@ -11,7 +11,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-class Transaction extends CircuitValue {
+export default class RollupTransaction extends CircuitValue {
   @prop amount: UInt64;
   @prop nonce: UInt32;
   @prop sender: PublicKey;

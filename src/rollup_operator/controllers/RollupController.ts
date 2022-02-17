@@ -3,14 +3,10 @@ import express from 'express';
 import Controller from './Controller';
 import RollupService from '../services/RollupService';
 
-import EnumError from '../interfaces/EnumError';
+import EnumError from '../../lib/models/interfaces/EnumError';
 
-import ISignature from '../interfaces/ISignature';
-import ITransaction from '../interfaces/ITransaction';
-
-import { base58Encode } from '../../lib/base58';
-
-import { sha256 } from '../../lib/sha256';
+import ISignature from '../../lib/models/interfaces/ISignature';
+import ITransaction from '../../lib/models/interfaces/ITransaction';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {
@@ -38,8 +34,8 @@ class RollupController extends Controller<RollupService> {
       let signature: ISignature = {
         publicKey: req.body.publicKey,
         signature: {
-          field: req.body.signature.field,
-          scalar: req.body.signature.scalar,
+          r: req.body.signature.r,
+          s: req.body.signature.s,
         },
         payload: req.body.payload,
       };
@@ -67,26 +63,24 @@ class RollupController extends Controller<RollupService> {
     res: express.Response
   ): Promise<express.Response> {
     let signature: ISignature = {
-      publicKey: req.body.publicKey,
+      publicKey: req.body.signature.publicKey,
       signature: {
-        field: req.body.signature.field,
-        scalar: req.body.signature.scalar,
+        r: req.body.signature.signature.r,
+        s: req.body.signature.signature.s,
       },
-      payload: req.body.payload,
+      payload: req.body.signature.payload,
     };
-
-    let jsonObj = JSON.parse(req.body.payload);
 
     let transaction: ITransaction = {
-      from: jsonObj.from,
-      to: jsonObj.to,
-      amount: jsonObj.amount,
-      nonce: jsonObj.nonce,
-      memo: jsonObj.memo,
+      from: req.body.from,
+      to: req.body.to,
+      amount: req.body.amount,
+      nonce: req.body.nonce,
+      publicKey: req.body.signature.publicKey,
       signature: signature,
-      time_received: Date.now().toString(),
-      hash: undefined,
     };
+
+    //console.log(transaction);
 
     console.log(`new incoming transaction request`);
 

@@ -1,4 +1,4 @@
-import ITransaction from '../interfaces/ITransaction';
+import ITransaction from '../../lib/models/interfaces/ITransaction';
 import TransactionPool from '../setup/TransactionPool';
 import Service from './Service';
 

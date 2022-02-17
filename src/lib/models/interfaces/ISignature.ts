@@ -1,10 +1,13 @@
+import { Signature } from 'snarkyjs';
+import IPublicKey from './IPublicKey';
+
 export default interface ISignature {
-  publicKey: string;
+  publicKey: IPublicKey;
   signature: {
-    field: string;
-    scalar: string;
+    r: string;
+    s: string;
   };
-  payload: string;
+  payload: string[];
 }
 
 /*

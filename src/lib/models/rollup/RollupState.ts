@@ -1,17 +1,6 @@
-import {
-  CircuitValue,
-  Field,
-  isReady,
-  Poseidon,
-  PrivateKey,
-  prop,
-  PublicKey,
-  shutdown,
-  UInt32,
-  UInt64,
-} from 'snarkyjs';
+import { CircuitValue, Field, prop } from 'snarkyjs';
 
-export class RollupState extends CircuitValue {
+export default class RollupState extends CircuitValue {
   @prop pendingDepositsCommitment: Field;
   @prop accountDbCommitment: Field;
   constructor(p: Field, c: Field) {

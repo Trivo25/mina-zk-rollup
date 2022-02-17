@@ -11,9 +11,9 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { RollupState } from './RollupState';
+import RollupState from './RollupState';
 
-class RollupStateTransition extends CircuitValue {
+export default class RollupStateTransition extends CircuitValue {
   @prop source: RollupState;
   @prop target: RollupState;
   constructor(source: RollupState, target: RollupState) {
