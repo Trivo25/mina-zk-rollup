@@ -8,11 +8,4 @@ export default class RollupState extends CircuitValue {
     this.pendingDepositsCommitment = p;
     this.accountDbCommitment = c;
   }
-
-  // NOTE: there seems to be an issue with the default toFields() method ?
-  toFields(): Field[] {
-    return this.pendingDepositsCommitment
-      .toFields()
-      .concat(this.accountDbCommitment.toFields());
-  }
 }

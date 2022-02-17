@@ -8,14 +8,6 @@ class Controller<ServiceType extends Service> {
 
   constructor(service: ServiceType) {
     this.service = service;
-    this.hello = this.hello.bind(this);
-  }
-
-  async hello(
-    req: express.Request,
-    res: express.Response
-  ): Promise<express.Response> {
-    return res.status(200).send(this.service.hello());
   }
 }
 

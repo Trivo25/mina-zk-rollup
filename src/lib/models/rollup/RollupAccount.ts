@@ -1,15 +1,4 @@
-import {
-  CircuitValue,
-  Field,
-  isReady,
-  Poseidon,
-  PrivateKey,
-  prop,
-  PublicKey,
-  shutdown,
-  UInt32,
-  UInt64,
-} from 'snarkyjs';
+import { CircuitValue, Field, prop, PublicKey, UInt32, UInt64 } from 'snarkyjs';
 
 export default class RollupAccount extends CircuitValue {
   @prop balance: UInt64;
@@ -21,13 +10,5 @@ export default class RollupAccount extends CircuitValue {
     this.balance = balance;
     this.publicKey = publicKey;
     this.nonce = nonce;
-  }
-
-  // NOTE: there seems to be an issue with the default toFields() method ?
-  toFields(): Field[] {
-    return this.balance
-      .toFields()
-      .concat(this.publicKey.toFields())
-      .concat(this.nonce.toFields());
   }
 }

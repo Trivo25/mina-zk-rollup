@@ -1,6 +1,6 @@
 // takes a normal ClientSDK keypair and decodes it to snarky compatible elements
 import * as MinaSDK from '@o1labs/client-sdk';
-import { Field, Group, PrivateKey, PublicKey } from 'snarkyjs';
+import { PrivateKey, PublicKey } from 'snarkyjs';
 
 export function toSnarkyPublicKey(publicKey: MinaSDK.publicKey): PublicKey {
   // TODO: decode the public key into group point

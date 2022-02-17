@@ -1,13 +1,9 @@
 import express from 'express';
-
 import Controller from './Controller';
 import RollupService from '../services/RollupService';
-
 import EnumError from '../../lib/models/interfaces/EnumError';
-
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
-import { Field, PublicKey } from 'snarkyjs';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
 
 class RollupController extends Controller<RollupService> {
