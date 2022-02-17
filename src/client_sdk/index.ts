@@ -17,7 +17,7 @@ import {
 import RollupAccount from '../lib/models/rollup/RollupAccount';
 import RollupTransaction from '../lib/models/rollup/RollupTransaction';
 import { toSnarkyPublicKey, toSnarkyPrivateKey } from './lib/keypair';
-import { signRollupPayment, getPaymentPayload } from './lib/transfer';
+import { createAndSignPayment } from './lib/transfer';
 
 await isReady;
 
@@ -46,13 +46,12 @@ let rollupTransaction = new RollupTransaction(
   receiverPub
 );
 
-let payload = getPaymentPayload(
+let payload = createAndSignPayment(
   rollupTransaction,
   senderKeypair.publicKey,
-  receiverKeypair.publicKey
+  receiverKeypair.publicKey,
+  senderPriv
 );
-
-payload = signRollupPayment(rollupTransaction, payload, senderPriv);
 
 console.log(payload);
 

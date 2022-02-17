@@ -32,12 +32,8 @@ class RollupController extends Controller<RollupService> {
     */
     try {
       let signature: ISignature = {
-        publicKey: req.body.publicKey,
-        signature: {
-          r: req.body.signature.r,
-          s: req.body.signature.s,
-        },
-        payload: req.body.payload,
+        r: req.body.signature.r,
+        s: req.body.signature.s,
       };
       let veriferResponse: boolean | EnumError = this.service.verify(signature);
 
@@ -63,12 +59,8 @@ class RollupController extends Controller<RollupService> {
     res: express.Response
   ): Promise<express.Response> {
     let signature: ISignature = {
-      publicKey: req.body.signature.publicKey,
-      signature: {
-        r: req.body.signature.signature.r,
-        s: req.body.signature.signature.s,
-      },
-      payload: req.body.signature.payload,
+      r: req.body.signature.r,
+      s: req.body.signature.s,
     };
 
     let transaction: ITransaction = {
@@ -76,7 +68,8 @@ class RollupController extends Controller<RollupService> {
       to: req.body.to,
       amount: req.body.amount,
       nonce: req.body.nonce,
-      publicKey: req.body.signature.publicKey,
+      publicKey: req.body.publicKey,
+      payload: req.body.payload,
       signature: signature,
     };
 

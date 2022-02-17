@@ -59,16 +59,12 @@ class RequestService extends Service {
   processTransaction(transaction: ITransaction): string | EnumError {
     // verify signature so no faulty signature makes it into the pool
 
-    if (transaction.publicKey !== transaction.signature!.publicKey) {
-      return EnumError.SigNotMatchPub;
-    }
-
-    let signature = signatureFromInterface(transaction.signature!);
+    let signature = signatureFromInterface(transaction.signature);
     console.log(signature.toJSON());
     // ! TODO make sure the sig pub key is the same as the from public key!
 
     let pubKey: PublicKey = publicKeyFromInterface(transaction.publicKey);
-    let message: Field[] = transaction.signature!.payload.map((f) => Field(f));
+    let message: Field[] = transaction.payload.map((f) => Field(f));
 
     if (signature === undefined) {
       return EnumError.InvalidSignature;
@@ -77,7 +73,7 @@ class RequestService extends Service {
       return EnumError.InvalidSignature;
     }
 
-    transaction.hash = sha256(JSON.stringify(transaction.signature));
+    // transaction.hash = sha256(JSON.stringify(transaction.signature));
 
     let poolSize = TransactionPool.getInstance().push(transaction);
 

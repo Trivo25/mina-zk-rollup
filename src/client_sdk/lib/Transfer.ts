@@ -6,10 +6,11 @@ import ISignature from '../../lib/models/interfaces/ISignature';
 
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
 
-export function getPaymentPayload(
+export function createAndSignPayment(
   tx: RollupTransaction,
   from: string,
-  to: string
+  to: string,
+  priv: PrivateKey
 ): ITransaction {
   return {
     from: from,
@@ -22,32 +23,20 @@ export function getPaymentPayload(
         y: tx.sender.g.x.toString(),
       },
     },
-    signature: undefined,
+    signature: signRollupPayment(tx, priv),
+    payload: tx.toFields().map((x) => x.toString()),
   };
 }
 
-export function signRollupPayment(
+function signRollupPayment(
   rollupTx: RollupTransaction,
-  tx: ITransaction,
   privateKey: PrivateKey
-): ITransaction {
+): ISignature {
   let s: Signature = Signature.create(privateKey, rollupTx.toFields());
-  let pubKey = privateKey.toPublicKey();
   let signature: ISignature = {
-    publicKey: {
-      g: {
-        x: pubKey.g.x.toString(),
-        y: pubKey.g.y.toString(),
-      },
-    },
-    signature: {
-      r: s.r.toJSON()!.toString(),
-      s: s.s.toJSON()!.toString(),
-    },
-    payload: rollupTx.toFields().map((x) => x.toString()),
+    r: s.r.toJSON()!.toString(),
+    s: s.s.toJSON()!.toString(),
   };
 
-  tx.signature = signature;
-
-  return tx;
+  return signature;
 }

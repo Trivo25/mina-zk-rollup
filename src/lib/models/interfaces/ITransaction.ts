@@ -7,5 +7,6 @@ export default interface ITransaction {
   amount: number;
   nonce: number;
   publicKey: IPublicKey;
-  signature: ISignature | undefined;
+  payload: string[];
+  signature: ISignature;
 }

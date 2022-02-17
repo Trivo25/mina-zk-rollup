@@ -5,9 +5,8 @@ export default function signatureFromInterface(
   sigInterface: ISignature
 ): Signature {
   let signature = Signature.fromJSON({
-    r: sigInterface.signature.r,
-    s: sigInterface.signature.s,
+    r: sigInterface.r,
+    s: sigInterface.s,
   });
-
   return signature!;
 }
