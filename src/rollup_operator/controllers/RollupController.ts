@@ -7,6 +7,8 @@ import EnumError from '../../lib/models/interfaces/EnumError';
 
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
+import { Field, PublicKey } from 'snarkyjs';
+import IPublicKey from '../../lib/models/interfaces/IPublicKey';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {
@@ -19,23 +21,20 @@ class RollupController extends Controller<RollupService> {
     req: express.Request,
     res: express.Response
   ): Promise<express.Response> {
-    /*
-    Example payload    
-    {
-      "publicKey": "B62qmNsne47XJamGRsmckG6L16QZu7cGCA7avTEi4zCzPzxmmXgAj7w",
-      "signature": {
-        "field": "7797250386283974212481778052523307015056807928189716961253856328756529747873",
-        "scalar": "7843613972680634670880673355411715345749981823944101735387873769093458498464"
-      },
-      "payload": "{\"message\":\"Hello\"}"
-    }
-    */
     try {
       let signature: ISignature = {
         r: req.body.signature.r,
         s: req.body.signature.s,
       };
-      let veriferResponse: boolean | EnumError = this.service.verify(signature);
+
+      let payload = req.body.payload;
+      let publicKey: IPublicKey = req.body.publicKey;
+
+      let veriferResponse: boolean | EnumError = this.service.verify(
+        signature,
+        payload,
+        publicKey
+      );
 
       let isSuccess = typeof veriferResponse === 'boolean';
       return res.status(veriferResponse === true ? 200 : 400).send({
@@ -77,17 +76,18 @@ class RollupController extends Controller<RollupService> {
 
     console.log(`new incoming transaction request`);
 
-    let processorReponse: string | EnumError =
+    let processorReponse: boolean | EnumError =
       this.service.processTransaction(transaction);
 
-    let isSuccess = typeof processorReponse === 'string';
-    return res.status(isSuccess ? 200 : 400).send({
-      error: isSuccess ? undefined : processorReponse,
-      payload: isSuccess
-        ? {
-            transaction_hash: processorReponse,
-          }
-        : undefined,
+    return res.status(processorReponse ? 200 : 400).send({
+      error:
+        typeof processorReponse === 'boolean' ? undefined : processorReponse,
+      payload:
+        typeof processorReponse === 'boolean'
+          ? {
+              transaction_hash: processorReponse,
+            }
+          : undefined,
     });
   }
 }

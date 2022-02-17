@@ -10,6 +10,7 @@ import Events from '../../lib/models/interfaces/Events';
 import { Field, PublicKey, Signature } from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
+import IPublicKey from '../../lib/models/interfaces/IPublicKey';
 
 class RequestService extends Service {
   constructor() {
@@ -34,29 +35,23 @@ class RequestService extends Service {
    * @param signature Signature to verify
    * @returns true if signature is valid
    */
-  verify(signature: ISignature): boolean | EnumError {
+  verify(
+    signature: ISignature,
+    payload: string[],
+    publicKey: IPublicKey
+  ): boolean | EnumError {
     try {
-      // let minaSignature: MinaSDK.signature = {
-      //   field: signature.signature.r,
-      //   scalar: signature.signature.s,
-      // };
+      let fieldPayload: Field[] = payload.map((f: any) => Field(f));
+      let pub = publicKeyFromInterface(publicKey);
+      let sig = signatureFromInterface(signature);
 
-      // let minaPayload: MinaSDK.signable = signature.payload;
-      // let signed: MinaSDK.signed<string> = {
-      //   publicKey: signature.publicKey,
-      //   signature: minaSignature,
-      //   payload: minaPayload,
-      // };
-
-      // return MinaSDK.verifyMessage(signed) ? true : EnumError.InvalidSignature;
-      return true;
-      // eslint-disable-next-line no-unreachable
+      return sig.verify(pub, fieldPayload).toBoolean();
     } catch {
       return EnumError.BrokenSignature;
     }
   }
 
-  processTransaction(transaction: ITransaction): string | EnumError {
+  processTransaction(transaction: ITransaction): boolean | EnumError {
     // verify signature so no faulty signature makes it into the pool
 
     let signature = signatureFromInterface(transaction.signature);
@@ -69,7 +64,7 @@ class RequestService extends Service {
     if (signature === undefined) {
       return EnumError.InvalidSignature;
     }
-    if (!signature.verify(pubKey, message)) {
+    if (!signature.verify(pubKey, message).toBoolean()) {
       return EnumError.InvalidSignature;
     }
 
@@ -87,7 +82,7 @@ class RequestService extends Service {
     }
 
     // return transaction.hash!;
-    return '';
+    return true;
   }
 }
 
