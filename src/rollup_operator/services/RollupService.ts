@@ -3,11 +3,11 @@ import * as MinaSDK from '@o1labs/client-sdk';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import EnumError from '../../lib/models/interfaces/EnumError';
-import TransactionPool from '../setup/TransactionPool';
+import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/interfaces/Events';
-import { Field, PublicKey, Signature } from 'snarkyjs';
+import { Field, PublicKey } from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
@@ -20,13 +20,13 @@ class RequestService extends Service {
   static produceRollupBlock() {
     console.log(
       `producing a new rollup block with ${
-        TransactionPool.getInstance().length
+        DataStore.getTransactionPool().length
       } transctions`
     );
 
     let transactionsToProcess: Array<ITransaction> = new Array<ITransaction>();
-    Object.assign(transactionsToProcess, TransactionPool.getInstance());
-    TransactionPool.getInstance().length = 0;
+    Object.assign(transactionsToProcess, DataStore.getTransactionPool());
+    DataStore.getTransactionPool().length = 0;
     console.log(transactionsToProcess);
   }
 
@@ -69,7 +69,7 @@ class RequestService extends Service {
 
     transaction.hash = sha256(JSON.stringify(transaction.signature));
 
-    let poolSize = TransactionPool.getInstance().push(transaction);
+    let poolSize = DataStore.getTransactionPool().push(transaction);
 
     // TODO: use config for block size
     // NOTE: define a more precise way to produce blocks; either by filling up a block or producing a block every x hours/minutes
