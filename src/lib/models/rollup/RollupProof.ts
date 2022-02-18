@@ -1,8 +1,9 @@
 import {
   branch,
+  Field,
+  Poseidon,
   proofSystem,
   ProofWithInput,
-  PublicKey,
   Signature,
   UInt32,
   UInt64,
@@ -23,7 +24,7 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     t: RollupTransaction,
     s: Signature,
     pending: DataStack<RollupDeposit>,
-    accountDb: KeyedDataStore<string, RollupAccount>
+    accountDb: KeyedDataStore<Field, RollupAccount>
   ): RollupProof {
     console.log(1);
     s.verify(t.sender, t.toFields()).assertEquals(true);
@@ -33,21 +34,25 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
       pending.getMerkleRoot()!,
       accountDb.getMerkleRoot()!
     );
+
+    console.log(accountDb.getMerkleRoot()?.toString());
+    console.log(accountDb.get(Poseidon.hash([Field(0)])));
     console.log(3);
 
-    let senderAccount = accountDb.get(t.sender.toJSON()!.toString());
-
+    let senderAccount = accountDb.get(Poseidon.hash(t.sender.toFields()));
+    console.log(senderAccount);
     // ! TODO: DUMMY CODE - REMOVE
     if (senderAccount === undefined) {
       accountDb.set(
-        t.sender.toJSON()!.toString(),
+        Poseidon.hash(t.sender.toFields()),
         new RollupAccount(
           UInt64.fromNumber(100),
           t.sender,
           UInt32.fromNumber(0)
         )
       );
-      senderAccount = accountDb.get(t.sender.toJSON()!.toString());
+      senderAccount = accountDb.get(Poseidon.hash(t.sender.toFields()));
+      console.log(senderAccount);
       if (senderAccount === undefined) {
         throw new Error('...');
       }
@@ -61,9 +66,9 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     senderAccount.balance = senderAccount.balance.sub(t.amount);
     senderAccount.nonce = senderAccount.nonce.add(1);
 
-    accountDb.set(t.sender.toJSON()!.toString(), senderAccount);
+    accountDb.set(Poseidon.hash(t.sender.toFields()), senderAccount);
 
-    let receiverAccount = accountDb.get(t.receiver.toJSON()!.toString());
+    let receiverAccount = accountDb.get(Poseidon.hash(t.receiver.toFields()));
 
     if (receiverAccount === undefined) {
       receiverAccount = new RollupAccount(
@@ -74,7 +79,7 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     }
 
     receiverAccount.balance = receiverAccount.balance.add(t.amount);
-    accountDb.set(t.receiver.toJSON()!.toString(), receiverAccount);
+    accountDb.set(Poseidon.hash(t.receiver.toFields()), receiverAccount);
 
     let stateAfter = new RollupState(
       pending.getMerkleRoot()!,

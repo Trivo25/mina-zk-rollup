@@ -1,5 +1,4 @@
 import Service from './Service';
-import * as MinaSDK from '@o1labs/client-sdk';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import EnumError from '../../lib/models/interfaces/EnumError';
@@ -9,7 +8,7 @@ import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/interfaces/Events';
 import {
   Field,
-  PrivateKey,
+  Poseidon,
   PublicKey,
   Signature,
   UInt32,
@@ -46,10 +45,21 @@ class RequestService extends Service {
     let pendingDeposits: DataStack<RollupDeposit> =
       new DataStack<RollupDeposit>();
 
-    let accountDb: KeyedDataStore<string, RollupAccount> = new KeyedDataStore<
-      string,
+    let accountDb: KeyedDataStore<Field, RollupAccount> = new KeyedDataStore<
+      Field,
       RollupAccount
     >();
+
+    accountDb.set(
+      Poseidon.hash([Field(0)]),
+      new RollupAccount(
+        UInt64.fromNumber(100),
+        publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
+        UInt32.fromNumber(0)
+      )
+    );
+    console.log(accountDb.getMerkleRoot()!.toString());
+    console.log(accountDb.get(Poseidon.hash([Field(0)])));
 
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach((tx) => {

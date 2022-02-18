@@ -96,8 +96,11 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     let entry: V | undefined = this.dataStore.get(key);
     if (entry === undefined) {
       // key is new
+      console.log('setting 1');
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())], false);
+      console.log('setting 2');
       this.dataStore.set(key, value);
+      console.log(this.dataStore.get(key));
     } else {
       // element already exists in merkle tree, just change the entry so the order doesnt get mixed up#
       let index = this.merkleTree.getIndex(Poseidon.hash(entry.toFields()));
