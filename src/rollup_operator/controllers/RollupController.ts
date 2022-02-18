@@ -63,7 +63,8 @@ class RollupController extends Controller<RollupService> {
       to: req.body.to,
       amount: req.body.amount,
       nonce: req.body.nonce,
-      publicKey: req.body.publicKey,
+      sender_publicKey: req.body.sender_publicKey,
+      receiver_publicKey: req.body.receiver_publicKey,
       payload: req.body.payload,
       signature: signature,
     };

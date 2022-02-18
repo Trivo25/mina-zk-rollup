@@ -6,7 +6,8 @@ export default interface ITransaction {
   to: string;
   amount: number;
   nonce: number;
-  publicKey: IPublicKey;
+  sender_publicKey: IPublicKey;
+  receiver_publicKey: IPublicKey;
   payload: string[];
   signature: ISignature;
   hash?: string;
