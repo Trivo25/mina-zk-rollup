@@ -17,6 +17,7 @@ import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
 import { KeyedDataStore } from './lib/data_store/KeyedDataStore';
 
 import { DataStack } from './lib/data_store/DataStack';
+import IPublicKey from './lib/models/interfaces/IPublicKey';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;
@@ -43,16 +44,42 @@ test();
 async function test() {
   await isReady;
 
+  let dataStore = new Map<IPublicKey, Test>();
+
+  let acc = new Account(
+    UInt64.fromNumber(10),
+    PrivateKey.random().toPublicKey()
+  );
+
+  let pubkey: Test = new Test();
+
+  let pubkey2: Test = new Test();
+
+  console.log(pubkey === pubkey2);
+
+  // dataStore.set(pubkey, acc);
+
+  // console.log(dataStore.get(pubkey));
+
+  // testF(dataStore);
+
   //dataStackDemo();
   //keyedDataStoreDemo();
 
   //merkleTreeDemo();
 
-  console.log(Test.t);
-  Test.t++;
-  console.log(Test.t);
-
   shutdown();
+}
+
+function testF(store: Map<IPublicKey, Account>) {
+  let pubkey: IPublicKey = {
+    g: {
+      x: '10403996635208384494000576583154508739074089553813316440641262781046658512525',
+      y: '28475752123784524432200374217371603321225482732108015475742377080547605049403',
+    },
+  };
+  console.log('inside func');
+  console.log(store.get(pubkey));
 }
 
 function dataStackDemo() {

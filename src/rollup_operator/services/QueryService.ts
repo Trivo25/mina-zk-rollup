@@ -1,5 +1,5 @@
 import ITransaction from '../../lib/models/interfaces/ITransaction';
-import TransactionPool from '../setup/TransactionPool';
+import DataStore from '../setup/DataStore';
 import Service from './Service';
 
 class QueryService extends Service {
@@ -8,7 +8,7 @@ class QueryService extends Service {
   }
 
   getTransactionPool(): ITransaction[] {
-    return TransactionPool.getInstance();
+    return DataStore.getTransactionPool();
   }
 
   stats(): any {
@@ -16,7 +16,7 @@ class QueryService extends Service {
     return {
       average_tps: 14,
       uptime: '3d 4h 32m',
-      pending_transactions_count: TransactionPool.getInstance().length,
+      pending_transactions_count: DataStore.getTransactionPool().length,
     };
   }
 }

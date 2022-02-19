@@ -1,5 +1,9 @@
 import {
+  Account,
   branch,
+  Circuit,
+  Field,
+  Poseidon,
   proofSystem,
   ProofWithInput,
   PublicKey,
@@ -16,8 +20,6 @@ import RollupDeposit from './RollupDeposit';
 import RollupAccount from './RollupAccount';
 import { KeyedDataStore } from '../../data_store/KeyedDataStore';
 
-type AccountDb = KeyedDataStore<PublicKey, RollupAccount>;
-
 @proofSystem
 class RollupProof extends ProofWithInput<RollupStateTransition> {
   @branch
@@ -25,8 +27,9 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     t: RollupTransaction,
     s: Signature,
     pending: DataStack<RollupDeposit>,
-    accountDb: AccountDb
+    accountDb: KeyedDataStore<string, RollupAccount>
   ): RollupProof {
+    // making sure the tx has actually been signed by the sender
     s.verify(t.sender, t.toFields()).assertEquals(true);
 
     let stateBefore = new RollupState(
@@ -34,22 +37,26 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
       accountDb.getMerkleRoot()!
     );
 
-    let senderAccount = accountDb.get(t.sender);
+    let senderAccount: RollupAccount | undefined = accountDb.get(
+      t.sender.toJSON()!.toString()
+    );
 
+    // NOTE: what about if-statements within proofs? probably not good
     if (senderAccount === undefined) {
-      throw 'error'; // TODO: smarter assertion
+      throw new Error('Sender account does not exist');
     }
 
-    //senderAccount.isSome.assertEquals(true);
-    senderAccount.nonce.assertEquals(t.nonce);
-
+    senderAccount.nonce.equals(t.nonce);
     senderAccount.balance = senderAccount.balance.sub(t.amount);
     senderAccount.nonce = senderAccount.nonce.add(1);
 
-    accountDb.set(t.sender, senderAccount);
+    accountDb.set(t.sender.toJSON()!.toString(), senderAccount);
 
-    let receiverAccount = accountDb.get(t.receiver);
+    let receiverAccount: RollupAccount | undefined = accountDb.get(
+      t.receiver.toJSON()!.toString()
+    );
 
+    // NOTE: what about if-statements within proofs? probably not good
     if (receiverAccount === undefined) {
       receiverAccount = new RollupAccount(
         UInt64.fromNumber(0),
@@ -59,12 +66,14 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     }
 
     receiverAccount.balance = receiverAccount.balance.add(t.amount);
-    accountDb.set(t.receiver, receiverAccount);
+
+    accountDb.set(t.sender.toJSON()!.toString(), receiverAccount);
 
     let stateAfter = new RollupState(
       pending.getMerkleRoot()!,
       accountDb.getMerkleRoot()!
     );
+
     return new RollupProof(new RollupStateTransition(stateBefore, stateAfter));
   }
 

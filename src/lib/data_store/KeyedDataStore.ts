@@ -2,7 +2,7 @@ import { Field, CircuitValue, Poseidon } from 'snarkyjs';
 
 import { MerklePathElement, MerkleTree } from '../merkle_proof/MerkleTree';
 
-// NOTE should the key also be Hashable or only the value?
+// ! NOTE use primitive types as Key, JS uses === for checks inside the map, hence advanced data types such as Objects WILL NOT yield the same result
 export class KeyedDataStore<K, V extends CircuitValue> {
   // the merkle tree doesnt store the actual data, its only a layer ontop of the dataStore map
 
@@ -97,8 +97,10 @@ export class KeyedDataStore<K, V extends CircuitValue> {
     let entry: V | undefined = this.dataStore.get(key);
     if (entry === undefined) {
       // key is new
+
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())], false);
-      this.dataStore.set(key, value);
+
+      this.dataStore = this.dataStore.set(key, value);
     } else {
       // element already exists in merkle tree, just change the entry so the order doesnt get mixed up#
       let index = this.merkleTree.getIndex(Poseidon.hash(entry.toFields()));

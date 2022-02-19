@@ -9,13 +9,21 @@ class EventHandler {
     throw new Error('Use EvenHandler.getInstance() instead!');
   }
 
-  static getInstance() {
+  static emit(event: string) {
     if (EventHandler.instance === undefined) {
       EventHandler.instance = new events.EventEmitter();
       EventHandler.setEvents();
     }
-    return EventHandler.instance;
+    EventHandler.instance.emit(event);
   }
+
+  // static getInstance() {
+  //   if (EventHandler.instance === undefined) {
+  //     EventHandler.instance = new events.EventEmitter();
+  //     EventHandler.setEvents();
+  //   }
+  //   return EventHandler.instance;
+  // }
 
   static setEvents() {
     if (EventHandler.instance === undefined) {

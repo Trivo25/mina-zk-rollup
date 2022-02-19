@@ -1,5 +1,8 @@
 import pkg from 'pg';
 
+/*
+! NOTE: This is jsut a dummy data structure and will be improved on in the future
+*/
 class SingletonPool extends pkg.Pool {
   constructor() {
     super({
