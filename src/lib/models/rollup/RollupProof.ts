@@ -1,9 +1,12 @@
 import {
+  Account,
   branch,
+  Circuit,
   Field,
   Poseidon,
   proofSystem,
   ProofWithInput,
+  PublicKey,
   Signature,
   UInt32,
   UInt64,
@@ -24,52 +27,36 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     t: RollupTransaction,
     s: Signature,
     pending: DataStack<RollupDeposit>,
-    accountDb: KeyedDataStore<Field, RollupAccount>
+    accountDb: KeyedDataStore<string, RollupAccount>
   ): RollupProof {
-    console.log(1);
+    // making sure the tx has actually been signed by the sender
     s.verify(t.sender, t.toFields()).assertEquals(true);
-    console.log(2);
 
     let stateBefore = new RollupState(
       pending.getMerkleRoot()!,
       accountDb.getMerkleRoot()!
     );
 
-    console.log(accountDb.getMerkleRoot()?.toString());
-    console.log(accountDb.get(Poseidon.hash([Field(0)])));
-    console.log(3);
+    let senderAccount: RollupAccount | undefined = accountDb.get(
+      t.sender.toJSON()!.toString()
+    );
 
-    let senderAccount = accountDb.get(Poseidon.hash(t.sender.toFields()));
-    console.log(senderAccount);
-    // ! TODO: DUMMY CODE - REMOVE
+    // NOTE: what about if-statements within proofs? probably not good
     if (senderAccount === undefined) {
-      accountDb.set(
-        Poseidon.hash(t.sender.toFields()),
-        new RollupAccount(
-          UInt64.fromNumber(100),
-          t.sender,
-          UInt32.fromNumber(0)
-        )
-      );
-      senderAccount = accountDb.get(Poseidon.hash(t.sender.toFields()));
-      console.log(senderAccount);
-      if (senderAccount === undefined) {
-        throw new Error('...');
-      }
-      // throw 'Sender does not exist in the ledger'; // TODO: smarter assertion
+      throw new Error('Sender account does not exist');
     }
 
-    //senderAccount.isSome.assertEquals(true);
-    senderAccount.nonce.assertEquals(t.nonce);
-    senderAccount.balance.assertGt(t.amount);
-
+    senderAccount.nonce.equals(t.nonce);
     senderAccount.balance = senderAccount.balance.sub(t.amount);
     senderAccount.nonce = senderAccount.nonce.add(1);
 
-    accountDb.set(Poseidon.hash(t.sender.toFields()), senderAccount);
+    accountDb.set(t.sender.toJSON()!.toString(), senderAccount);
 
-    let receiverAccount = accountDb.get(Poseidon.hash(t.receiver.toFields()));
+    let receiverAccount: RollupAccount | undefined = accountDb.get(
+      t.receiver.toJSON()!.toString()
+    );
 
+    // NOTE: what about if-statements within proofs? probably not good
     if (receiverAccount === undefined) {
       receiverAccount = new RollupAccount(
         UInt64.fromNumber(0),
@@ -79,13 +66,13 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
     }
 
     receiverAccount.balance = receiverAccount.balance.add(t.amount);
-    accountDb.set(Poseidon.hash(t.receiver.toFields()), receiverAccount);
+
+    accountDb.set(t.sender.toJSON()!.toString(), receiverAccount);
 
     let stateAfter = new RollupState(
       pending.getMerkleRoot()!,
       accountDb.getMerkleRoot()!
     );
-    console.log(4);
 
     return new RollupProof(new RollupStateTransition(stateBefore, stateAfter));
   }

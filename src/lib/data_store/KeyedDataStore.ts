@@ -2,8 +2,7 @@ import { Field, CircuitValue, Poseidon } from 'snarkyjs';
 
 import { MerklePathElement, MerkleTree } from '../merkle_proof/MerkleTree';
 
-// NOTE should the key also be Hashable or only the value?
-// ! NOTE Field as K breaks. Why? I don't know but this is a problem for a future me
+// ! NOTE use primitive types as Key, JS uses === for checks inside the map, hence advanced data types such as Objects WILL NOT yield the same result
 export class KeyedDataStore<K, V extends CircuitValue> {
   // the merkle tree doesnt store the actual data, its only a layer ontop of the dataStore map
 

@@ -6,14 +6,7 @@ import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/interfaces/Events';
-import {
-  Field,
-  Poseidon,
-  PublicKey,
-  Signature,
-  UInt32,
-  UInt64,
-} from 'snarkyjs';
+import { Circuit, Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
@@ -29,7 +22,7 @@ class RequestService extends Service {
     super();
   }
 
-  static produceRollupBlock() {
+  static async produceRollupBlock() {
     console.log(
       `producing a new rollup block with ${
         DataStore.getTransactionPool().length
@@ -45,24 +38,26 @@ class RequestService extends Service {
     let pendingDeposits: DataStack<RollupDeposit> =
       new DataStack<RollupDeposit>();
 
-    let accountDb: KeyedDataStore<Field, RollupAccount> = new KeyedDataStore<
-      Field,
-      RollupAccount
-    >();
+    // let accountDb: KeyedDataStore<PublicKey, RollupAccount> =
+    //   new KeyedDataStore<PublicKey, RollupAccount>();
 
-    accountDb.set(
-      Poseidon.hash([Field(0)]),
-      new RollupAccount(
-        UInt64.fromNumber(100),
-        publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-        UInt32.fromNumber(0)
-      )
-    );
-    console.log(accountDb.getMerkleRoot()!.toString());
-    console.log(accountDb.get(Poseidon.hash([Field(0)])));
+    // accountDb.set(
+    //   publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
+    //   new RollupAccount(
+    //     UInt64.fromNumber(100),
+    //     publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
+    //     UInt32.fromNumber(0)
+    //   )
+    // );
+    // console.log(accountDb.getMerkleRoot()!.toString());
+    // console.log(
+    //   accountDb.get(
+    //     publicKeyFromInterface(transactionsToProcess[0].sender_publicKey)
+    //   )
+    // );
 
     let proofBatch: RollupProof[] = [];
-    transactionsToProcess.forEach((tx) => {
+    transactionsToProcess.forEach(async (tx) => {
       let sender: PublicKey = publicKeyFromInterface(tx.sender_publicKey);
       let receiver: PublicKey = publicKeyFromInterface(tx.receiver_publicKey);
       let signature: Signature = signatureFromInterface(tx.signature);
@@ -73,14 +68,32 @@ class RequestService extends Service {
         receiver
       );
 
-      let p = RollupProof.transaction(
-        rollupTx,
-        signature,
-        pendingDeposits,
-        accountDb
-      );
+      try {
+        let accountDb: KeyedDataStore<string, RollupAccount> =
+          new KeyedDataStore<string, RollupAccount>();
 
-      proofBatch.push(p);
+        let pubSender: PublicKey = publicKeyFromInterface(
+          transactionsToProcess[0].sender_publicKey
+        );
+        accountDb.set(
+          pubSender.toJSON()!.toString(),
+          new RollupAccount(
+            UInt64.fromNumber(100),
+            publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
+            UInt32.fromNumber(0)
+          )
+        );
+        let p: RollupProof = RollupProof.transaction(
+          rollupTx,
+          signature,
+          pendingDeposits,
+          accountDb
+        );
+
+        proofBatch.push(p);
+      } catch (error) {
+        console.log(error);
+      }
     });
 
     console.log(proofBatch);
