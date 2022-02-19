@@ -8,7 +8,7 @@ import * as MinaSDK from '@o1labs/client-sdk';
 import { isReady, UInt64, UInt32 } from 'snarkyjs';
 import RollupTransaction from '../lib/models/rollup/RollupTransaction';
 import { toSnarkyPublicKey, toSnarkyPrivateKey } from './lib/keypair';
-import { createAndSignPayment } from './lib/transfer';
+import { createAndSignPayment } from './lib/transaction';
 
 await isReady;
 

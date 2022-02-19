@@ -43,14 +43,23 @@ test();
 async function test() {
   await isReady;
 
+  let dataStore = new KeyedDataStore<PublicKey, Account>();
+
+  let acc = new Account(
+    UInt64.fromNumber(10),
+    PrivateKey.random().toPublicKey()
+  );
+
+  let pubkey = PrivateKey.random().toPublicKey();
+
+  dataStore.set(pubkey, acc);
+
+  console.log(dataStore.get(pubkey));
+
   //dataStackDemo();
   //keyedDataStoreDemo();
 
   //merkleTreeDemo();
-
-  console.log(Test.t);
-  Test.t++;
-  console.log(Test.t);
 
   shutdown();
 }
