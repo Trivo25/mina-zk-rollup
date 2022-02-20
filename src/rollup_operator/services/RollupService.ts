@@ -6,11 +6,11 @@ import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/interfaces/Events';
-import { Circuit, Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import RollupProof from '../../lib/models/rollup/RollupProof';
+import RollupProof from '../branches/RollupProof';
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
 import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
@@ -83,7 +83,7 @@ class RequestService extends Service {
             UInt32.fromNumber(0)
           )
         );
-        let p: RollupProof = RollupProof.transaction(
+        let p: RollupProof = RollupProof.simpleTransfer(
           rollupTx,
           signature,
           pendingDeposits,

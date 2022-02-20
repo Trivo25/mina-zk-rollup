@@ -14,12 +14,11 @@ import {
   SmartContract,
   State,
   state,
-  UInt32,
   UInt64,
 } from 'snarkyjs';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
-import RollupProof from '../lib/models/rollup/RollupProof';
+import RollupProof from '../rollup_operator/branches/RollupProof';
 
 class RollupSnapp extends SmartContract {
   // Merkle root of all accounts
