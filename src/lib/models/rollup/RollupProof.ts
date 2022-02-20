@@ -15,10 +15,10 @@ import RollupState from './RollupState';
 import RollupStateTransition from './RollupStateTransition';
 
 import RollupTransaction from './RollupTransaction';
-import { DataStack } from '../../data_store/DataStack';
+import { MerkleStack } from '../../data_store/MerkleStack';
 import RollupDeposit from './RollupDeposit';
 import RollupAccount from './RollupAccount';
-import { KeyedDataStore } from '../../data_store/KeyedDataStore';
+import { KeyedMerkleStore } from '../../data_store/KeyedMerkleStore';
 
 @proofSystem
 class RollupProof extends ProofWithInput<RollupStateTransition> {
@@ -26,8 +26,8 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
   static transaction(
     t: RollupTransaction,
     s: Signature,
-    pending: DataStack<RollupDeposit>,
-    accountDb: KeyedDataStore<string, RollupAccount>
+    pending: MerkleStack<RollupDeposit>,
+    accountDb: KeyedMerkleStore<string, RollupAccount>
   ): RollupProof {
     // making sure the tx has actually been signed by the sender
     s.verify(t.sender, t.toFields()).assertEquals(true);

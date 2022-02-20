@@ -1,6 +1,6 @@
 import { isReady, PrivateKey, shutdown } from 'snarkyjs';
 
-import { DataStack } from '../../src/lib/data_store/DataStack';
+import { MerkleStack } from '../../src/lib/data_store/MerkleStack';
 
 describe('DataStack', () => {
   beforeAll(async () => {
@@ -14,7 +14,7 @@ describe('DataStack', () => {
   it('should construct DataStack', () => {
     // TODO: cleanup tests
     // TODO: test more edge cases
-    let stack = new DataStack();
+    let stack = new MerkleStack();
 
     let a = PrivateKey.random().toPublicKey();
     let b = PrivateKey.random().toPublicKey();

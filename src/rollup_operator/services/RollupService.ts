@@ -12,9 +12,9 @@ import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
 import RollupProof from '../../lib/models/rollup/RollupProof';
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
-import { DataStack } from '../../lib/data_store/DataStack';
+import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
-import { KeyedDataStore } from '../../lib/data_store/KeyedDataStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
 
 class RequestService extends Service {
@@ -35,8 +35,8 @@ class RequestService extends Service {
 
     // TODO: do real calculations
 
-    let pendingDeposits: DataStack<RollupDeposit> =
-      new DataStack<RollupDeposit>();
+    let pendingDeposits: MerkleStack<RollupDeposit> =
+      new MerkleStack<RollupDeposit>();
 
     // let accountDb: KeyedDataStore<PublicKey, RollupAccount> =
     //   new KeyedDataStore<PublicKey, RollupAccount>();
@@ -69,8 +69,8 @@ class RequestService extends Service {
       );
 
       try {
-        let accountDb: KeyedDataStore<string, RollupAccount> =
-          new KeyedDataStore<string, RollupAccount>();
+        let accountDb: KeyedMerkleStore<string, RollupAccount> =
+          new KeyedMerkleStore<string, RollupAccount>();
 
         let pubSender: PublicKey = publicKeyFromInterface(
           transactionsToProcess[0].sender_publicKey

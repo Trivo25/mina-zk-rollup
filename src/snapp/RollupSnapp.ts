@@ -117,7 +117,7 @@ async function test() {
       previousRoot = Field(0);
     }
 
-    snapp.deploy(amount, previousRoot);
+    snapp.deploy(amount, previousRoot, Field(0));
   })
     .send()
     .wait();
