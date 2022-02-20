@@ -10,7 +10,7 @@ class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {
     super(service);
     this.verify = this.verify.bind(this);
-    this.transferFunds = this.transferFunds.bind(this);
+    this.transaction = this.transaction.bind(this);
   }
 
   async verify(
@@ -26,66 +26,66 @@ class RollupController extends Controller<RollupService> {
       let payload = req.body.payload;
       let publicKey: IPublicKey = req.body.publicKey;
 
-      let veriferResponse: boolean | EnumError = this.service.verify(
+      let veriferResponse: any | EnumError = this.service.verify(
         signature,
         payload,
         publicKey
       );
 
-      let isSuccess = typeof veriferResponse === 'boolean';
-      return res.status(veriferResponse === true ? 200 : 400).send({
-        error: veriferResponse === true ? undefined : veriferResponse,
-        payload: isSuccess
-          ? {
-              is_valid_signature: veriferResponse,
-            }
-          : undefined,
+      return res.status(200).send({
+        error: undefined,
+        payload: veriferResponse,
       });
     } catch (err) {
       return res.status(400).send({
         error: EnumError.BrokenSignature,
-        payload: false,
+        payload: undefined,
       });
     }
   }
 
-  async transferFunds(
+  async transaction(
     req: express.Request,
     res: express.Response
   ): Promise<express.Response> {
-    let signature: ISignature = {
-      r: req.body.signature.r,
-      s: req.body.signature.s,
-    };
+    try {
+      let signature: ISignature = {
+        r: req.body.signature.r,
+        s: req.body.signature.s,
+      };
 
-    let transaction: ITransaction = {
-      from: req.body.from,
-      to: req.body.to,
-      amount: req.body.amount,
-      nonce: req.body.nonce,
-      sender_publicKey: req.body.sender_publicKey,
-      receiver_publicKey: req.body.receiver_publicKey,
-      payload: req.body.payload,
-      signature: signature,
-    };
+      let transaction: ITransaction = {
+        from: req.body.from,
+        to: req.body.to,
+        amount: req.body.amount,
+        nonce: req.body.nonce,
+        sender_publicKey: req.body.sender_publicKey,
+        receiver_publicKey: req.body.receiver_publicKey,
+        payload: req.body.payload,
+        signature: signature,
+        method: req.body.method, // TODO: maybe verify method via a signature?
+      };
 
-    //console.log(transaction);
+      let processorReponse: any;
+      switch (transaction.method) {
+        case 'simple_transfer':
+          processorReponse = this.service.processTransaction(transaction);
+          break;
+        default:
+          processorReponse = EnumError.InvalidMethod;
+          break;
+      }
 
-    console.log(`new incoming transaction request`);
-
-    let processorReponse: boolean | EnumError =
-      this.service.processTransaction(transaction);
-
-    return res.status(processorReponse ? 200 : 400).send({
-      error:
-        typeof processorReponse === 'boolean' ? undefined : processorReponse,
-      payload:
-        typeof processorReponse === 'boolean'
-          ? {
-              transaction_hash: processorReponse,
-            }
-          : undefined,
-    });
+      return res.status(200).send({
+        error: undefined,
+        payload: processorReponse,
+      });
+    } catch (error) {
+      return res.status(400).send({
+        error: error,
+        payload: undefined,
+      });
+    }
   }
 }
 

@@ -17,14 +17,6 @@ class EventHandler {
     EventHandler.instance.emit(event);
   }
 
-  // static getInstance() {
-  //   if (EventHandler.instance === undefined) {
-  //     EventHandler.instance = new events.EventEmitter();
-  //     EventHandler.setEvents();
-  //   }
-  //   return EventHandler.instance;
-  // }
-
   static setEvents() {
     if (EventHandler.instance === undefined) {
       throw new Error(`Use ${this}.getInstance() instead!`);

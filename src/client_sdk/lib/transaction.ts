@@ -28,6 +28,7 @@ export function createAndSignPayment(
     },
     signature: signRollupPayment(tx, priv),
     payload: tx.toFields().map((x) => x.toString()),
+    method: 'simple_transfer',
   };
 }
 

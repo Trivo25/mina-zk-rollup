@@ -6,15 +6,15 @@ import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/interfaces/Events';
-import { Circuit, Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import RollupProof from '../../lib/models/rollup/RollupProof';
+import RollupProof from '../branches/RollupProof';
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
-import { DataStack } from '../../lib/data_store/DataStack';
+import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
-import { KeyedDataStore } from '../../lib/data_store/KeyedDataStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
 
 class RequestService extends Service {
@@ -35,8 +35,8 @@ class RequestService extends Service {
 
     // TODO: do real calculations
 
-    let pendingDeposits: DataStack<RollupDeposit> =
-      new DataStack<RollupDeposit>();
+    let pendingDeposits: MerkleStack<RollupDeposit> =
+      new MerkleStack<RollupDeposit>();
 
     // let accountDb: KeyedDataStore<PublicKey, RollupAccount> =
     //   new KeyedDataStore<PublicKey, RollupAccount>();
@@ -69,8 +69,8 @@ class RequestService extends Service {
       );
 
       try {
-        let accountDb: KeyedDataStore<string, RollupAccount> =
-          new KeyedDataStore<string, RollupAccount>();
+        let accountDb: KeyedMerkleStore<string, RollupAccount> =
+          new KeyedMerkleStore<string, RollupAccount>();
 
         let pubSender: PublicKey = publicKeyFromInterface(
           transactionsToProcess[0].sender_publicKey
@@ -83,7 +83,7 @@ class RequestService extends Service {
             UInt32.fromNumber(0)
           )
         );
-        let p: RollupProof = RollupProof.transaction(
+        let p: RollupProof = RollupProof.simpleTransfer(
           rollupTx,
           signature,
           pendingDeposits,
@@ -104,38 +104,39 @@ class RequestService extends Service {
    * @param signature Signature to verify
    * @returns true if signature is valid
    */
-  verify(
-    signature: ISignature,
-    payload: string[],
-    publicKey: IPublicKey
-  ): boolean | EnumError {
+  verify(signature: ISignature, payload: string[], publicKey: IPublicKey): any {
     try {
       let fieldPayload: Field[] = payload.map((f: any) => Field(f));
       let pub = publicKeyFromInterface(publicKey);
       let sig = signatureFromInterface(signature);
 
-      return sig.verify(pub, fieldPayload).toBoolean();
+      return {
+        is_valid: sig.verify(pub, fieldPayload).toBoolean(),
+      };
     } catch {
-      return EnumError.BrokenSignature;
+      throw new Error(EnumError.BrokenSignature);
     }
   }
 
-  processTransaction(transaction: ITransaction): boolean | EnumError {
+  processTransaction(transaction: ITransaction): any {
     // verify signature so no faulty signature makes it into the pool
 
     let signature = signatureFromInterface(transaction.signature);
-    console.log(signature.toJSON());
 
     let sender: PublicKey = publicKeyFromInterface(
       transaction.sender_publicKey
     );
     let message: Field[] = transaction.payload.map((f) => Field(f));
 
+    if (sender === undefined) {
+      throw new Error(EnumError.InvalidPublicKey);
+    }
+
     if (signature === undefined) {
-      return EnumError.InvalidSignature;
+      throw new Error(EnumError.InvalidSignature);
     }
     if (!signature.verify(sender, message).toBoolean()) {
-      return EnumError.InvalidSignature;
+      throw new Error(EnumError.InvalidSignature);
     }
 
     transaction.hash = sha256(JSON.stringify(transaction.signature));
@@ -151,8 +152,9 @@ class RequestService extends Service {
       EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 
-    // return transaction.hash!;
-    return true;
+    return {
+      transcaction_hash: transaction.hash,
+    };
   }
 }
 

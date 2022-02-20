@@ -12,6 +12,8 @@ import {
 import { MerkleTree, Tree } from '../../src/lib/merkle_proof/MerkleTree';
 
 describe('MerkleTree unit test', () => {
+  let merkleTree: MerkleTree;
+
   beforeAll(async () => {
     await isReady;
   });
@@ -20,10 +22,13 @@ describe('MerkleTree unit test', () => {
     shutdown();
   });
 
+  beforeEach(() => {
+    merkleTree = new MerkleTree();
+  });
+
   it('should construct and proof a merkle tree', () => {
     // TODO: cleanup tests
     // TODO: test more edge cases
-    let merkleTree = new MerkleTree();
     let nodeData = [];
 
     for (let index = 0; index <= 4; index++) {

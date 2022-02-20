@@ -14,9 +14,9 @@ import {
 
 import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
 
-import { KeyedDataStore } from './lib/data_store/KeyedDataStore';
+import { KeyedMerkleStore } from './lib/data_store/KeyedMerkleStore';
 
-import { DataStack } from './lib/data_store/DataStack';
+import { MerkleStack } from './lib/data_store/MerkleStack';
 import IPublicKey from './lib/models/interfaces/IPublicKey';
 
 class Account extends CircuitValue {
@@ -51,12 +51,6 @@ async function test() {
     PrivateKey.random().toPublicKey()
   );
 
-  let pubkey: Test = new Test();
-
-  let pubkey2: Test = new Test();
-
-  console.log(pubkey === pubkey2);
-
   // dataStore.set(pubkey, acc);
 
   // console.log(dataStore.get(pubkey));
@@ -83,7 +77,7 @@ function testF(store: Map<IPublicKey, Account>) {
 }
 
 function dataStackDemo() {
-  let stack = new DataStack();
+  let stack = new MerkleStack();
   stack.merkleTree.printTree();
 
   let a = PrivateKey.random().toPublicKey();
@@ -105,7 +99,7 @@ function dataStackDemo() {
 function keyedDataStoreDemo() {
   // dummy account
 
-  let store = new KeyedDataStore<String, Account>();
+  let store = new KeyedMerkleStore<String, Account>();
   let dataLeaves = new Map<String, Account>();
 
   let accountA = new Account(

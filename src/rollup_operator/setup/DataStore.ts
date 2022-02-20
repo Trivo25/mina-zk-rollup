@@ -1,4 +1,4 @@
-import { KeyedDataStore } from '../../lib/data_store/KeyedDataStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import Account from '../../lib/models/rollup/RollupAccount';
 
@@ -6,7 +6,7 @@ import Account from '../../lib/models/rollup/RollupAccount';
 ! NOTE: This is jsut a dummy data structure and will be improved on in the future
 */
 class DataStore {
-  static accounts: KeyedDataStore<string, Account> | undefined;
+  static accounts: KeyedMerkleStore<string, Account> | undefined;
   static transactionPool: Array<ITransaction> | undefined;
 
   constructor() {
@@ -15,7 +15,7 @@ class DataStore {
 
   static getAccountStore() {
     if (DataStore.accounts === undefined) {
-      DataStore.accounts = new KeyedDataStore<string, Account>();
+      DataStore.accounts = new KeyedMerkleStore<string, Account>();
     }
     return DataStore.accounts;
   }

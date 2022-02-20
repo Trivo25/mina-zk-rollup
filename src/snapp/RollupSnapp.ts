@@ -8,7 +8,9 @@ import {
   Party,
   Poseidon,
   PrivateKey,
+  PublicKey,
   shutdown,
+  Signature,
   SmartContract,
   State,
   state,
@@ -16,21 +18,40 @@ import {
 } from 'snarkyjs';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
+import RollupProof from '../rollup_operator/branches/RollupProof';
 
 class RollupSnapp extends SmartContract {
-  @state(Field) merkleRoot = State<Field>();
+  // Merkle root of all accounts
+  @state(Field) acccountsCommitment = State<Field>();
+  // Merkle root of all pending deposits
+  @state(Field) pendingDepositsCommitment = State<Field>();
 
-  deploy(initialBalance: UInt64, merkleRoot: Field) {
+  deploy(
+    initialBalance: UInt64,
+    acccountsCommitment: Field,
+    pendingDepositsCommitment: Field
+  ) {
     super.deploy();
     this.balance.addInPlace(initialBalance);
-    this.merkleRoot.set(merkleRoot);
+    this.acccountsCommitment.set(acccountsCommitment);
+    this.pendingDepositsCommitment.set(pendingDepositsCommitment);
   }
 
-  @method async validateRollupProof() {}
+  @method async deposit(depositor: PublicKey, amount: UInt64) {}
+
+  @method async validateRollupProof(
+    rollupProof: RollupProof,
+    operator: PublicKey,
+    operatorSignature: Signature
+  ) {
+    // TODO: checking if operator is within list of allowed operators
+    // TODO: verify signature
+  }
 
   @method async validateProof(merklePath: any, leafHash: Field): Promise<Bool> {
     // merkle root from inside the smart contract
-    let merkleRoot = await this.merkleRoot.get();
+    let currentAcccountsCommitment: Field =
+      await this.acccountsCommitment.get();
 
     // // ! 'if' is probably not good here?
     // if (merklePath.length === 0) {
@@ -51,7 +72,7 @@ class RollupSnapp extends SmartContract {
       );
     }
 
-    return proofHash.equals(merkleRoot);
+    return proofHash.equals(currentAcccountsCommitment);
   }
 }
 
@@ -95,7 +116,7 @@ async function test() {
       previousRoot = Field(0);
     }
 
-    snapp.deploy(amount, previousRoot);
+    snapp.deploy(amount, previousRoot, Field(0));
   })
     .send()
     .wait();
