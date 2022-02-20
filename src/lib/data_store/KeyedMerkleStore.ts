@@ -23,6 +23,7 @@ export class KeyedMerkleStore<K, V extends CircuitValue> {
     this.merkleTree = new MerkleTree();
 
     let leaves: Field[] = [];
+    // eslint-disable-next-line no-unused-vars
     for (let [key, value] of dataBlobs.entries()) {
       leaves.push(Poseidon.hash(value.toFields()));
     }
@@ -32,8 +33,8 @@ export class KeyedMerkleStore<K, V extends CircuitValue> {
   }
 
   /**
-   * Validates a Merkle path/proof
-   * @param merklePath Merkle proof/path
+   * Validates a Merkle path
+   * @param merklePath Merkle proof
    * @param targetHash hash of the target element
    * @param merkleRoot root of the merkle tree
    * @returns true if proof is valid
