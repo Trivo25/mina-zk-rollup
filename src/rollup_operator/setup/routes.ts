@@ -1,11 +1,10 @@
 import express from 'express';
 import QueryController from '../controllers/QueryController';
-
 import RollupController from '../controllers/RollupController';
 
 export default (server: express.Application) => {
   server.post(`/rollup/verify`, RollupController.verify);
-  server.post(`/rollup/transferFunds`, RollupController.transferFunds);
+  server.post(`/rollup/transaction`, RollupController.transaction);
 
   server.get(`/query/transactionPool`, QueryController.getTransactionPool);
   server.get(`/query/stats`, QueryController.stats);

@@ -1,4 +1,4 @@
-import { Signature, UInt32, UInt64 } from 'snarkyjs';
+import { Bool, Signature, UInt32, UInt64 } from 'snarkyjs';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
@@ -31,7 +31,7 @@ export function simpleTransfer(
     throw new Error('Sender account does not exist');
   }
 
-  senderAccount.balance.assertGt(t.amount);
+  senderAccount.balance.assertEquals(t.amount);
   senderAccount.nonce.equals(t.nonce);
 
   senderAccount.balance = senderAccount.balance.sub(t.amount);
