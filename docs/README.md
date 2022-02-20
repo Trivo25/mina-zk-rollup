@@ -186,12 +186,12 @@ This section will briefly explain how the Merkle Tree implementation works.
 
 ##### Merkle Tree Structure
 
-The tree structure consists of mainly 4 parts, the underlying data, leaf nodes which are the hashes of the corresponding data, nodes, and the root. An example is shown below.
+The tree structure consists of mainly 4 parts: the underlying data, leaf nodes which are the hashes of the corresponding data, nodes, and the root. An example is shown below.
 
 <img src="https://www.proxylabs.org/assets/img/merkle_tree_descriptors.svg" style="margin-top: 25px; margin-left: 10%; margin-right: 10%; width: 80%"/>
 <p style="text-align: center;">Merkle Tree structure, odd leaves n = 5</p>
 
-Th `Data` section of the tree is mainly being represented by the two implemented data structures `KeyedDataStore<K, V>` and `DataStack<V>`, which basically represent well known TypeScript structures like `Map<K, V>` and `Array<V>`, respectively, but only with the addition of a Merkle Tree that uses those data structures as its "foundation" and builds a Merkle Tree on top of.
+The `Data` section of the tree is mainly being represented by the two implemented data structures `KeyedDataStore<K, V>` and `DataStack<V>`, which basically represents well known TypeScript structures like `Map<K, V>` and `Array<V>`, respectively, but only with the addition of a Merkle Tree that uses those data structures as its "foundation" while allowing for easy construction and rebuilding of the Merkle Tree.
 
 :::info  
 For trees of odd size, like the one above, the remaining odd node **E** would simply be "handed over" to next level, without re-hasing it.
@@ -199,12 +199,17 @@ For trees of odd size, like the one above, the remaining odd node **E** would si
 
 ##### Merkle Tree Proof/Path
 
-The Merkle Path allows users and developers to proof the integrity of a piece of data by only providing a path that leads from that piece of data to the Merkle root.
+The Merkle Path allows users and developers to proof the integrity of a piece of data by only providing a path that leads from a given piece of data to the Merkle root.
 
 <img src="https://www.proxylabs.org/assets/img/merkle_path.svg" style="margin-top: 25px; margin-left: 15%; margin-right: 15%; width: 70%"/>
 <p style="text-align: center;">Merkle Path</p>
 
-If we wanted to proof the integrity of **A**, we would take the Hash **H_B** and concatenate it with the Hash **H_A**. To recreate the Merkle Root, we would only need the hash **H_C,D**, while not having to know the underlying data **B**, **C** or **D**.
+If we wanted to efficiently proof the integritiy, or rather existance in our case, of <b style="color: red">**A**</b>, we would proceed the following way:
+
+1. use a hashing algorithm (Poseidon in our case) on <b style="color: red">**A**</b> to get its corresponding hash <b style="color: red">**H<sub>A</sub>**</b>
+2. get the hash of <b style="color: orange">**H<sub>B</sub>**</b>, concatenate both hashes and calculate the hash **H<sub>A,B</sub>**
+3. get the hash of <b style="color: orange">**H<sub>C,D</sub>**</b>, concatenate <b style="color: orange">**H<sub>C,D</sub>**</b> with **H<sub>A,B</sub>** and calculate the hash of the concatenation
+4. check if **H<sub>AB,CD</sub>** equals the on-chain root of the Merkle Tree
 
 :::info  
 The Merkle Tree, including all hashes and its root, would have to be available off-chain in a secure and decentralized place. For now, it is only available in the rollup operators memory.
@@ -214,16 +219,16 @@ The Merkle Tree, including all hashes and its root, would have to be available o
 
 ##### KeyedDataStore<K, V extends CircuitValue>
 
-Currently, there are two forms of data storage impemented - the first one is basically a `Map<K, V>`, called `KeyedDataStore<K, V extends CircuitValue>`. Note the`V extends CircuitValue` - this is because the `value: V` needs to be hashable with Poseidon in order to construct a Poseidon-compatible Merkle Tree in SnarkyJS. In order to achieve that, all data of type `V` would need to extend SnarkyJS's `CircuitValue`.
+Currently, there are two datastructures of data storage implemented - the first one is a `Map<K, V>`, called `KeyedDataStore<K, V extends CircuitValue>`. Note `V extends CircuitValue` - this is because the `value: V` needs to be hashable with Poseidon in order to construct a Poseidon-compatible Merkle Tree in SnarkyJS. In order to achieve that, all data of type `V` would need to extend SnarkyJS's `CircuitValue`.
 
 Exact API of that class will follow, see [here](https://github.com/Trivo25/mina-zk-rollup/blob/main/src/snapp/datastore/KeyedDataStore.ts#L6) for the implementation.
 
 ##### DataStack<V extends CircuitValue>
 
-Similiar to `KeyedDataStore`, `DataStack` is also just a wrapper for a Merkle Tree and a well know TypeScript data structure: `Array<V>`. Just like values in `KeyedDataStore`, `V` must also extend `CircuitValue` to allow the Merkle Tree to hash the data.
+Similiar to `KeyedDataStore`, `DataStack` is just a wrapper for a Merkle Tree and JavaScript's `Array<V>` structure. Just like values in `KeyedDataStore`, `V` must also extend `CircuitValue` to allow the Merkle Tree to hash the data.
 
 Exact API of that class will follow, see [here](https://github.com/Trivo25/mina-zk-rollup/blob/main/src/snapp/datastore/MerkleTree.ts) for the implementation.
 
 #### 1.3 IPFS <span id="impl_13"></span>
 
-_Not yet implemented._
+_For a first MVP, all data will not only be available within the rollup operators memory, but also on IPFS_

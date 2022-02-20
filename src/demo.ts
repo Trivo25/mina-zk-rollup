@@ -51,12 +51,6 @@ async function test() {
     PrivateKey.random().toPublicKey()
   );
 
-  let pubkey: Test = new Test();
-
-  let pubkey2: Test = new Test();
-
-  console.log(pubkey === pubkey2);
-
   // dataStore.set(pubkey, acc);
 
   // console.log(dataStore.get(pubkey));
