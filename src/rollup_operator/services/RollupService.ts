@@ -6,16 +6,24 @@ import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/interfaces/Events';
-import { Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
+import {
+  Field,
+  Poseidon,
+  PublicKey,
+  Signature,
+  UInt32,
+  UInt64,
+} from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import RollupProof from '../branches/RollupProof';
+import RollupProof from '../proof/RollupProof';
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
 import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
+import { base58Encode } from '../../lib/base58';
 
 class RequestService extends Service {
   constructor() {
@@ -96,7 +104,10 @@ class RequestService extends Service {
       }
     });
 
+    let masterProof = RollupProof.mergeBatch(proofBatch);
+
     console.log(proofBatch);
+    console.log(masterProof);
   }
 
   /**
@@ -139,7 +150,8 @@ class RequestService extends Service {
       throw new Error(EnumError.InvalidSignature);
     }
 
-    transaction.hash = sha256(JSON.stringify(transaction.signature));
+    transaction.hash =
+      'ROLLUP' + sha256(Poseidon.hash(signature.toFields()).toString());
 
     let poolSize = DataStore.getTransactionPool().push(transaction);
 

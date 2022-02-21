@@ -18,7 +18,7 @@ import {
 } from 'snarkyjs';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
-import RollupProof from '../rollup_operator/branches/RollupProof';
+import RollupProof from '../rollup_operator/proof/RollupProof';
 
 class RollupSnapp extends SmartContract {
   // Merkle root of all accounts

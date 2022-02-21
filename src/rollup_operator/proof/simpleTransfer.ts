@@ -11,18 +11,20 @@ import RollupProof from './RollupProof';
 export function simpleTransfer(
   t: RollupTransaction,
   s: Signature,
-  pending: MerkleStack<RollupDeposit>,
-  accountDb: KeyedMerkleStore<string, RollupAccount>
+  pendingDeposits: MerkleStack<RollupDeposit>,
+  accountDatabase: KeyedMerkleStore<string, RollupAccount>
 ): RollupProof {
   // making sure the tx has actually been signed by the sender
   s.verify(t.sender, t.toFields()).assertEquals(true);
 
+  // Bool(false).assertEquals(t.sender.equals(t.receiver));
+
   let stateBefore = new RollupState(
-    pending.getMerkleRoot()!,
-    accountDb.getMerkleRoot()!
+    pendingDeposits.getMerkleRoot()!,
+    accountDatabase.getMerkleRoot()!
   );
 
-  let senderAccount: RollupAccount | undefined = accountDb.get(
+  let senderAccount: RollupAccount | undefined = accountDatabase.get(
     t.sender.toJSON()!.toString()
   );
 
@@ -37,9 +39,9 @@ export function simpleTransfer(
   senderAccount.balance = senderAccount.balance.sub(t.amount);
   senderAccount.nonce = senderAccount.nonce.add(1);
 
-  accountDb.set(t.sender.toJSON()!.toString(), senderAccount);
+  accountDatabase.set(t.sender.toJSON()!.toString(), senderAccount);
 
-  let receiverAccount: RollupAccount | undefined = accountDb.get(
+  let receiverAccount: RollupAccount | undefined = accountDatabase.get(
     t.receiver.toJSON()!.toString()
   );
 
@@ -54,11 +56,11 @@ export function simpleTransfer(
 
   receiverAccount.balance = receiverAccount.balance.add(t.amount);
 
-  accountDb.set(t.receiver.toJSON()!.toString(), receiverAccount);
+  accountDatabase.set(t.receiver.toJSON()!.toString(), receiverAccount);
 
   let stateAfter = new RollupState(
-    pending.getMerkleRoot()!,
-    accountDb.getMerkleRoot()!
+    pendingDeposits.getMerkleRoot()!,
+    accountDatabase.getMerkleRoot()!
   );
 
   return new RollupProof(new RollupStateTransition(stateBefore, stateAfter));

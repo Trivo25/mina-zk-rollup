@@ -61,8 +61,41 @@ async function test() {
   //keyedDataStoreDemo();
 
   //merkleTreeDemo();
-
+  let batch: string[] = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+  let res = mergeBatch(batch);
+  console.log(res);
   shutdown();
+}
+
+function mergeBatch(batch: string[]): string {
+  let mergedBatch: string[] = [];
+
+  if (batch.length === 1) {
+    return batch[0];
+  }
+  for (let i = 0; i < batch.length; i += 2) {
+    if (i === batch.length && i % 2 === 0) {
+      // uneven batch list, last element
+      mergedBatch.push(batch[i]);
+      continue;
+    }
+    let first = batch[i];
+    let second = batch[i + 1];
+    let merged = merge(first, second);
+
+    if (i + 1 >= batch.length) {
+      mergedBatch.push(first);
+    } else {
+      mergedBatch.push(merged);
+    }
+  }
+
+  return mergeBatch(mergedBatch);
+}
+
+function merge(a: string, b: string): string {
+  console.log('merging');
+  return '[' + a + b + ']';
 }
 
 function testF(store: Map<IPublicKey, Account>) {
