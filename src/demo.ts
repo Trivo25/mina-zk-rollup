@@ -81,11 +81,11 @@ function mergeBatch(batch: string[]): string {
     }
     let first = batch[i];
     let second = batch[i + 1];
-    let merged = merge(first, second);
 
     if (i + 1 >= batch.length) {
       mergedBatch.push(first);
     } else {
+      let merged = merge(first, second);
       mergedBatch.push(merged);
     }
   }

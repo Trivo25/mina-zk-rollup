@@ -9,6 +9,7 @@ import Events from '../../lib/models/interfaces/Events';
 import {
   Field,
   Poseidon,
+  PrivateKey,
   PublicKey,
   Signature,
   UInt32,
@@ -45,6 +46,13 @@ class RequestService extends Service {
 
     let pendingDeposits: MerkleStack<RollupDeposit> =
       new MerkleStack<RollupDeposit>();
+
+    pendingDeposits.push(
+      new RollupDeposit(
+        PrivateKey.random().toPublicKey(),
+        UInt64.fromNumber(300)
+      )
+    );
 
     // let accountDb: KeyedDataStore<PublicKey, RollupAccount> =
     //   new KeyedDataStore<PublicKey, RollupAccount>();
@@ -104,6 +112,7 @@ class RequestService extends Service {
       }
     });
 
+    console.log('producing master proof');
     let masterProof = RollupProof.mergeBatch(proofBatch);
 
     console.log(proofBatch);

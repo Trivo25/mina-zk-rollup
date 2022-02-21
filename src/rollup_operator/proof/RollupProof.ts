@@ -31,10 +31,10 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
   @branch
   static mergeBatch(batch: RollupProof[]): RollupProof {
     let mergedBatch: RollupProof[] = [];
-
     if (batch.length === 1) {
       return batch[0];
     }
+
     for (let i = 0; i < batch.length; i += 2) {
       if (i === batch.length && i % 2 === 0) {
         // uneven batch list, last element
@@ -43,11 +43,11 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
       }
       let first = batch[i];
       let second = batch[i + 1];
-      let merged = RollupProof.merge(first, second);
 
       if (i + 1 >= batch.length) {
         mergedBatch.push(first);
       } else {
+        let merged = RollupProof.merge(first, second);
         mergedBatch.push(merged);
       }
     }
