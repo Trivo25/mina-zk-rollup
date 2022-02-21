@@ -10,6 +10,11 @@ import {
   PublicKey,
   PrivateKey,
   CircuitValue,
+  UInt32,
+  Proof,
+  proofSystem,
+  branch,
+  ProofWithInput,
 } from 'snarkyjs';
 
 import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
@@ -18,6 +23,10 @@ import { KeyedMerkleStore } from './lib/data_store/KeyedMerkleStore';
 
 import { MerkleStack } from './lib/data_store/MerkleStack';
 import IPublicKey from './lib/models/interfaces/IPublicKey';
+import RollupAccount from './lib/models/rollup/RollupAccount';
+import RollupStateTransition from './lib/models/rollup/RollupStateTransition';
+import RollupState from './lib/models/rollup/RollupState';
+import RollupProof from './rollup_operator/proof/RollupProof';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;
@@ -61,12 +70,55 @@ async function test() {
   //keyedDataStoreDemo();
 
   //merkleTreeDemo();
-  let batch: string[] = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
-  let res = mergeBatch(batch);
-  console.log(res);
+  let accountDb: KeyedMerkleStore<string, RollupAccount> = new KeyedMerkleStore<
+    string,
+    RollupAccount
+  >();
+  let pubSender = PrivateKey.random().toPublicKey();
+  accountDb.set(
+    pubSender.toJSON()!.toString(),
+    new RollupAccount(UInt64.fromNumber(100), pubSender, UInt32.fromNumber(0))
+  );
+  TestProof.example(accountDb, pubSender);
+  console.log(
+    'new balacne ',
+    accountDb.get(pubSender.toJSON()!.toString())?.balance.toString()
+  );
   shutdown();
 }
 
+@proofSystem
+class TestProof extends ProofWithInput<RollupStateTransition> {
+  @branch
+  static example(
+    db: KeyedMerkleStore<string, RollupAccount>,
+    pub: PublicKey
+  ): TestProof {
+    return example(db, pub);
+  }
+}
+
+function example(
+  db: KeyedMerkleStore<string, RollupAccount>,
+  pub: PublicKey
+): TestProof {
+  let acc = db.get(pub.toJSON()!.toString());
+
+  acc!.balance = UInt64.fromNumber(3000);
+
+  db.set(pub.toJSON()!.toString(), acc!);
+  console.log(
+    'set balacne to ',
+    db.get(pub.toJSON()!.toString())?.balance.toString()
+  );
+
+  return new TestProof(
+    new RollupStateTransition(
+      new RollupState(Field(0), Field(0)),
+      new RollupState(Field(1), Field(1))
+    )
+  );
+}
 function mergeBatch(batch: string[]): string {
   let mergedBatch: string[] = [];
 

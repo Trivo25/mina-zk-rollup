@@ -17,13 +17,13 @@ export function createAndSignPayment(
     sender_publicKey: {
       g: {
         x: tx.sender.g.x.toString(),
-        y: tx.sender.g.x.toString(),
+        y: tx.sender.g.y.toString(),
       },
     },
     receiver_publicKey: {
       g: {
         x: tx.receiver.g.x.toString(),
-        y: tx.receiver.g.x.toString(),
+        y: tx.receiver.g.y.toString(),
       },
     },
     signature: signRollupPayment(tx, priv),

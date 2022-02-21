@@ -1,4 +1,12 @@
-import { Bool, Signature, UInt32, UInt64 } from 'snarkyjs';
+import {
+  Bool,
+  Field,
+  Poseidon,
+  Signature,
+  state,
+  UInt32,
+  UInt64,
+} from 'snarkyjs';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
@@ -14,10 +22,7 @@ export function simpleTransfer(
   pendingDeposits: MerkleStack<RollupDeposit>,
   accountDatabase: KeyedMerkleStore<string, RollupAccount>
 ): RollupProof {
-  // making sure the tx has actually been signed by the sender
   s.verify(t.sender, t.toFields()).assertEquals(true);
-
-  // Bool(false).assertEquals(t.sender.equals(t.receiver));
 
   let stateBefore = new RollupState(
     pendingDeposits.getMerkleRoot()!,
@@ -25,7 +30,7 @@ export function simpleTransfer(
   );
 
   let senderAccount: RollupAccount | undefined = accountDatabase.get(
-    t.sender.toJSON()!.toString()
+    Poseidon.hash(t.sender.toFields()).toString()
   );
 
   // NOTE: what about if-statements within proofs? probably not good
@@ -33,13 +38,15 @@ export function simpleTransfer(
     throw new Error('Sender account does not exist');
   }
 
-  senderAccount.balance.assertEquals(t.amount);
   senderAccount.nonce.equals(t.nonce);
 
-  senderAccount.balance = senderAccount.balance.sub(t.amount);
+  senderAccount.balance = senderAccount.balance.sub(100);
   senderAccount.nonce = senderAccount.nonce.add(1);
 
-  accountDatabase.set(t.sender.toJSON()!.toString(), senderAccount);
+  accountDatabase.set(
+    Poseidon.hash(t.sender.toFields()).toString(),
+    senderAccount
+  );
 
   let receiverAccount: RollupAccount | undefined = accountDatabase.get(
     t.receiver.toJSON()!.toString()
@@ -47,6 +54,7 @@ export function simpleTransfer(
 
   // NOTE: what about if-statements within proofs? probably not good
   if (receiverAccount === undefined) {
+    console.log('undefined receiver');
     receiverAccount = new RollupAccount(
       UInt64.fromNumber(0),
       t.receiver,
@@ -56,7 +64,10 @@ export function simpleTransfer(
 
   receiverAccount.balance = receiverAccount.balance.add(t.amount);
 
-  accountDatabase.set(t.receiver.toJSON()!.toString(), receiverAccount);
+  accountDatabase.set(
+    Poseidon.hash(t.receiver.toFields()).toString(),
+    receiverAccount
+  );
 
   let stateAfter = new RollupState(
     pendingDeposits.getMerkleRoot()!,

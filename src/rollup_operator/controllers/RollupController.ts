@@ -24,7 +24,7 @@ class RollupController extends Controller<RollupService> {
       };
 
       let payload = req.body.payload;
-      let publicKey: IPublicKey = req.body.publicKey;
+      let publicKey: IPublicKey = req.body.sender_publicKey;
 
       let veriferResponse: any | EnumError = this.service.verify(
         signature,

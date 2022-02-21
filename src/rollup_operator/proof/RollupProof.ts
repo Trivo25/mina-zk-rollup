@@ -47,7 +47,7 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
       if (i + 1 >= batch.length) {
         mergedBatch.push(first);
       } else {
-        let merged = RollupProof.merge(first, second);
+        let merged = RollupProof.mergeProofPair(first, second);
         mergedBatch.push(merged);
       }
     }
@@ -56,7 +56,7 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
   }
 
   @branch
-  static merge(first: RollupProof, second: RollupProof): RollupProof {
+  static mergeProofPair(first: RollupProof, second: RollupProof): RollupProof {
     first.publicInput.target.assertEquals(second.publicInput.source);
     return new RollupProof(
       new RollupStateTransition(

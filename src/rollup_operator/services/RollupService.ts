@@ -24,7 +24,6 @@ import { MerkleStack } from '../../lib/data_store/MerkleStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
-import { base58Encode } from '../../lib/base58';
 
 class RequestService extends Service {
   constructor() {
@@ -48,64 +47,74 @@ class RequestService extends Service {
       new MerkleStack<RollupDeposit>();
 
     pendingDeposits.push(
-      new RollupDeposit(
-        PrivateKey.random().toPublicKey(),
-        UInt64.fromNumber(300)
+      new RollupDeposit(PrivateKey.random().toPublicKey(), UInt64.fromNumber(0))
+    );
+
+    let accountDb: KeyedMerkleStore<string, RollupAccount> =
+      new KeyedMerkleStore<string, RollupAccount>();
+
+    accountDb.set(
+      Poseidon.hash(
+        publicKeyFromInterface(
+          transactionsToProcess[0].sender_publicKey
+        ).toFields()
+      ).toString(),
+      new RollupAccount(
+        UInt64.fromNumber(500),
+        publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
+        UInt32.fromNumber(0)
       )
     );
 
-    // let accountDb: KeyedDataStore<PublicKey, RollupAccount> =
-    //   new KeyedDataStore<PublicKey, RollupAccount>();
-
-    // accountDb.set(
-    //   publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-    //   new RollupAccount(
-    //     UInt64.fromNumber(100),
-    //     publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-    //     UInt32.fromNumber(0)
-    //   )
-    // );
-    // console.log(accountDb.getMerkleRoot()!.toString());
-    // console.log(
-    //   accountDb.get(
-    //     publicKeyFromInterface(transactionsToProcess[0].sender_publicKey)
-    //   )
-    // );
-
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
-      let sender: PublicKey = publicKeyFromInterface(tx.sender_publicKey);
-      let receiver: PublicKey = publicKeyFromInterface(tx.receiver_publicKey);
-      let signature: Signature = signatureFromInterface(tx.signature);
-      let rollupTx: RollupTransaction = new RollupTransaction(
-        UInt64.fromNumber(parseInt(tx.payload[0])),
-        UInt32.fromNumber(parseInt(tx.payload[1])),
-        sender,
-        receiver
-      );
-
       try {
-        let accountDb: KeyedMerkleStore<string, RollupAccount> =
-          new KeyedMerkleStore<string, RollupAccount>();
+        let sender: PublicKey = publicKeyFromInterface(tx.sender_publicKey);
+        let receiver: PublicKey = publicKeyFromInterface(tx.receiver_publicKey);
+        let signature: Signature = signatureFromInterface(tx.signature);
+        let rollupTx: RollupTransaction = new RollupTransaction(
+          UInt64.fromNumber(parseInt(tx.payload[0])),
+          UInt32.fromNumber(parseInt(tx.payload[1])),
+          sender,
+          receiver
+        );
+        console.log(
+          'SENDER BEFORE:',
+          accountDb
+            .get(
+              Poseidon.hash(
+                publicKeyFromInterface(tx.sender_publicKey).toFields()
+              ).toString()
+            )!
+            .balance.toString()
+        );
 
-        let pubSender: PublicKey = publicKeyFromInterface(
-          transactionsToProcess[0].sender_publicKey
-        );
-        accountDb.set(
-          pubSender.toJSON()!.toString(),
-          new RollupAccount(
-            UInt64.fromNumber(100),
-            publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-            UInt32.fromNumber(0)
-          )
-        );
         let p: RollupProof = RollupProof.simpleTransfer(
           rollupTx,
           signature,
           pendingDeposits,
           accountDb
         );
-
+        console.log(
+          'SENDER AFTER:',
+          accountDb
+            .get(
+              Poseidon.hash(
+                publicKeyFromInterface(tx.sender_publicKey).toFields()
+              ).toString()
+            )!
+            .balance.toString()
+        );
+        console.log(
+          'RECEIVER AFTER:',
+          accountDb
+            .get(
+              Poseidon.hash(
+                publicKeyFromInterface(tx.receiver_publicKey).toFields()
+              ).toString()
+            )!
+            .balance.toString()
+        );
         proofBatch.push(p);
       } catch (error) {
         console.log(error);
@@ -114,8 +123,6 @@ class RequestService extends Service {
 
     console.log('producing master proof');
     let masterProof = RollupProof.mergeBatch(proofBatch);
-
-    console.log(proofBatch);
     console.log(masterProof);
   }
 
@@ -169,7 +176,7 @@ class RequestService extends Service {
     // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
     // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
     // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
-    if (poolSize >= 2) {
+    if (poolSize >= 1) {
       EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 
