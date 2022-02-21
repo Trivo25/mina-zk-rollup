@@ -37,7 +37,7 @@
                   font-medium
                 "
                 aria-current="page"
-                >Dashboard</a
+                >Overview</a
               >
 
               <a
@@ -51,19 +51,19 @@
                   text-sm
                   font-medium
                 "
-                >Team</a
+                >Accounts</a
               >
 
               <a
                 href="#"
                 class="text-gray-300 px-3 py-2 rounded-md text-sm font-medium"
-                >Projects</a
+                >Transactions</a
               >
 
               <a
                 href="#"
                 class="text-gray-300 px-3 py-2 rounded-md text-sm font-medium"
-                >Calendar</a
+                >Stats</a
               >
             </div>
           </div>
