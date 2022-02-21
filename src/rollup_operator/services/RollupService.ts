@@ -41,8 +41,7 @@ class RequestService extends Service {
     Object.assign(transactionsToProcess, DataStore.getTransactionPool());
     DataStore.getTransactionPool().length = 0;
 
-    // TODO: do real calculations
-
+    // TODO: break out both account and pendingdepositst storage
     let pendingDeposits: MerkleStack<RollupDeposit> =
       new MerkleStack<RollupDeposit>();
 
@@ -56,12 +55,14 @@ class RequestService extends Service {
     accountDb.set(
       Poseidon.hash(
         publicKeyFromInterface(
-          transactionsToProcess[0].sender_publicKey
+          transactionsToProcess[0].transaction_data.sender_publicKey
         ).toFields()
       ).toString(),
       new RollupAccount(
         UInt64.fromNumber(500),
-        publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
+        publicKeyFromInterface(
+          transactionsToProcess[0].transaction_data.sender_publicKey
+        ),
         UInt32.fromNumber(0)
       )
     );
@@ -69,23 +70,16 @@ class RequestService extends Service {
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
       try {
-        let sender: PublicKey = publicKeyFromInterface(tx.sender_publicKey);
-        let receiver: PublicKey = publicKeyFromInterface(tx.receiver_publicKey);
-        let signature: Signature = signatureFromInterface(tx.signature);
-        let rollupTx: RollupTransaction = new RollupTransaction(
-          UInt64.fromNumber(parseInt(tx.payload[0])),
-          UInt32.fromNumber(parseInt(tx.payload[1])),
-          sender,
-          receiver
+        let signature: Signature = signatureFromInterface(
+          tx.transaction_data.signature
+        );
+        let rollupTx: RollupTransaction = RollupTransaction.deserializePayload(
+          tx.transaction_data.payload.map((f: string) => Field(f))
         );
         console.log(
           'SENDER BEFORE:',
           accountDb
-            .get(
-              Poseidon.hash(
-                publicKeyFromInterface(tx.sender_publicKey).toFields()
-              ).toString()
-            )!
+            .get(Poseidon.hash(rollupTx.sender.toFields()).toString())!
             .balance.toString()
         );
 
@@ -98,21 +92,13 @@ class RequestService extends Service {
         console.log(
           'SENDER AFTER:',
           accountDb
-            .get(
-              Poseidon.hash(
-                publicKeyFromInterface(tx.sender_publicKey).toFields()
-              ).toString()
-            )!
+            .get(Poseidon.hash(rollupTx.sender.toFields()).toString())!
             .balance.toString()
         );
         console.log(
           'RECEIVER AFTER:',
           accountDb
-            .get(
-              Poseidon.hash(
-                publicKeyFromInterface(tx.receiver_publicKey).toFields()
-              ).toString()
-            )!
+            .get(Poseidon.hash(rollupTx.receiver.toFields()).toString())!
             .balance.toString()
         );
         proofBatch.push(p);
@@ -148,12 +134,16 @@ class RequestService extends Service {
   processTransaction(transaction: ITransaction): any {
     // verify signature so no faulty signature makes it into the pool
 
-    let signature = signatureFromInterface(transaction.signature);
+    let signature: Signature = signatureFromInterface(
+      transaction.transaction_data.signature
+    );
 
     let sender: PublicKey = publicKeyFromInterface(
-      transaction.sender_publicKey
+      transaction.transaction_data.sender_publicKey
     );
-    let message: Field[] = transaction.payload.map((f) => Field(f));
+    let payload: Field[] = transaction.transaction_data.payload.map((f) =>
+      Field(f)
+    );
 
     if (sender === undefined) {
       throw new Error(EnumError.InvalidPublicKey);
@@ -162,11 +152,11 @@ class RequestService extends Service {
     if (signature === undefined) {
       throw new Error(EnumError.InvalidSignature);
     }
-    if (!signature.verify(sender, message).toBoolean()) {
+    if (!signature.verify(sender, payload).toBoolean()) {
       throw new Error(EnumError.InvalidSignature);
     }
 
-    transaction.hash =
+    transaction.meta_data.hash =
       'ROLLUP' + sha256(Poseidon.hash(signature.toFields()).toString());
 
     let poolSize = DataStore.getTransactionPool().push(transaction);
@@ -181,7 +171,7 @@ class RequestService extends Service {
     }
 
     return {
-      transcaction_hash: transaction.hash,
+      transcaction_hash: transaction.meta_data.hash,
     };
   }
 }

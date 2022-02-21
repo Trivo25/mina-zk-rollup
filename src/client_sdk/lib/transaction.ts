@@ -10,25 +10,29 @@ export function createAndSignPayment(
   priv: PrivateKey
 ): ITransaction {
   return {
-    from: from,
-    to: to,
-    amount: parseInt(tx.amount.toString()),
-    nonce: parseInt(tx.nonce.toString()),
-    sender_publicKey: {
-      g: {
-        x: tx.sender.g.x.toString(),
-        y: tx.sender.g.y.toString(),
-      },
+    meta_data: {
+      from: from,
+      to: to,
+      amount: parseInt(tx.amount.toString()),
+      nonce: parseInt(tx.nonce.toString()),
+      method: 'simple_transfer',
     },
-    receiver_publicKey: {
-      g: {
-        x: tx.receiver.g.x.toString(),
-        y: tx.receiver.g.y.toString(),
+    transaction_data: {
+      sender_publicKey: {
+        g: {
+          x: tx.sender.g.x.toString(),
+          y: tx.sender.g.y.toString(),
+        },
       },
+      receiver_publicKey: {
+        g: {
+          x: tx.receiver.g.x.toString(),
+          y: tx.receiver.g.y.toString(),
+        },
+      },
+      signature: signRollupPayment(tx, priv),
+      payload: tx.toFields().map((x) => x.toString()),
     },
-    signature: signRollupPayment(tx, priv),
-    payload: tx.toFields().map((x) => x.toString()),
-    method: 'simple_transfer',
   };
 }
 

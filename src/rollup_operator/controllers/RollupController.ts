@@ -19,12 +19,12 @@ class RollupController extends Controller<RollupService> {
   ): Promise<express.Response> {
     try {
       let signature: ISignature = {
-        r: req.body.signature.r,
-        s: req.body.signature.s,
+        r: req.body.transaction_data.signature.r,
+        s: req.body.transaction_data.signature.s,
       };
 
-      let payload = req.body.payload;
-      let publicKey: IPublicKey = req.body.sender_publicKey;
+      let payload = req.body.transaction_data.payload;
+      let publicKey: IPublicKey = req.body.transaction_data.sender_publicKey;
 
       let veriferResponse: any | EnumError = this.service.verify(
         signature,
@@ -55,19 +55,23 @@ class RollupController extends Controller<RollupService> {
       };
 
       let transaction: ITransaction = {
-        from: req.body.from,
-        to: req.body.to,
-        amount: req.body.amount,
-        nonce: req.body.nonce,
-        sender_publicKey: req.body.sender_publicKey,
-        receiver_publicKey: req.body.receiver_publicKey,
-        payload: req.body.payload,
-        signature: signature,
-        method: req.body.method, // TODO: maybe verify method via a signature?
+        meta_data: {
+          from: req.body.from,
+          to: req.body.to,
+          amount: req.body.amount,
+          nonce: req.body.nonce,
+          method: req.body.method, // TODO: maybe verify method via a signature?
+        },
+        transaction_data: {
+          sender_publicKey: req.body.sender_publicKey,
+          receiver_publicKey: req.body.receiver_publicKey,
+          payload: req.body.payload,
+          signature: signature,
+        },
       };
 
       let processorReponse: any;
-      switch (transaction.method) {
+      switch (transaction.meta_data.method) {
         case 'simple_transfer':
           processorReponse = this.service.processTransaction(transaction);
           break;
