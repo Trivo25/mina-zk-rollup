@@ -41,7 +41,10 @@
     "express": "^4.17.2",
     "pg": "^8.7.3",
     "snarkyjs": "^0.2.0",
-    "vue": "^3.2.25"
+    "vite-plugin-windicss": "^1.7.1",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.12",
+    "windicss": "^3.4.4"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
