@@ -1,7 +1,7 @@
 import Service from './Service';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
-import EnumError from '../../lib/models/interfaces/EnumError';
+import EnumError from '../../lib/models/enums/EnumError';
 import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
