@@ -46,6 +46,12 @@ class RollupSnapp extends SmartContract {
   ) {
     // TODO: checking if operator is within list of allowed operators
     // TODO: verify signature
+
+    let acccountsCommitmentBefore = await this.acccountsCommitment.get();
+
+    rollupProof.publicInput.source.accountDbCommitment.equals(
+      acccountsCommitmentBefore
+    );
   }
 
   @method async validateProof(merklePath: any, leafHash: Field): Promise<Bool> {

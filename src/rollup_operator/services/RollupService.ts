@@ -52,6 +52,8 @@ class RequestService extends Service {
     let accountDb: KeyedMerkleStore<string, RollupAccount> =
       new KeyedMerkleStore<string, RollupAccount>();
 
+    // TODO: verify that on-chain merkle root actually matches with the one known to the operator
+
     accountDb.set(
       Poseidon.hash(
         publicKeyFromInterface(
