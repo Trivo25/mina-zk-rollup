@@ -5,7 +5,7 @@ import EnumError from '../../lib/models/enums/EnumError';
 import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
-import Events from '../../lib/models/interfaces/Events';
+import Events from '../../lib/models/enums/Events';
 import {
   Field,
   Poseidon,
@@ -20,9 +20,9 @@ import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
 import RollupProof from '../proof/RollupProof';
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
-import { MerkleStack } from '../../lib/data_store/MerkleStack';
+import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
 
 class RequestService extends Service {

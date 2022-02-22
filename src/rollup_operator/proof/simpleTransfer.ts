@@ -7,8 +7,8 @@ import {
   UInt32,
   UInt64,
 } from 'snarkyjs';
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
-import { MerkleStack } from '../../lib/data_store/MerkleStack';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
+import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
 import RollupState from '../../lib/models/rollup/RollupState';

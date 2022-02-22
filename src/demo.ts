@@ -19,9 +19,9 @@ import {
 
 import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
 
-import { KeyedMerkleStore } from './lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from './lib/data_store/KeyedDataStore';
 
-import { MerkleStack } from './lib/data_store/MerkleStack';
+import { MerkleStack } from './lib/data_store/DataStack';
 import IPublicKey from './lib/models/interfaces/IPublicKey';
 import RollupAccount from './lib/models/rollup/RollupAccount';
 import RollupStateTransition from './lib/models/rollup/RollupStateTransition';
@@ -30,17 +30,10 @@ import RollupProof from './rollup_operator/proof/RollupProof';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;
-  @prop publicKey: PublicKey;
 
-  constructor(balance: UInt64, publicKey: PublicKey) {
+  constructor(balance: UInt64) {
     super();
     this.balance = balance;
-    this.publicKey = publicKey;
-  }
-
-  // NOTE: there seems to be an issue with the default toFields() method ?
-  toFields(): Field[] {
-    return this.balance.toFields().concat(this.publicKey.toFields());
   }
 }
 
@@ -52,38 +45,6 @@ class Test {
 test();
 async function test() {
   await isReady;
-
-  let dataStore = new Map<IPublicKey, Test>();
-
-  let acc = new Account(
-    UInt64.fromNumber(10),
-    PrivateKey.random().toPublicKey()
-  );
-
-  // dataStore.set(pubkey, acc);
-
-  // console.log(dataStore.get(pubkey));
-
-  // testF(dataStore);
-
-  //dataStackDemo();
-  //keyedDataStoreDemo();
-
-  //merkleTreeDemo();
-  let accountDb: KeyedMerkleStore<string, RollupAccount> = new KeyedMerkleStore<
-    string,
-    RollupAccount
-  >();
-  let pubSender = PrivateKey.random().toPublicKey();
-  accountDb.set(
-    pubSender.toJSON()!.toString(),
-    new RollupAccount(UInt64.fromNumber(100), pubSender, UInt32.fromNumber(0))
-  );
-  TestProof.example(accountDb, pubSender);
-  console.log(
-    'new balacne ',
-    accountDb.get(pubSender.toJSON()!.toString())?.balance.toString()
-  );
   shutdown();
 }
 
@@ -187,36 +148,21 @@ function keyedDataStoreDemo() {
   let store = new KeyedMerkleStore<String, Account>();
   let dataLeaves = new Map<String, Account>();
 
-  let accountA = new Account(
-    UInt64.fromNumber(100),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountA = new Account(UInt64.fromNumber(100));
   dataLeaves.set('A', accountA);
 
-  let accountB = new Account(
-    UInt64.fromNumber(100),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountB = new Account(UInt64.fromNumber(100));
   dataLeaves.set('B', accountB);
 
-  let accountC = new Account(
-    UInt64.fromNumber(100),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountC = new Account(UInt64.fromNumber(100));
   dataLeaves.set('C', accountC);
 
-  let accountCnew = new Account(
-    UInt64.fromNumber(330),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountCnew = new Account(UInt64.fromNumber(330));
   dataLeaves.set('C', accountCnew);
 
   let ok = store.fromData(dataLeaves);
 
-  let accountD = new Account(
-    UInt64.fromNumber(330),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountD = new Account(UInt64.fromNumber(330));
   // store.set('A', accountA);
   // store.set('B', accountB);
   store.set('C', accountC);

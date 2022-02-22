@@ -10,10 +10,10 @@ import RollupState from '../../lib/models/rollup/RollupState';
 import RollupStateTransition from '../../lib/models/rollup/RollupStateTransition';
 
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
-import { MerkleStack } from '../../lib/data_store/MerkleStack';
+import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import { simpleTransfer } from './simpleTransfer';
 
 @proofSystem
