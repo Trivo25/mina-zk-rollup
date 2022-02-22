@@ -19,6 +19,7 @@ import {
 import { MerkleStack } from '../lib/data_store/MerkleStack';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
+import RollupAccount from '../lib/models/rollup/RollupAccount';
 import RollupDeposit from '../lib/models/rollup/RollupDeposit';
 import RollupProof from '../rollup_operator/proof/RollupProof';
 
@@ -37,6 +38,15 @@ class RollupSnapp extends SmartContract {
     this.balance.addInPlace(initialBalance);
     this.acccountsCommitment.set(acccountsCommitment);
     this.pendingDepositsCommitment.set(pendingDepositsCommitment);
+  }
+
+  @method async withdrawTo(
+    rollupWithdrawal: RollupAccount,
+    hashmerklePath: any,
+    leafHash: Field,
+    signature: Signature
+  ) {
+    // TODO: withdraw to initial account
   }
 
   @method async deposit(depositor: PublicKey, amount: UInt64) {
