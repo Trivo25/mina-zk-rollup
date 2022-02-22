@@ -16,8 +16,10 @@ import {
   state,
   UInt64,
 } from 'snarkyjs';
+import { MerkleStack } from '../lib/data_store/MerkleStack';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
+import RollupDeposit from '../lib/models/rollup/RollupDeposit';
 import RollupProof from '../rollup_operator/proof/RollupProof';
 
 class RollupSnapp extends SmartContract {
@@ -37,7 +39,15 @@ class RollupSnapp extends SmartContract {
     this.pendingDepositsCommitment.set(pendingDepositsCommitment);
   }
 
-  @method async deposit(depositor: PublicKey, amount: UInt64) {}
+  @method async deposit(depositor: PublicKey, amount: UInt64) {
+    let deposit = new RollupDeposit(depositor, amount);
+
+    this.emitEvent(deposit);
+
+    const oldCommitment = await this.pendingDepositsCommitment.get();
+    const newCommitment = MerkleStack.getCommitment(deposit, oldCommitment);
+    this.pendingDepositsCommitment.set(newCommitment);
+  }
 
   @method async validateRollupProof(
     rollupProof: RollupProof,
