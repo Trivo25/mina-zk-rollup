@@ -49,6 +49,29 @@ class RollupSnapp extends SmartContract {
     this.pendingDepositsCommitment.set(newCommitment);
   }
 
+  @method async withdrawPendingDeposit(
+    depositor: PublicKey,
+    originalAmount: UInt64,
+    path: Field[]
+  ) {
+    let deposit: RollupDeposit = new RollupDeposit(depositor, originalAmount);
+
+    let originalCommitment: Field = await this.pendingDepositsCommitment.get();
+    let currentDepositCommitment: Field = originalCommitment;
+
+    for (let i = 0; i < path.length; i++) {
+      currentDepositCommitment = MerkleStack.getCommitment(
+        deposit,
+        currentDepositCommitment
+      );
+    }
+
+    currentDepositCommitment.assertEquals(originalCommitment);
+
+    // TODO: return funds to depositor
+    // TODO: update commitment - maybe introduce RollupPendingWithdrawal or something like that
+  }
+
   @method async validateRollupProof(
     rollupProof: RollupProof,
     operator: PublicKey,
