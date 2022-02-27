@@ -1,4 +1,4 @@
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import Account from '../../lib/models/rollup/RollupAccount';
 

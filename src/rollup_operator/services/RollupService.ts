@@ -1,20 +1,28 @@
 import Service from './Service';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
-import EnumError from '../../lib/models/interfaces/EnumError';
+import EnumError from '../../lib/models/enums/EnumError';
 import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
-import Events from '../../lib/models/interfaces/Events';
-import { Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
+import Events from '../../lib/models/enums/Events';
+import {
+  Field,
+  Poseidon,
+  PrivateKey,
+  PublicKey,
+  Signature,
+  UInt32,
+  UInt64,
+} from 'snarkyjs';
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import RollupProof from '../branches/RollupProof';
+import RollupProof from '../proof/RollupProof';
 import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
-import { MerkleStack } from '../../lib/data_store/MerkleStack';
+import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import RollupAccount from '../../lib/models/rollup/RollupAccount';
 
 class RequestService extends Service {
@@ -33,70 +41,77 @@ class RequestService extends Service {
     Object.assign(transactionsToProcess, DataStore.getTransactionPool());
     DataStore.getTransactionPool().length = 0;
 
-    // TODO: do real calculations
-
+    // TODO: break out both account and pendingdepositst storage
     let pendingDeposits: MerkleStack<RollupDeposit> =
       new MerkleStack<RollupDeposit>();
 
-    // let accountDb: KeyedDataStore<PublicKey, RollupAccount> =
-    //   new KeyedDataStore<PublicKey, RollupAccount>();
+    pendingDeposits.push(
+      new RollupDeposit(PrivateKey.random().toPublicKey(), UInt64.fromNumber(0))
+    );
 
-    // accountDb.set(
-    //   publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-    //   new RollupAccount(
-    //     UInt64.fromNumber(100),
-    //     publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-    //     UInt32.fromNumber(0)
-    //   )
-    // );
-    // console.log(accountDb.getMerkleRoot()!.toString());
-    // console.log(
-    //   accountDb.get(
-    //     publicKeyFromInterface(transactionsToProcess[0].sender_publicKey)
-    //   )
-    // );
+    let accountDb: KeyedMerkleStore<string, RollupAccount> =
+      new KeyedMerkleStore<string, RollupAccount>();
+
+    // TODO: verify that on-chain merkle root actually matches with the one known to the operator
+
+    accountDb.set(
+      Poseidon.hash(
+        publicKeyFromInterface(
+          transactionsToProcess[0].transaction_data.sender_publicKey
+        ).toFields()
+      ).toString(),
+      new RollupAccount(
+        UInt64.fromNumber(500),
+        publicKeyFromInterface(
+          transactionsToProcess[0].transaction_data.sender_publicKey
+        ),
+        UInt32.fromNumber(0)
+      )
+    );
 
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
-      let sender: PublicKey = publicKeyFromInterface(tx.sender_publicKey);
-      let receiver: PublicKey = publicKeyFromInterface(tx.receiver_publicKey);
-      let signature: Signature = signatureFromInterface(tx.signature);
-      let rollupTx: RollupTransaction = new RollupTransaction(
-        UInt64.fromNumber(parseInt(tx.payload[0])),
-        UInt32.fromNumber(parseInt(tx.payload[1])),
-        sender,
-        receiver
-      );
-
       try {
-        let accountDb: KeyedMerkleStore<string, RollupAccount> =
-          new KeyedMerkleStore<string, RollupAccount>();
+        let signature: Signature = signatureFromInterface(
+          tx.transaction_data.signature
+        );
+        let rollupTx: RollupTransaction = RollupTransaction.deserializePayload(
+          tx.transaction_data.payload.map((f: string) => Field(f))
+        );
+        console.log(
+          'SENDER BEFORE:',
+          accountDb
+            .get(Poseidon.hash(rollupTx.sender.toFields()).toString())!
+            .balance.toString()
+        );
 
-        let pubSender: PublicKey = publicKeyFromInterface(
-          transactionsToProcess[0].sender_publicKey
-        );
-        accountDb.set(
-          pubSender.toJSON()!.toString(),
-          new RollupAccount(
-            UInt64.fromNumber(100),
-            publicKeyFromInterface(transactionsToProcess[0].sender_publicKey),
-            UInt32.fromNumber(0)
-          )
-        );
         let p: RollupProof = RollupProof.simpleTransfer(
           rollupTx,
           signature,
           pendingDeposits,
           accountDb
         );
-
+        console.log(
+          'SENDER AFTER:',
+          accountDb
+            .get(Poseidon.hash(rollupTx.sender.toFields()).toString())!
+            .balance.toString()
+        );
+        console.log(
+          'RECEIVER AFTER:',
+          accountDb
+            .get(Poseidon.hash(rollupTx.receiver.toFields()).toString())!
+            .balance.toString()
+        );
         proofBatch.push(p);
       } catch (error) {
         console.log(error);
       }
     });
 
-    console.log(proofBatch);
+    console.log('producing master proof');
+    let masterProof = RollupProof.mergeBatch(proofBatch);
+    console.log(masterProof);
   }
 
   /**
@@ -121,12 +136,16 @@ class RequestService extends Service {
   processTransaction(transaction: ITransaction): any {
     // verify signature so no faulty signature makes it into the pool
 
-    let signature = signatureFromInterface(transaction.signature);
+    let signature: Signature = signatureFromInterface(
+      transaction.transaction_data.signature
+    );
 
     let sender: PublicKey = publicKeyFromInterface(
-      transaction.sender_publicKey
+      transaction.transaction_data.sender_publicKey
     );
-    let message: Field[] = transaction.payload.map((f) => Field(f));
+    let payload: Field[] = transaction.transaction_data.payload.map((f) =>
+      Field(f)
+    );
 
     if (sender === undefined) {
       throw new Error(EnumError.InvalidPublicKey);
@@ -135,11 +154,12 @@ class RequestService extends Service {
     if (signature === undefined) {
       throw new Error(EnumError.InvalidSignature);
     }
-    if (!signature.verify(sender, message).toBoolean()) {
+    if (!signature.verify(sender, payload).toBoolean()) {
       throw new Error(EnumError.InvalidSignature);
     }
 
-    transaction.hash = sha256(JSON.stringify(transaction.signature));
+    transaction.meta_data.hash =
+      'ROLLUP' + sha256(Poseidon.hash(signature.toFields()).toString());
 
     let poolSize = DataStore.getTransactionPool().push(transaction);
 
@@ -148,12 +168,12 @@ class RequestService extends Service {
     // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
     // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
     // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
-    if (poolSize >= 2) {
+    if (poolSize >= 1) {
       EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 
     return {
-      transcaction_hash: transaction.hash,
+      transcaction_hash: transaction.meta_data.hash,
     };
   }
 }

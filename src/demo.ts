@@ -10,28 +10,30 @@ import {
   PublicKey,
   PrivateKey,
   CircuitValue,
+  UInt32,
+  Proof,
+  proofSystem,
+  branch,
+  ProofWithInput,
 } from 'snarkyjs';
 
 import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
 
-import { KeyedMerkleStore } from './lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from './lib/data_store/KeyedDataStore';
 
-import { MerkleStack } from './lib/data_store/MerkleStack';
+import { MerkleStack } from './lib/data_store/DataStack';
 import IPublicKey from './lib/models/interfaces/IPublicKey';
+import RollupAccount from './lib/models/rollup/RollupAccount';
+import RollupStateTransition from './lib/models/rollup/RollupStateTransition';
+import RollupState from './lib/models/rollup/RollupState';
+import RollupProof from './rollup_operator/proof/RollupProof';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;
-  @prop publicKey: PublicKey;
 
-  constructor(balance: UInt64, publicKey: PublicKey) {
+  constructor(balance: UInt64) {
     super();
     this.balance = balance;
-    this.publicKey = publicKey;
-  }
-
-  // NOTE: there seems to be an issue with the default toFields() method ?
-  toFields(): Field[] {
-    return this.balance.toFields().concat(this.publicKey.toFields());
   }
 }
 
@@ -43,26 +45,70 @@ class Test {
 test();
 async function test() {
   await isReady;
+  shutdown();
+}
 
-  let dataStore = new Map<IPublicKey, Test>();
+@proofSystem
+class TestProof extends ProofWithInput<RollupStateTransition> {
+  @branch
+  static example(
+    db: KeyedMerkleStore<string, RollupAccount>,
+    pub: PublicKey
+  ): TestProof {
+    return example(db, pub);
+  }
+}
 
-  let acc = new Account(
-    UInt64.fromNumber(10),
-    PrivateKey.random().toPublicKey()
+function example(
+  db: KeyedMerkleStore<string, RollupAccount>,
+  pub: PublicKey
+): TestProof {
+  let acc = db.get(pub.toJSON()!.toString());
+
+  acc!.balance = UInt64.fromNumber(3000);
+
+  db.set(pub.toJSON()!.toString(), acc!);
+  console.log(
+    'set balacne to ',
+    db.get(pub.toJSON()!.toString())?.balance.toString()
   );
 
-  // dataStore.set(pubkey, acc);
+  return new TestProof(
+    new RollupStateTransition(
+      new RollupState(Field(0), Field(0)),
+      new RollupState(Field(1), Field(1))
+    )
+  );
+}
+function mergeBatch(batch: string[]): string {
+  let mergedBatch: string[] = [];
 
-  // console.log(dataStore.get(pubkey));
+  if (batch.length === 1) {
+    return batch[0];
+  }
+  for (let i = 0; i < batch.length; i += 2) {
+    if (i === batch.length && i % 2 === 0) {
+      // uneven batch list, last element
+      mergedBatch.push(batch[i]);
+      continue;
+    }
+    let first = batch[i];
+    let second = batch[i + 1];
 
-  // testF(dataStore);
+    if (i + 1 >= batch.length) {
+      mergedBatch.push(first);
+    } else {
+      let merged = merge(first, second);
+      mergedBatch.push(merged);
+    }
+  }
 
-  //dataStackDemo();
-  //keyedDataStoreDemo();
+  return mergeBatch(mergedBatch);
+}
 
-  //merkleTreeDemo();
-
-  shutdown();
+function merge(a: string, b: string): string {
+  console.log('merging');
+  return '[' + a + b + ']';
 }
 
 function testF(store: Map<IPublicKey, Account>) {
@@ -102,36 +148,21 @@ function keyedDataStoreDemo() {
   let store = new KeyedMerkleStore<String, Account>();
   let dataLeaves = new Map<String, Account>();
 
-  let accountA = new Account(
-    UInt64.fromNumber(100),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountA = new Account(UInt64.fromNumber(100));
   dataLeaves.set('A', accountA);
 
-  let accountB = new Account(
-    UInt64.fromNumber(100),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountB = new Account(UInt64.fromNumber(100));
   dataLeaves.set('B', accountB);
 
-  let accountC = new Account(
-    UInt64.fromNumber(100),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountC = new Account(UInt64.fromNumber(100));
   dataLeaves.set('C', accountC);
 
-  let accountCnew = new Account(
-    UInt64.fromNumber(330),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountCnew = new Account(UInt64.fromNumber(330));
   dataLeaves.set('C', accountCnew);
 
   let ok = store.fromData(dataLeaves);
 
-  let accountD = new Account(
-    UInt64.fromNumber(330),
-    PrivateKey.random().toPublicKey()
-  );
+  let accountD = new Account(UInt64.fromNumber(330));
   // store.set('A', accountA);
   // store.set('B', accountB);
   store.set('C', accountC);

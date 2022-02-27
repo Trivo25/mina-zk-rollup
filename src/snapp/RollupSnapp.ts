@@ -16,9 +16,12 @@ import {
   state,
   UInt64,
 } from 'snarkyjs';
+import { MerkleStack } from '../lib/data_store/MerkleStack';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
-import RollupProof from '../rollup_operator/branches/RollupProof';
+import RollupAccount from '../lib/models/rollup/RollupAccount';
+import RollupDeposit from '../lib/models/rollup/RollupDeposit';
+import RollupProof from '../rollup_operator/proof/RollupProof';
 
 class RollupSnapp extends SmartContract {
   // Merkle root of all accounts
@@ -37,7 +40,47 @@ class RollupSnapp extends SmartContract {
     this.pendingDepositsCommitment.set(pendingDepositsCommitment);
   }
 
-  @method async deposit(depositor: PublicKey, amount: UInt64) {}
+  @method async withdrawTo(
+    rollupWithdrawal: RollupAccount,
+    hashmerklePath: any,
+    leafHash: Field,
+    signature: Signature
+  ) {
+    // TODO: withdraw to initial account
+  }
+
+  @method async deposit(depositor: PublicKey, amount: UInt64) {
+    let deposit = new RollupDeposit(depositor, amount);
+
+    this.emitEvent(deposit);
+
+    const oldCommitment = await this.pendingDepositsCommitment.get();
+    const newCommitment = MerkleStack.getCommitment(deposit, oldCommitment);
+    this.pendingDepositsCommitment.set(newCommitment);
+  }
+
+  @method async withdrawPendingDeposit(
+    depositor: PublicKey,
+    originalAmount: UInt64,
+    path: Field[]
+  ) {
+    let deposit: RollupDeposit = new RollupDeposit(depositor, originalAmount);
+
+    let originalCommitment: Field = await this.pendingDepositsCommitment.get();
+    let currentDepositCommitment: Field = originalCommitment;
+
+    for (let i = 0; i < path.length; i++) {
+      currentDepositCommitment = MerkleStack.getCommitment(
+        deposit,
+        currentDepositCommitment
+      );
+    }
+
+    currentDepositCommitment.assertEquals(originalCommitment);
+
+    // TODO: return funds to depositor
+    // TODO: update commitment - maybe introduce RollupPendingWithdrawal or something like that
+  }
 
   @method async validateRollupProof(
     rollupProof: RollupProof,
@@ -46,6 +89,12 @@ class RollupSnapp extends SmartContract {
   ) {
     // TODO: checking if operator is within list of allowed operators
     // TODO: verify signature
+
+    let acccountsCommitmentBefore = await this.acccountsCommitment.get();
+
+    rollupProof.publicInput.source.accountDbCommitment.equals(
+      acccountsCommitmentBefore
+    );
   }
 
   @method async validateProof(merklePath: any, leafHash: Field): Promise<Bool> {
