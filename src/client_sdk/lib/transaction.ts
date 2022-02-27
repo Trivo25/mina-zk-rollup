@@ -40,6 +40,7 @@ function signRollupPayment(
   rollupTx: RollupTransaction,
   privateKey: PrivateKey
 ): ISignature {
+  // TODO: Hash the tx fieds and sign the hash instead of hasing the entire tx
   let s: Signature = Signature.create(privateKey, rollupTx.toFields());
   let signature: ISignature = {
     r: s.r.toJSON()!.toString(),
