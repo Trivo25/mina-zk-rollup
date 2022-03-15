@@ -8,6 +8,8 @@ import App from './App.vue';
 
 import 'virtual:windi.css';
 
+import './assets/nord.css';
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [

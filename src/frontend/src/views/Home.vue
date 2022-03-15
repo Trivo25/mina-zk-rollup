@@ -1,3 +1,5 @@
 <template>
-  <h1>HOME ROUTE</h1>
+  <div>HOME ROUTE</div>
 </template>
+
+<script lang="ts" setup></script>
