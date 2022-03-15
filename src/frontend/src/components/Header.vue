@@ -15,12 +15,12 @@
             <img
               class="block lg:hidden h-8 w-auto"
               src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-              alt="Workflow"
+              alt="rollup"
             />
             <img
               class="hidden lg:block h-8 w-auto"
               src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-              alt="Workflow"
+              alt="rollup"
             />
           </div>
           <div class="hidden sm:block sm:ml-6">
@@ -56,6 +56,14 @@
               >
             </div>
           </div>
+          <div class="hidden sm:block sm:ml-6">
+            <div class="flex space-x-4">
+              <input
+                class="searchbar px-3 py-2"
+                placeholder="Adress, Transaction Hash or block id.."
+              />
+            </div>
+          </div>
         </div>
         <div
           class="
@@ -68,7 +76,6 @@
             sm:static sm:inset-auto sm:ml-6 sm:pr-0
           "
         >
-          <!-- Profile dropdown -->
           <div class="ml-3 relative">
             <div>
               <moon
@@ -118,11 +125,12 @@ const setDark = () => {
 
 <style scoped>
 .bg {
-  background-color: var(--nord1) !important;
+  background-color: var(--nord9) !important;
+  box-shadow: 0px 0px 4px black;
 }
-
-.bg-dark {
-  background-color: var(--nord14) !important;
+.dark .dark\:bg-dark {
+  background-color: var(--nord1) !important;
+  box-shadow: 0px 0px 2px rgb(0, 0, 0);
 }
 
 .moon {
@@ -139,5 +147,12 @@ const setDark = () => {
 }
 .mode-toggle:hover {
   transform: scale(1.1);
+}
+
+.searchbar {
+  background-color: var(--nord4);
+  height: 40px;
+  border-radius: 6px;
+  width: 350px;
 }
 </style>

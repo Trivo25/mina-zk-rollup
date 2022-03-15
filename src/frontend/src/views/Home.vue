@@ -1,5 +1,5 @@
 <template>
-  <div>HOME ROUTE</div>
+  <div></div>
 </template>
 
 <script lang="ts" setup></script>
