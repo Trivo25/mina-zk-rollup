@@ -1,6 +1,6 @@
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
-import Account from '../../lib/models/rollup/RollupAccount';
+import Account from '../rollup/models/RollupAccount';
 
 /*
 ! NOTE: This is jsut a dummy data structure and will be improved on in the future

@@ -18,12 +18,12 @@ import {
 import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
 import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import RollupProof from '../proof/RollupProof';
-import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
+import RollupProof from '../rollup/RollupProof';
+import RollupTransaction from '../rollup/models/RollupTransaction';
 import { MerkleStack } from '../../lib/data_store/DataStack';
-import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
+import RollupDeposit from '../rollup/models/RollupDeposit';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
-import RollupAccount from '../../lib/models/rollup/RollupAccount';
+import RollupAccount from '../rollup/models/RollupAccount';
 
 class RequestService extends Service {
   constructor() {
@@ -54,6 +54,7 @@ class RequestService extends Service {
 
     // TODO: verify that on-chain merkle root actually matches with the one known to the operator
 
+    // NOTE: just some dummy data
     accountDb.set(
       Poseidon.hash(
         publicKeyFromInterface(

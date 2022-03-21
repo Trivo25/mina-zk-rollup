@@ -1,20 +1,12 @@
-import {
-  Bool,
-  Field,
-  Poseidon,
-  Signature,
-  state,
-  UInt32,
-  UInt64,
-} from 'snarkyjs';
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
-import { MerkleStack } from '../../lib/data_store/DataStack';
-import RollupAccount from '../../lib/models/rollup/RollupAccount';
-import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
-import RollupState from '../../lib/models/rollup/RollupState';
-import RollupStateTransition from '../../lib/models/rollup/RollupStateTransition';
-import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
-import RollupProof from './RollupProof';
+import { Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { KeyedMerkleStore } from '../../../lib/data_store/KeyedDataStore';
+import { MerkleStack } from '../../../lib/data_store/MerkleStack';
+import RollupAccount from '../models/RollupAccount';
+import RollupDeposit from '../models/RollupDeposit';
+import RollupState from '../models/RollupState';
+import RollupStateTransition from '../models/RollupStateTransition';
+import RollupTransaction from '../models/RollupTransaction';
+import RollupProof from '../RollupProof';
 
 export function simpleTransfer(
   t: RollupTransaction,
@@ -26,10 +18,7 @@ export function simpleTransfer(
   s.verify(t.sender, t.toFields()).assertEquals(true);
 
   // store the current state
-  let stateBefore = new RollupState(
-    pendingDeposits.getMerkleRoot()!,
-    accountDatabase.getMerkleRoot()!
-  );
+  let stateBefore = new RollupState(Field(0), accountDatabase.getMerkleRoot()!);
 
   // get both participants of the transaction
   let senderAccount: RollupAccount | undefined = accountDatabase.get(
@@ -78,10 +67,7 @@ export function simpleTransfer(
   );
 
   // get the updates state
-  let stateAfter = new RollupState(
-    pendingDeposits.getMerkleRoot()!,
-    accountDatabase.getMerkleRoot()!
-  );
+  let stateAfter = new RollupState(Field(0), accountDatabase.getMerkleRoot()!);
 
   return new RollupProof(new RollupStateTransition(stateBefore, stateAfter));
 }

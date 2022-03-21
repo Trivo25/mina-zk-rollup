@@ -1,3 +1,3 @@
 # /client_sdk
 
-This folder contains some code that should allow easy interfaction with the rollup backend
+This folder contains some code that should allow easy interaction with the rollup backend

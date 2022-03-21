@@ -19,9 +19,9 @@ import {
 import { MerkleStack } from '../lib/data_store/MerkleStack';
 
 import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
-import RollupAccount from '../lib/models/rollup/RollupAccount';
-import RollupDeposit from '../lib/models/rollup/RollupDeposit';
-import RollupProof from '../rollup_operator/proof/RollupProof';
+import RollupAccount from '../rollup_operator/rollup/models/RollupAccount';
+import RollupDeposit from '../rollup_operator/rollup/models/RollupDeposit';
+import RollupProof from '../rollup_operator/rollup/RollupProof';
 
 class RollupSnapp extends SmartContract {
   // Merkle root of all accounts

@@ -23,10 +23,10 @@ import { KeyedMerkleStore } from './lib/data_store/KeyedDataStore';
 
 import { MerkleStack } from './lib/data_store/DataStack';
 import IPublicKey from './lib/models/interfaces/IPublicKey';
-import RollupAccount from './lib/models/rollup/RollupAccount';
-import RollupStateTransition from './lib/models/rollup/RollupStateTransition';
-import RollupState from './lib/models/rollup/RollupState';
-import RollupProof from './rollup_operator/proof/RollupProof';
+import RollupAccount from './rollup_operator/rollup/models/RollupAccount';
+import RollupStateTransition from './rollup_operator/rollup/models/RollupStateTransition';
+import RollupState from './rollup_operator/rollup/models/RollupState';
+import RollupProof from './rollup_operator/rollup/RollupProof';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;

@@ -1,20 +1,11 @@
-import {
-  branch,
-  proofSystem,
-  ProofWithInput,
-  Signature,
-  UInt32,
-  UInt64,
-} from 'snarkyjs';
-import RollupState from '../../lib/models/rollup/RollupState';
-import RollupStateTransition from '../../lib/models/rollup/RollupStateTransition';
-
-import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
+import { branch, proofSystem, ProofWithInput, Signature } from 'snarkyjs';
+import RollupStateTransition from './models/RollupStateTransition';
+import RollupTransaction from './models/RollupTransaction';
 import { MerkleStack } from '../../lib/data_store/DataStack';
-import RollupDeposit from '../../lib/models/rollup/RollupDeposit';
-import RollupAccount from '../../lib/models/rollup/RollupAccount';
+import RollupDeposit from './models/RollupDeposit';
+import RollupAccount from './models/RollupAccount';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
-import { simpleTransfer } from './simpleTransfer';
+import { simpleTransfer } from './branches/simpleTransfer';
 
 @proofSystem
 class RollupProof extends ProofWithInput<RollupStateTransition> {
