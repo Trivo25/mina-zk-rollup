@@ -39,6 +39,8 @@
     "config": "^3.3.7",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
+    "ipfs": "^0.62.1",
+    "orbit-db": "^0.28.3",
     "pg": "^8.7.3",
     "snarkyjs": "^0.2.0",
     "vite-plugin-windicss": "^1.7.1",
