@@ -26,8 +26,8 @@ import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import RollupAccount from '../rollup/models/RollupAccount';
 
 class RequestService extends Service {
-  constructor() {
-    super();
+  constructor(indexer: Object) {
+    super(indexer);
   }
 
   static async produceRollupBlock() {

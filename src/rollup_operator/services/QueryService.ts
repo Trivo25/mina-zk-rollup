@@ -3,8 +3,8 @@ import DataStore from '../setup/DataStore';
 import Service from './Service';
 
 class QueryService extends Service {
-  constructor() {
-    super();
+  constructor(indexer: Object) {
+    super(indexer);
   }
 
   getTransactionPool(): ITransaction[] {

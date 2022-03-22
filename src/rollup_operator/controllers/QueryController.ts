@@ -1,9 +1,9 @@
 import express from 'express';
-
 import Controller from './Controller';
-
 import QueryService from '../services/QueryService';
-
+import IPFS_Log from '../setup/data_storages/IPFS_Log';
+import Local from '../setup/data_storages/Local';
+import Indexer from '../setup/Indexer';
 class QueryController extends Controller<QueryService> {
   constructor(service: QueryService) {
     super(service);
@@ -26,4 +26,9 @@ class QueryController extends Controller<QueryService> {
   }
 }
 
-export default new QueryController(new QueryService());
+let indexer = new Indexer({
+  ipfs_log: IPFS_Log,
+  local: Local,
+});
+
+export default new QueryController(new QueryService(indexer));

@@ -5,6 +5,9 @@ import EnumError from '../../lib/models/enums/EnumError';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
+import IPFS_Log from '../setup/data_storages/IPFS_Log';
+import Local from '../setup/data_storages/Local';
+import Indexer from '../setup/Indexer';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {
@@ -93,4 +96,9 @@ class RollupController extends Controller<RollupService> {
   }
 }
 
-export default new RollupController(new RollupService());
+let indexer = new Indexer({
+  ipfs_log: IPFS_Log,
+  local: Local,
+});
+
+export default new RollupController(new RollupService(indexer));
