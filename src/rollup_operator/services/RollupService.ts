@@ -31,7 +31,7 @@ class RequestService extends Service {
     super(indexer);
   }
 
-  static async produceRollupBlock() {
+  async produceRollupBlock() {
     console.log(
       `producing a new rollup block with ${
         DataStore.getTransactionPool().length

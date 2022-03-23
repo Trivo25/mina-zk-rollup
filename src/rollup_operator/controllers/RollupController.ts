@@ -5,7 +5,7 @@ import EnumError from '../../lib/models/enums/EnumError';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import { IPFS_Log, Local } from '../setup/IndexerOptions';
+import { IPFS_Log, PSQL } from '../setup/IndexerOptions';
 import Indexer from '../setup/Indexer';
 
 class RollupController extends Controller<RollupService> {
@@ -99,7 +99,7 @@ export default new RollupController(
   new RollupService(
     new Indexer({
       ipfs_log: IPFS_Log,
-      local: Local,
+      psql: PSQL,
     })
   )
 );

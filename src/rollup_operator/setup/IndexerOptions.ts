@@ -4,11 +4,17 @@ import * as IPFS from 'ipfs';
 const identity = await IdentityProvider.createIdentity({ id: 'peerid' });
 const ipfs = await IPFS.create({ repo: './temp/log.data' });
 
-const Local = {
-  type: 'psql',
-  instance: Math.random(),
-};
-const IPFS_Log = new Log(ipfs, identity);
+// dummy data
+class PSQL {
+  constructor() {}
+}
+let PSQL_INSTANCE: any;
+let IPFS_Log: any;
+try {
+  PSQL_INSTANCE = new PSQL();
+  IPFS_Log = new Log(ipfs, identity)();
+} catch (error) {
+  console.log(error);
+}
 
-export { Local, IPFS_Log };
-export type { Options };
+export { PSQL_INSTANCE as PSQL, IPFS_Log };

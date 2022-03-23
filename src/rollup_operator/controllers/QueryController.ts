@@ -1,7 +1,7 @@
 import express from 'express';
 import Controller from './Controller';
 import QueryService from '../services/QueryService';
-import { IPFS_Log, Local } from '../setup/IndexerOptions';
+import { IPFS_Log, PSQL } from '../setup/IndexerOptions';
 import Indexer from '../setup/Indexer';
 class QueryController extends Controller<QueryService> {
   constructor(service: QueryService) {
@@ -29,7 +29,7 @@ export default new QueryController(
   new QueryService(
     new Indexer({
       ipfs_log: IPFS_Log,
-      local: Local,
+      psql: PSQL,
     })
   )
 );
