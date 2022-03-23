@@ -1,7 +1,7 @@
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import DataStore from '../setup/DataStore';
 import Service from './Service';
-import Indexer from '../setup/Indexer';
+import Indexer from '../indexer/Indexer';
 class QueryService extends Service {
   constructor(indexer: Indexer) {
     super(indexer);

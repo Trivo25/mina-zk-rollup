@@ -9,9 +9,9 @@ class Indexer {
   psql: any;
   ipfs_log: any;
 
-  constructor() {
-    this.psql = PSQL;
-    this.ipfs_log = IPFS_Log;
+  constructor(psql: any, log: any) {
+    this.psql = psql;
+    this.ipfs_log = log;
   }
 
   /*
@@ -20,4 +20,4 @@ class Indexer {
   logEvent() {}
 }
 
-export default Indexer;
+export default new Indexer(PSQL, IPFS_Log);

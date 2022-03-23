@@ -1,8 +1,8 @@
 import express from 'express';
 import Controller from './Controller';
 import QueryService from '../services/QueryService';
-import { IPFS_Log, PSQL } from '../setup/IndexerOptions';
-import Indexer from '../setup/Indexer';
+import { IPFS_Log, PSQL } from '../indexer/IndexerOptions';
+import Indexer from '../indexer/Indexer';
 class QueryController extends Controller<QueryService> {
   constructor(service: QueryService) {
     super(service);

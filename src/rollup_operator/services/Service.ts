@@ -1,4 +1,4 @@
-import Indexer from '../setup/Indexer';
+import Indexer from '../indexer/Indexer';
 
 class Service {
   indexer: Indexer;

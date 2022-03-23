@@ -24,7 +24,7 @@ import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../rollup/models/RollupDeposit';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import RollupAccount from '../rollup/models/RollupAccount';
-import Indexer from '../setup/Indexer';
+import Indexer from '../indexer/Indexer';
 
 class RequestService extends Service {
   constructor(indexer: Indexer) {
