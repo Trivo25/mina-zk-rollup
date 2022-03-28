@@ -53,13 +53,13 @@ import github from '~icons/carbon/LogoGithub';
   height: 100vh;
   width: 250px;
   z-index: 1;
-  top: 25px;
+  top: 60px;
   left: 0;
   overflow-x: hidden;
   padding-top: 30px;
   transition: 0.2s;
-  position: sticky;
   border-right: 1px solid black;
+  position: absolute;
 
   /*   background-color: var(--nord9); */
   /*   box-shadow: 0px 4px 4px black; */
@@ -125,6 +125,7 @@ li {
 .footer {
   position: absolute;
   bottom: 100px;
+  margin-top: 50px;
   width: 100%;
   color: var(--nord3);
   line-height: 30px;

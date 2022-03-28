@@ -22,6 +22,8 @@ import SideNav from './components/SideNav.vue';
 
 html {
   background-color: var(--nord6);
+  display: flex;
+  position: relative;
   overflow: hidden;
 }
 </style>

@@ -1,8 +1,7 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
-import Home from './views/Home.vue';
-import Stats from './views/Stats.vue';
+import Overview from './views/Overview.vue';
 
 import App from './App.vue';
 
@@ -15,13 +14,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: Home,
-    },
-    {
-      path: '/stats',
-      name: 'Stats',
-      component: Stats,
+      name: 'Overview',
+      component: Overview,
     },
   ],
 });
