@@ -143,6 +143,8 @@ const setDark = () => {
 .input-container {
   display: flex;
   width: 400px;
+  border-width: 1px;
+  border-color: black;
 }
 
 /* Style the form icons */

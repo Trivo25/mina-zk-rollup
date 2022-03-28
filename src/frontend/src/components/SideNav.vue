@@ -1,13 +1,37 @@
 <template>
-  <nav class="bg dark:bg-dark">sde nav</nav>
+  <nav class="bg dark:bg-dark">
+    <ul>
+      <li>
+        <div class="logo"><overview class="i" /></div>
+        <span class="nav-item">Overview</span>
+      </li>
+      <li>
+        <div class="logo"><tx class="i" /></div>
+        <span class="nav-item">Transactions</span>
+      </li>
+      <li>
+        <div class="logo"><block class="i" /></div>
+        <span class="nav-item">Blocks</span>
+      </li>
+      <li>
+        <div class="logo"><accounts class="i" /></div>
+        <span class="nav-item">Accounts</span>
+      </li>
+    </ul>
+  </nav>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import block from '~icons/carbon/Blockchain';
+import tx from '~icons/carbon/DataShare';
+import overview from '~icons/carbon/Dashboard';
+import accounts from '~icons/carbon/Events';
+</script>
 
 <style scoped>
 .bg {
   height: 100vh;
-  width: 200px;
+  width: 250px;
   position: sticky;
   z-index: 1;
   top: 25px;
@@ -22,5 +46,51 @@
 .dark .dark\:bg-dark {
   background-color: var(--nord1) !important;
   box-shadow: 0px 4px 4px rgb(0, 0, 0);
+}
+
+ul {
+  padding: 10px;
+}
+
+li {
+  color: white;
+  margin: 25px;
+  font-weight: 500;
+  position: relative;
+  display: flex;
+  height: 40px;
+  justify-content: space-between;
+  border-width: 1px;
+  border-color: black;
+  cursor: pointer;
+  border-right: 6px solid transparent;
+  transition: 0.5s;
+}
+
+li:hover {
+  border-right: 6px solid var(--nord13);
+}
+
+.logo {
+  width: auto;
+  height: 100%;
+  padding: 4px;
+  background-color: var(--nord11);
+}
+
+.logo .i {
+  width: 30px;
+  height: auto;
+}
+
+.nav-item {
+  width: 100%;
+  background-color: var(--nord4);
+  line-height: 40px;
+  justify-content: baseline;
+  text-align: left;
+  padding-left: 10px;
+  font-size: 1.3rem;
+  color: var(--nord2);
 }
 </style>
