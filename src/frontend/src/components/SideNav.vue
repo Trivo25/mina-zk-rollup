@@ -73,7 +73,7 @@ import github from '~icons/carbon/LogoGithub';
   border-right: 1px solid black;
   position: absolute;
 
-  /*   background-color: var(--nord9); */
+  background-color: var(--nord3);
   /*   box-shadow: 0px 4px 4px black; */
 }
 
@@ -99,16 +99,16 @@ li {
   border-color: black;
   cursor: pointer;
   transition: 0.5s;
-  border-right: 1px solid var(--nord1);
+  border-right: 1px solid var(--nord11);
 }
 
 .selecteable:hover {
   transition: 0.5s;
-  border-right: 6px solid var(--nord1);
+  border-right: 6px solid var(--nord11);
 }
 
 .selected {
-  border-right: 6px solid var(--nord1);
+  border-right: 6px solid var(--nord11);
 }
 
 .logo {
