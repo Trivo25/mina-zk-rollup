@@ -1,31 +1,43 @@
 <template>
   <nav class="bg dark:bg-dark">
     <ul>
-      <li class="selected">
-        <div class="logo"><overview class="i" /></div>
-        <span class="nav-item">Overview</span>
-      </li>
-      <li class="selecteable">
-        <div class="logo"><tx class="i" /></div>
-        <span class="nav-item">Transactions</span>
-      </li>
-      <li class="selecteable">
-        <div class="logo"><block class="i" /></div>
-        <span class="nav-item">Blocks</span>
-      </li>
-      <li class="selecteable">
-        <div class="logo"><accounts class="i" /></div>
-        <span class="nav-item">Accounts</span>
-      </li>
+      <router-link to="/">
+        <li :class="$route.name == 'Overview' ? 'selected' : 'selecteable'">
+          <div class="logo"><overview class="i" /></div>
+          <span class="nav-item">Overview</span>
+        </li>
+      </router-link>
+      <router-link to="Transactions">
+        <li :class="$route.name == 'Transactions' ? 'selected' : 'selecteable'">
+          <div class="logo"><tx class="i" /></div>
+          <span class="nav-item">Transactions</span>
+        </li>
+      </router-link>
+      <router-link to="Blocks">
+        <li :class="$route.name == 'Blocks' ? 'selected' : 'selecteable'">
+          <div class="logo"><block class="i" /></div>
+          <span class="nav-item">Blocks</span>
+        </li>
+      </router-link>
+      <router-link to="Accounts">
+        <li :class="$route.name == 'Accounts' ? 'selected' : 'selecteable'">
+          <div class="logo"><accounts class="i" /></div>
+          <span class="nav-item">Accounts</span>
+        </li>
+      </router-link>
       <hr class="menu-seperator" />
-      <li class="selecteable">
-        <div class="logo"><user class="i" /></div>
-        <span class="nav-item">Account</span>
-      </li>
-      <li class="selecteable">
-        <div class="logo"><send class="i" /></div>
-        <span class="nav-item">Send</span>
-      </li>
+      <router-link to="Account">
+        <li :class="$route.name == 'Account' ? 'selected' : 'selecteable'">
+          <div class="logo"><user class="i" /></div>
+          <span class="nav-item">Account</span>
+        </li>
+      </router-link>
+      <router-link to="Send">
+        <li :class="$route.name == 'Send' ? 'selected' : 'selecteable'">
+          <div class="logo"><send class="i" /></div>
+          <span class="nav-item">Send</span>
+        </li>
+      </router-link>
     </ul>
 
     <div class="footer">

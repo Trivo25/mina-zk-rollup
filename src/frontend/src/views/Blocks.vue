@@ -1,6 +1,6 @@
 <template>
   <div class="overview">
-    <h1 class="tag">Overview</h1>
+    <h1 class="tag">Blocks</h1>
     {{ $route }}
     <div class="content"></div>
   </div>
