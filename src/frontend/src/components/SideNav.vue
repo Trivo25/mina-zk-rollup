@@ -19,10 +19,10 @@
           <span class="nav-item">Blocks</span>
         </li>
       </router-link>
-      <router-link to="Accounts">
+      <router-link to="Addresses">
         <li :class="$route.name == 'Accounts' ? 'selected' : 'selecteable'">
           <div class="logo"><accounts class="i" /></div>
-          <span class="nav-item">Accounts</span>
+          <span class="nav-item">Addresses</span>
         </li>
       </router-link>
       <hr class="menu-seperator" />
@@ -104,11 +104,11 @@ li {
 
 .selecteable:hover {
   transition: 0.5s;
-  border-right: 6px solid var(--nord13);
+  border-right: 6px solid var(--nord1);
 }
 
 .selected {
-  border-right: 6px solid var(--nord13);
+  border-right: 6px solid var(--nord1);
 }
 
 .logo {
