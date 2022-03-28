@@ -25,14 +25,18 @@
           </div>
 
           <div class="hidden sm:block sm:ml-6">
-            <div class="flex space-x-4">
+            <div class="input-container">
+              <search class="icon dark:icon-dark" />
               <input
-                class="searchbar px-3 py-2"
-                placeholder="Adress, Transaction Hash or block id.."
+                class="input-field searchbar"
+                type="text"
+                placeholder="Transaction id, block id, address.."
+                name="usrnm"
               />
             </div>
           </div>
         </div>
+
         <div
           class="
             absolute
@@ -63,6 +67,8 @@
 <script setup lang="ts">
 import moon from '~icons/carbon/moon';
 import sun from '~icons/carbon/sun';
+import search from '~icons/carbon/search';
+
 import { ref } from 'vue';
 let darkMode = ref(true);
 
@@ -120,7 +126,6 @@ const setDark = () => {
 .searchbar {
   background-color: var(--nord4);
   height: 40px;
-  width: 350px;
 }
 
 .menu-item {
@@ -131,5 +136,52 @@ const setDark = () => {
 
 .menu-item:hover {
   color: black;
+}
+
+/* Style the input container */
+.input-container {
+  display: flex;
+  width: 400px;
+}
+
+/* Style the form icons */
+.icon {
+  background: var(--nord10);
+  color: white;
+  min-width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  padding: 8px;
+}
+
+.icon:hover {
+  cursor: pointer;
+  color: black !important;
+}
+
+.dark .dark\:icon-dark {
+  background: var(--nord9);
+  color: white;
+  min-width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  padding: 8px;
+}
+
+/* Style the input fields */
+.input-field {
+  width: 100%;
+  padding: 5px;
+  outline: none;
+}
+
+.input-field:focus {
+  outline: none;
+  outline-width: 0 !important;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
 }
 </style>
