@@ -1,22 +1,17 @@
 <template>
   <!-- This example requires Tailwind CSS v2.0+ -->
   <nav class="bg dark:bg-dark">
-    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-8 px-2 sm:px-6 lg:px-8">
       <div class="relative flex items-center justify-between h-16">
         <div
           class="
             flex-1 flex
             items-center
-            justify-center
+            justify-between
             sm:items-stretch sm:justify-between
           "
         >
-          <div class="flex-shrink-0 flex items-center">
-            <img
-              class="block lg:hidden h-12 w-auto"
-              src="../assets/logo.svg"
-              alt="rollup"
-            />
+          <div class="flex-shrink-0 flex items-left">
             <img
               class="hidden lg:block h-12 w-auto"
               src="../assets/logo.svg"
@@ -148,7 +143,7 @@ const setDark = () => {
 /* Style the input container */
 .input-container {
   display: flex;
-  width: 400px;
+  width: 500px;
   border-width: 1px;
   border-color: black;
 }
