@@ -13,17 +13,18 @@
           <th>Fee</th>
           <th>Time</th>
         </tr>
-        <tr>
-          <td>1</td>
-          <td>Transfer</td>
-          <td>100db386818cee4ff0f2972431a62ed78ed8</td>
-          <td>e6bbf33a230c16443a20447bc3a7616d813a</td>
-          <td>32.00 MINA</td>
-          <td>0.01 MINA</td>
-          <td>05:14:32 UTC, 28-03-2022</td>
+
+        <tr v-for="(tx, t) in transactions">
+          <td>{{ crop(tx.hash) }}</td>
+          <td>{{ tx.method }}</td>
+          <td>{{ crop(tx.from) }}</td>
+          <td>{{ crop(tx.to) }}</td>
+          <td>{{ tx.amount }} MINA</td>
+          <td>{{ tx.fee }} MINA</td>
+          <td>{{ new Date(tx.time * 1).toLocaleDateString() }}</td>
         </tr>
       </table>
-      <div class="refresh">
+      <div @click="refreshTx()" class="refresh">
         <refresh style="font-size: 4rem; padding: 5px" />
       </div>
     </div>
@@ -32,6 +33,25 @@
 
 <script lang="ts" setup>
 import refresh from '~icons/el/refresh';
+import axios from 'axios';
+
+import { ref, onMounted } from 'vue';
+
+const transactions = ref();
+
+onMounted(async () => {
+  let res = await axios.get('http://localhost:5000/query/transactionPool');
+  transactions.value = res.data;
+});
+
+const refreshTx = async () => {
+  let res = await axios.get('http://localhost:5000/query/transactionPool');
+  transactions.value = res.data;
+};
+
+const crop = (s: string) => {
+  return `${s.slice(0, 8)}...${s.slice(s.length - 8, s.length)}`;
+};
 </script>
 
 <style scoped>
