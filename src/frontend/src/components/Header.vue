@@ -8,7 +8,7 @@
             flex-1 flex
             items-center
             justify-center
-            sm:items-stretch sm:justify-start
+            sm:items-stretch sm:justify-between
           "
         >
           <div class="flex-shrink-0 flex items-center">
@@ -23,39 +23,7 @@
               alt="rollup"
             />
           </div>
-          <div class="hidden sm:block sm:ml-6">
-            <div class="flex space-x-4">
-              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <a
-                href="#"
-                class="
-                  bg-gray-900
-                  text-white
-                  px-3
-                  py-2
-                  rounded-md
-                  text-sm
-                  font-medium
-                "
-                aria-current="page"
-                >Dashboard</a
-              >
 
-              <a
-                href="#"
-                class="
-                  text-gray-300
-                  hover:bg-gray-700 hover:text-white
-                  px-3
-                  py-2
-                  rounded-md
-                  text-sm
-                  font-medium
-                "
-                >Calendar</a
-              >
-            </div>
-          </div>
           <div class="hidden sm:block sm:ml-6">
             <div class="flex space-x-4">
               <input
@@ -152,7 +120,16 @@ const setDark = () => {
 .searchbar {
   background-color: var(--nord4);
   height: 40px;
-  border-radius: 6px;
   width: 350px;
+}
+
+.menu-item {
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.menu-item:hover {
+  color: black;
 }
 </style>
