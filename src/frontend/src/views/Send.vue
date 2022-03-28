@@ -37,12 +37,11 @@
 <script lang="ts" setup>
 import axios from 'axios';
 import { base58Decode, base58Encode } from '../../../lib/baseEncoding';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
 import { createAndSignPayment } from '../../../client_sdk/lib/transaction';
 import RollupTransaction from '../../../rollup_operator/rollup/models/RollupTransaction';
 import { isReady, PrivateKey, PublicKey, UInt32, UInt64 } from 'snarkyjs';
-import { parse } from 'path/posix';
 
 const amount = ref();
 const nonce = ref();
