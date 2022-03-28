@@ -1,7 +1,7 @@
 import { PrivateKey, Signature } from 'snarkyjs';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import ISignature from '../../lib/models/interfaces/ISignature';
-import RollupTransaction from '../../lib/models/rollup/RollupTransaction';
+import RollupTransaction from '../../rollup_operator/rollup/models/RollupTransaction';
 
 export function createAndSignPayment(
   tx: RollupTransaction,
