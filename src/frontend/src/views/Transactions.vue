@@ -6,6 +6,7 @@
       <table>
         <tr>
           <th>Tx Hash</th>
+          <th>Status</th>
           <th>Type</th>
           <th>From</th>
           <th>To</th>
@@ -16,6 +17,7 @@
 
         <tr v-for="(tx, t) in transactions">
           <td>{{ crop(tx.hash) }}</td>
+          <td>{{ tx.status }}</td>
           <td>{{ tx.method }}</td>
           <td>{{ crop(tx.from) }}</td>
           <td>{{ crop(tx.to) }}</td>

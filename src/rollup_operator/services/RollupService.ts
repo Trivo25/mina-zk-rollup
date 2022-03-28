@@ -74,6 +74,7 @@ class RequestService extends Service {
           accountDb
         );
         proofBatch.push(p);
+        tx.meta_data.status = 'executed';
       } catch (error) {
         console.log(error);
       }
@@ -130,6 +131,8 @@ class RequestService extends Service {
 
     transaction.meta_data.hash =
       'ROLLUP' + sha256(Poseidon.hash(signature.toFields()).toString());
+
+    transaction.meta_data.status = 'pending';
 
     let poolSize = DataStore.getTransactionPool().push(transaction);
 

@@ -15,6 +15,7 @@ export default interface ITransaction {
     hash?: string;
     fee?: string;
     time?: string;
+    status?: string;
   };
   // transaction_data includes the important information such as signature and payload
   transaction_data: {
