@@ -24,13 +24,14 @@ import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../rollup/models/RollupDeposit';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import RollupAccount from '../rollup/models/RollupAccount';
+import Indexer from '../indexer/Indexer';
 
 class RequestService extends Service {
-  constructor() {
-    super();
+  constructor(indexer: Indexer) {
+    super(indexer);
   }
 
-  static async produceRollupBlock() {
+  async produceRollupBlock() {
     console.log(
       `producing a new rollup block with ${
         DataStore.getTransactionPool().length
