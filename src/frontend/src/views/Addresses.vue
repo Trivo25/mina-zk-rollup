@@ -11,7 +11,11 @@
           <th></th>
         </tr>
         <tr v-for="(acc, a) in accounts">
-          <td>{{ crop(a.toString()) }}</td>
+          <td style="cursor: pointer">
+            <a @click="copyToClipboard(a.toString())">{{
+              crop(a.toString())
+            }}</a>
+          </td>
           <td>{{ acc.balance.value }} MINA</td>
           <td>{{ acc.nonce.value }}</td>
           <td>{{ acc.username ? acc.username : 'unknown' }}</td>
@@ -41,6 +45,10 @@ onMounted(async () => {
 const refreshAccounts = async () => {
   let res = await axios.get('http://localhost:5000/query/addresses');
   accounts.value = res.data;
+};
+
+const copyToClipboard = (s: string) => {
+  navigator.clipboard.writeText(s);
 };
 
 const crop = (s: string) => {
