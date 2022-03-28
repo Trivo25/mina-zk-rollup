@@ -1,10 +1,32 @@
 <template>
   <div class="overview">
-    <h1 class="tag" style="text-align: center !important">Accounts</h1>
+    <h1 class="tag" style="text-align: center !important">Addresses</h1>
 
-    <div class="content"></div>
+    <div class="content">
+      <table>
+        <tr>
+          <th>Address</th>
+          <th>Balance</th>
+          <th>Nonce</th>
+          <th></th>
+        </tr>
+        <tr>
+          <td>100db386818cee4ff0f2972431a62ed78ed8</td>
+          <td>3012.00 MINA</td>
+          <td>3</td>
+          <td>unknown</td>
+        </tr>
+      </table>
+      <div class="refresh">
+        <refresh style="font-size: 4rem; padding: 5px" />
+      </div>
+    </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import refresh from '~icons/el/refresh';
+</script>
 
 <style scoped>
 .overview {
@@ -19,7 +41,6 @@
 }
 .content {
   position: fixed;
-  display: flex;
   width: auto;
   height: auto;
   left: 250px;
@@ -31,5 +52,35 @@
 }
 .tag {
   font-size: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table th {
+  text-align: left;
+  padding: 5px;
+  background-color: var(--nord10);
+  color: white;
+  height: 30px;
+}
+
+tr {
+  text-align: left;
+  height: 40px;
+  margin-left: 15px;
+}
+
+tr:nth-child(odd) {
+  background-color: var(--nord4);
+}
+.refresh {
+  width: 51px;
+  height: auto;
+}
+.refresh:hover {
+  cursor: pointer;
+  color: var(--nord12);
 }
 </style>
