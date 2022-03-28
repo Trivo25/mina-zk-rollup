@@ -101,6 +101,7 @@ const setDark = () => {
 .bg {
   background-color: var(--nord9) !important;
   box-shadow: 0px 0px 4px black;
+  transition: 0.2s;
 }
 .dark .dark\:bg-dark {
   background-color: var(--nord1) !important;
