@@ -1,8 +1,8 @@
 import Indexer from '../indexer/Indexer';
 
 class Service {
-  indexer: Indexer;
-  constructor(indexer: Indexer) {
+  indexer: typeof Indexer;
+  constructor(indexer: typeof Indexer) {
     this.indexer = indexer;
   }
 }

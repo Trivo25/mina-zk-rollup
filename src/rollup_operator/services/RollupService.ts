@@ -27,11 +27,11 @@ import RollupAccount from '../rollup/models/RollupAccount';
 import Indexer from '../indexer/Indexer';
 
 class RequestService extends Service {
-  constructor(indexer: Indexer) {
+  constructor(indexer: typeof Indexer) {
     super(indexer);
   }
 
-  async produceRollupBlock() {
+  static async produceRollupBlock() {
     console.log(
       `producing a new rollup block with ${
         DataStore.getTransactionPool().length

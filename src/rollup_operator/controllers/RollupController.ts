@@ -95,11 +95,4 @@ class RollupController extends Controller<RollupService> {
   }
 }
 
-export default new RollupController(
-  new RollupService(
-    new Indexer({
-      ipfs_log: IPFS_Log,
-      psql: PSQL,
-    })
-  )
-);
+export default new RollupController(new RollupService(Indexer));

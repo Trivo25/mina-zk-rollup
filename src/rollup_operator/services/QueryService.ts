@@ -3,7 +3,7 @@ import DataStore from '../setup/DataStore';
 import Service from './Service';
 import Indexer from '../indexer/Indexer';
 class QueryService extends Service {
-  constructor(indexer: Indexer) {
+  constructor(indexer: typeof Indexer) {
     super(indexer);
   }
 

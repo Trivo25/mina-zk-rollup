@@ -25,11 +25,4 @@ class QueryController extends Controller<QueryService> {
   }
 }
 
-export default new QueryController(
-  new QueryService(
-    new Indexer({
-      ipfs_log: IPFS_Log,
-      psql: PSQL,
-    })
-  )
-);
+export default new QueryController(new QueryService(Indexer));
