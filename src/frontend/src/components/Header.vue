@@ -13,12 +13,12 @@
         >
           <div class="flex-shrink-0 flex items-center">
             <img
-              class="block lg:hidden h-8 w-auto"
+              class="block lg:hidden h-12 w-auto"
               src="../assets/logo.svg"
               alt="rollup"
             />
             <img
-              class="hidden lg:block h-8 w-auto"
+              class="hidden lg:block h-12 w-auto"
               src="../assets/logo.svg"
               alt="rollup"
             />
