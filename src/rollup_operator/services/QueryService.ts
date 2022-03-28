@@ -8,7 +8,9 @@ class QueryService extends Service {
   }
 
   getTransactionPool(): ITransaction[] {
-    return DataStore.getTransactionPool();
+    return DataStore.getTransactionPool().map((tx: any) => {
+      return tx.meta_data;
+    });
   }
 
   stats(): any {

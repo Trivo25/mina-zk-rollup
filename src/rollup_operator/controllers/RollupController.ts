@@ -52,22 +52,25 @@ class RollupController extends Controller<RollupService> {
   ): Promise<express.Response> {
     try {
       let signature: ISignature = {
-        r: req.body.signature.r,
-        s: req.body.signature.s,
+        r: req.body.transaction_data.signature.r,
+        s: req.body.transaction_data.signature.s,
       };
 
       let transaction: ITransaction = {
         meta_data: {
-          from: req.body.from,
-          to: req.body.to,
-          amount: req.body.amount,
-          nonce: req.body.nonce,
-          method: req.body.method, // TODO: maybe verify method via a signature?
+          from: req.body.meta_data.from,
+          to: req.body.meta_data.to,
+          amount: req.body.meta_data.amount,
+          nonce: req.body.meta_data.nonce,
+          method: req.body.meta_data.method, // TODO: maybe verify method via a signature?
+          // NOTE: THIS IS DUMMY DATA
+          fee: '0.001',
+          time: Date.now().toString(),
         },
         transaction_data: {
-          sender_publicKey: req.body.sender_publicKey,
-          receiver_publicKey: req.body.receiver_publicKey,
-          payload: req.body.payload,
+          sender_publicKey: req.body.transaction_data.sender_publicKey,
+          receiver_publicKey: req.body.transaction_data.receiver_publicKey,
+          payload: req.body.transaction_data.payload,
           signature: signature,
         },
       };
