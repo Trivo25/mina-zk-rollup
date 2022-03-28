@@ -1,19 +1,21 @@
 <template>
   <div class="overview">
-    <h1 class="tag">Accounts</h1>
-    {{ $route }}
+    <h1 class="tag" style="text-align: center !important">Accounts</h1>
+
     <div class="content"></div>
   </div>
 </template>
 
 <style scoped>
 .overview {
-  position: fixed;
-  width: auto;
+  position: absolute;
   height: auto;
   left: 250px;
   top: 50px;
-  padding: 15px;
+  padding: 25px;
+  display: inline;
+  width: calc(100% - 250px);
+  text-align: center !important;
 }
 .content {
   position: fixed;
@@ -28,6 +30,6 @@
   bottom: 0;
 }
 .tag {
-  font-size: 2rem !important;
+  font-size: 2rem;
 }
 </style>

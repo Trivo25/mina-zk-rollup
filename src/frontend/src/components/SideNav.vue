@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import block from '~icons/carbon/Blockchain';
+import block from '~icons/octicon/package-16';
 import tx from '~icons/carbon/DataShare';
 import overview from '~icons/carbon/Dashboard';
 import accounts from '~icons/carbon/Events';
