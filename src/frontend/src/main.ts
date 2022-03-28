@@ -6,6 +6,8 @@ import NotFound from './views/NotFound.vue';
 import Transactions from './views/Transactions.vue';
 import Blocks from './views/Blocks.vue';
 import Addresses from './views/Addresses.vue';
+import Account from './views/Account.vue';
+import Send from './views/Send.vue';
 
 import App from './App.vue';
 
@@ -33,9 +35,19 @@ const router = createRouter({
       component: Blocks,
     },
     {
-      path: '/addresses',
+      path: '/Addresses',
       name: 'Addresses',
       component: Addresses,
+    },
+    {
+      path: '/Account',
+      name: 'Account',
+      component: Account,
+    },
+    {
+      path: '/Send',
+      name: 'Send',
+      component: Send,
     },
     { path: '/:catchAll(.*)', name: 'NotFound', component: NotFound },
   ],

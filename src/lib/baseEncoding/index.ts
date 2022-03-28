@@ -1,4 +1,5 @@
 import base from 'base-x';
+import { Buffer } from 'buffer';
 const ALPHABET_58 =
   '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
