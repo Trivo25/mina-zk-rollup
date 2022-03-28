@@ -17,6 +17,15 @@
         <div class="logo"><accounts class="i" /></div>
         <span class="nav-item">Accounts</span>
       </li>
+      <hr class="menu-seperator" />
+      <li class="selecteable">
+        <div class="logo"><user class="i" /></div>
+        <span class="nav-item">Account</span>
+      </li>
+      <li class="selecteable">
+        <div class="logo"><send class="i" /></div>
+        <span class="nav-item">Send</span>
+      </li>
     </ul>
 
     <div class="footer">
@@ -33,6 +42,9 @@ import block from '~icons/carbon/Blockchain';
 import tx from '~icons/carbon/DataShare';
 import overview from '~icons/carbon/Dashboard';
 import accounts from '~icons/carbon/Events';
+import send from '~icons/carbon/Export';
+import user from '~icons/carbon/UserOnline';
+
 import github from '~icons/carbon/LogoGithub';
 </script>
 
@@ -116,5 +128,12 @@ li {
   width: 100%;
   color: var(--nord3);
   line-height: 30px;
+}
+
+.menu-seperator {
+  margin-left: 5%;
+  margin-right: 5%;
+  border-width: 2px;
+  border-color: var(--nord2);
 }
 </style>
