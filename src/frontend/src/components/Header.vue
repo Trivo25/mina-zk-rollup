@@ -72,7 +72,7 @@ if (
   (!('theme' in localStorage) &&
     window.matchMedia('(prefers-color-scheme: dark)').matches)
 ) {
-  document.documentElement.classList.add('dark');
+  //document.documentElement.classList.add('dark');
   darkMode.value = false;
 } else {
   document.documentElement.classList.remove('dark');
@@ -80,9 +80,9 @@ if (
 }
 
 const setLight = () => {
-  localStorage.theme = 'light';
+  /*   localStorage.theme = 'light';
   document.documentElement.classList.remove('dark');
-  darkMode.value = true;
+  darkMode.value = true; */
 };
 
 const setDark = () => {

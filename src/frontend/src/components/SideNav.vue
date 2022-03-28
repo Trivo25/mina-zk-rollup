@@ -99,16 +99,16 @@ li {
   border-color: black;
   cursor: pointer;
   transition: 0.5s;
-  border-right: 1px solid var(--nord11);
+  border-right: 1px solid var(--nord10);
 }
 
 .selecteable:hover {
   transition: 0.5s;
-  border-right: 6px solid var(--nord11);
+  border-right: 6px solid var(--nord10);
 }
 
 .selected {
-  border-right: 6px solid var(--nord11);
+  border-right: 6px solid var(--nord10);
 }
 
 .logo {
@@ -130,7 +130,7 @@ li {
   justify-content: baseline;
   text-align: left;
   padding-left: 10px;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: var(--nord2);
 }
 

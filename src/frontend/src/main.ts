@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import Overview from './views/Overview.vue';
 import NotFound from './views/NotFound.vue';
-
 import Transactions from './views/Transactions.vue';
 import Blocks from './views/Blocks.vue';
 import Addresses from './views/Addresses.vue';
@@ -13,6 +12,7 @@ import App from './App.vue';
 import 'virtual:windi.css';
 
 import './assets/nord.css';
+import './assets/global.css';
 
 const router = createRouter({
   history: createWebHistory(),
