@@ -63,8 +63,26 @@
           </div>
         </div>
       </div>
-
-      <div class="history">dasd</div>
+      <div class="history">
+        <!--         <h1 style="text-align: left; font-size: 1.5rem !important">History</h1>
+ -->
+        <table>
+          <tr>
+            <th>Block</th>
+            <th>Status</th>
+            <th>New Root</th>
+            <th>Transactions</th>
+            <th>Time</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>Executed</td>
+            <td>m1asd9124ghtadas7123gasd903</td>
+            <td>31</td>
+            <td>05:14:32 UTC, 28-03-2022</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -90,7 +108,7 @@ import pool from '~icons/icon-park-outline/swimming-pool';
 }
 .content {
   position: fixed;
-  display: flex;
+
   width: auto;
   height: auto;
   left: 250px;
@@ -145,5 +163,36 @@ import pool from '~icons/icon-park-outline/swimming-pool';
 .icon {
   font-size: 2rem;
   line-height: 100%;
+}
+
+.history {
+  padding: 15px;
+  width: 100%;
+  border-width: 1px;
+  /*   border-color: var(--nord1);
+ */
+  height: 50%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table th {
+  text-align: left;
+  padding: 5px;
+  background-color: var(--nord10);
+  color: white;
+  height: 30px;
+}
+
+tr {
+  text-align: left;
+  height: 40px;
+  margin-left: 15px;
+}
+
+tr:nth-child(odd) {
+  background-color: var(--nord4);
 }
 </style>
