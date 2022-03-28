@@ -22,9 +22,9 @@ import RollupProof from '../rollup/RollupProof';
 import RollupTransaction from '../rollup/models/RollupTransaction';
 import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../rollup/models/RollupDeposit';
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
 import RollupAccount from '../rollup/models/RollupAccount';
 import Indexer from '../indexer/Indexer';
+import { base58Decode, base58Encode } from '../../lib/baseEncoding';
 
 class RequestService extends Service {
   constructor(indexer: typeof Indexer) {
@@ -50,26 +50,9 @@ class RequestService extends Service {
       new RollupDeposit(PrivateKey.random().toPublicKey(), UInt64.fromNumber(0))
     );
 
-    let accountDb: KeyedMerkleStore<string, RollupAccount> =
-      new KeyedMerkleStore<string, RollupAccount>();
+    let accountDb = DataStore.getAccountStore();
 
     // TODO: verify that on-chain merkle root actually matches with the one known to the operator
-
-    // NOTE: just some dummy data
-    accountDb.set(
-      Poseidon.hash(
-        publicKeyFromInterface(
-          transactionsToProcess[0].transaction_data.sender_publicKey
-        ).toFields()
-      ).toString(),
-      new RollupAccount(
-        UInt64.fromNumber(500),
-        publicKeyFromInterface(
-          transactionsToProcess[0].transaction_data.sender_publicKey
-        ),
-        UInt32.fromNumber(0)
-      )
-    );
 
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
@@ -80,30 +63,12 @@ class RequestService extends Service {
         let rollupTx: RollupTransaction = RollupTransaction.deserializePayload(
           tx.transaction_data.payload.map((f: string) => Field(f))
         );
-        console.log(
-          'SENDER BEFORE:',
-          accountDb
-            .get(Poseidon.hash(rollupTx.sender.toFields()).toString())!
-            .balance.toString()
-        );
 
         let p: RollupProof = RollupProof.simpleTransfer(
           rollupTx,
           signature,
           pendingDeposits,
           accountDb
-        );
-        console.log(
-          'SENDER AFTER:',
-          accountDb
-            .get(Poseidon.hash(rollupTx.sender.toFields()).toString())!
-            .balance.toString()
-        );
-        console.log(
-          'RECEIVER AFTER:',
-          accountDb
-            .get(Poseidon.hash(rollupTx.receiver.toFields()).toString())!
-            .balance.toString()
         );
         proofBatch.push(p);
       } catch (error) {
@@ -176,6 +141,24 @@ class RequestService extends Service {
 
     return {
       transcaction_hash: transaction.meta_data.hash,
+    };
+  }
+
+  // ! dummy data!
+  createAccount(): any {
+    let priv = PrivateKey.random();
+
+    let newAcc = new RollupAccount(
+      UInt64.fromNumber(1000),
+      priv.toPublicKey(),
+      UInt32.fromNumber(0)
+    );
+    let pub = base58Encode(JSON.stringify(priv.toPublicKey().toJSON()));
+    DataStore.getAccountStore().set(pub, newAcc);
+
+    return {
+      priv: priv,
+      pub_enc: pub,
     };
   }
 }

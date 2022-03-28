@@ -10,14 +10,14 @@
           <th>Nonce</th>
           <th></th>
         </tr>
-        <tr>
-          <td>100db386818cee4ff0f2972431a62ed78ed8</td>
-          <td>3012.00 MINA</td>
-          <td>3</td>
-          <td>unknown</td>
+        <tr v-for="(acc, a) in accounts">
+          <td>{{ crop(a.toString()) }}</td>
+          <td>{{ acc.balance.value }} MINA</td>
+          <td>{{ acc.nonce.value }}</td>
+          <td>{{ acc.username ? acc.username : 'unknown' }}</td>
         </tr>
       </table>
-      <div class="refresh">
+      <div class="refresh" @click="refreshAccounts()">
         <refresh style="font-size: 4rem; padding: 5px" />
       </div>
     </div>
@@ -26,6 +26,26 @@
 
 <script lang="ts" setup>
 import refresh from '~icons/el/refresh';
+import axios from 'axios';
+
+import { ref, onMounted } from 'vue';
+
+const accounts = ref();
+
+onMounted(async () => {
+  let res = await axios.get('http://localhost:5000/query/addresses');
+  accounts.value = res.data;
+  console.log(accounts.value);
+});
+
+const refreshAccounts = async () => {
+  let res = await axios.get('http://localhost:5000/query/addresses');
+  accounts.value = res.data;
+};
+
+const crop = (s: string) => {
+  return `${s.slice(0, 8)}...${s.slice(s.length - 8, s.length)}`;
+};
 </script>
 
 <style scoped>

@@ -5,7 +5,6 @@ import EnumError from '../../lib/models/enums/EnumError';
 import ISignature from '../../lib/models/interfaces/ISignature';
 import ITransaction from '../../lib/models/interfaces/ITransaction';
 import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import { IPFS_Log, PSQL } from '../indexer/IndexerOptions';
 import Indexer from '../indexer/Indexer';
 
 class RollupController extends Controller<RollupService> {
@@ -13,6 +12,7 @@ class RollupController extends Controller<RollupService> {
     super(service);
     this.verify = this.verify.bind(this);
     this.transaction = this.transaction.bind(this);
+    this.createAccount = this.createAccount.bind(this);
   }
 
   async verify(
@@ -90,6 +90,22 @@ class RollupController extends Controller<RollupService> {
         payload: processorReponse,
       });
     } catch (error) {
+      return res.status(400).send({
+        error: error,
+        payload: undefined,
+      });
+    }
+  }
+
+  // ! DUMMY DATA
+  async createAccount(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
+    try {
+      return res.status(200).send(this.service.createAccount());
+    } catch (error) {
+      console.log(error);
       return res.status(400).send({
         error: error,
         payload: undefined,
