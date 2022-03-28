@@ -56,6 +56,9 @@ class RequestService extends Service {
 
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
+      console.log('---------------');
+      console.log(tx);
+      console.log('---------------');
       try {
         let signature: Signature = signatureFromInterface(
           tx.transaction_data.signature
@@ -135,7 +138,7 @@ class RequestService extends Service {
     // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
     // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
     // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
-    if (poolSize >= 12) {
+    if (poolSize >= 2) {
       EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 

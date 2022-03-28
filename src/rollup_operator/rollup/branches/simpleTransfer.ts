@@ -1,4 +1,5 @@
 import { Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { base58Encode } from '../../../lib/baseEncoding';
 import { KeyedMerkleStore } from '../../../lib/data_store/KeyedDataStore';
 import { MerkleStack } from '../../../lib/data_store/MerkleStack';
 import RollupAccount from '../models/RollupAccount';
@@ -22,7 +23,7 @@ export function simpleTransfer(
 
   // get both participants of the transaction
   let senderAccount: RollupAccount | undefined = accountDatabase.get(
-    Poseidon.hash(t.sender.toFields()).toString()
+    base58Encode(JSON.stringify(t.sender.toJSON()!))
   );
 
   // NOTE: what about if-statements within proofs? probably not good
@@ -31,7 +32,7 @@ export function simpleTransfer(
   }
 
   let receiverAccount: RollupAccount | undefined = accountDatabase.get(
-    t.receiver.toJSON()!.toString()
+    base58Encode(JSON.stringify(t.receiver.toJSON()!))
   );
 
   // NOTE: what about if-statements within proofs? probably not good
@@ -53,7 +54,7 @@ export function simpleTransfer(
 
   // store the sender
   accountDatabase.set(
-    Poseidon.hash(t.sender.toFields()).toString(),
+    base58Encode(JSON.stringify(t.sender.toJSON()!)),
     senderAccount
   );
 
@@ -62,7 +63,7 @@ export function simpleTransfer(
 
   // store receiver
   accountDatabase.set(
-    Poseidon.hash(t.receiver.toFields()).toString(),
+    base58Encode(JSON.stringify(t.receiver.toJSON()!)),
     receiverAccount
   );
 

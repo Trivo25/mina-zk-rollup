@@ -10044,9 +10044,9 @@ snake-case@^3.0.4:
     dot-case "^3.0.4"
     tslib "^2.0.3"
 
-snarkyjs@^0.2.0:
+snarkyjs@0.2.0:
   version "0.2.0"
-  resolved "https://registry.npmjs.org/snarkyjs/-/snarkyjs-0.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/snarkyjs/-/snarkyjs-0.2.0.tgz#f620bf52d9c914ff0acd1d5aa8059bde31ee8224"
   integrity sha512-pgYSb04eJWg0RwBQsVp8v2SE/6d3ukMBkcc9zzF8mPny6vp53BSV5eob4/hlIqMDkGUCnpD5teS9ZAFQsPNxiw==
   dependencies:
     env "^0.0.2"

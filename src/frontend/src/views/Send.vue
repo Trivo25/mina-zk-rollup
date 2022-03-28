@@ -56,21 +56,20 @@ const signAndProcess = async () => {
   let receiverPub = PublicKey.fromJSON(
     JSON.parse(base58Decode(receiver.value))
   );
-  console.log(receiverPub);
+
   let rollupTransaction = new RollupTransaction(
     UInt64.fromNumber(parseInt(amount.value)),
     UInt32.fromNumber(parseInt(nonce.value)),
     senderPub!,
     receiverPub!
   );
-
   let payload = createAndSignPayment(
     rollupTransaction,
     base58Encode(JSON.stringify(senderPub?.toJSON())),
     receiver.value,
     senderPriv!
   );
-
+  console.log(payload);
   let res = axios.post('http://localhost:5000/rollup/transaction', payload);
   console.log(res);
 };

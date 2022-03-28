@@ -9,6 +9,12 @@ export function createAndSignPayment(
   to: string,
   priv: PrivateKey
 ): ITransaction {
+  let fields = tx.amount
+    .toFields()
+    .concat(tx.nonce.toFields())
+    .concat(tx.sender.toFields())
+    .concat(tx.receiver.toFields());
+  let payload: string[] = fields.map((x) => x.toString());
   return {
     meta_data: {
       from: from,
@@ -31,7 +37,7 @@ export function createAndSignPayment(
         },
       },
       signature: signRollupPayment(tx, priv),
-      payload: tx.toFields().map((x) => x.toString()),
+      payload: payload,
     },
   };
 }
@@ -40,8 +46,14 @@ function signRollupPayment(
   rollupTx: RollupTransaction,
   privateKey: PrivateKey
 ): ISignature {
+  let fields = rollupTx.amount
+    .toFields()
+    .concat(rollupTx.nonce.toFields())
+    .concat(rollupTx.sender.toFields())
+    .concat(rollupTx.receiver.toFields());
+
   // TODO: Hash the tx fieds and sign the hash instead of hasing the entire tx
-  let s: Signature = Signature.create(privateKey, rollupTx.toFields());
+  let s: Signature = Signature.create(privateKey, fields);
   let signature: ISignature = {
     r: s.r.toJSON()!.toString(),
     s: s.s.toJSON()!.toString(),
