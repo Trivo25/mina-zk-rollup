@@ -94,7 +94,7 @@ const setDark = () => {
 
 <style scoped>
 .bg {
-  background-color: var(--nord9) !important;
+  background-color: var(--nord3) !important;
   box-shadow: 0px 0px 4px black;
   transition: 0.2s;
   height: 60px;
@@ -143,7 +143,7 @@ const setDark = () => {
 /* Style the input container */
 .input-container {
   display: flex;
-  width: 500px;
+  width: 600px;
   border-width: 1px;
   border-color: black;
 }
