@@ -8,6 +8,11 @@
       <div v-else>
         <div @click="signAndProcess()" class="button">Sign and Send</div>
         <br />
+        <h1 v-if="!notSet()">
+          Sending as
+          {{ pubKey }}
+        </h1>
+        <br />
         <input
           class="input-field searchbar"
           type="text"
@@ -30,7 +35,7 @@
           v-model="receiver"
         />
         <br /><br /><br />
-        <div v-if="receiver && amount && nonce && txHash">
+        <div v-if="receiver && amount && nonce && !txHash">
           You are about to send
           <span style="color: black; font-weight: 800">{{ amount }}</span>
           MINA to
@@ -64,6 +69,9 @@ const amount = ref();
 const receiver = ref();
 const nonce = ref();
 const txHash = ref();
+
+const pubKey = ref();
+pubKey.value = '';
 const signAndProcess = async () => {
   await isReady;
   let acc = JSON.parse(localStorage.getItem('account')!);
@@ -103,6 +111,14 @@ const notSet = () => {
 const crop = (s: string) => {
   return `${s.slice(0, 8)}...${s.slice(s.length - 8, s.length)}`;
 };
+
+if (localStorage.getItem('account') != null) {
+  pubKey.value = crop(
+    base58Encode(
+      JSON.stringify(JSON.parse(localStorage.getItem('account')!).publicKey_enc)
+    )
+  );
+}
 </script>
 
 <style scoped>
