@@ -44,8 +44,9 @@ class RequestService extends Service {
 
     transactionsToProcess.forEach((tx) => {
       tx.meta_data.status = 'executed';
-      DataStore.getTransactionHistory().push(tx);
     });
+
+    DataStore.getTransactionHistory().push(...transactionsToProcess);
 
     // TODO: break out both account and pendingdepositst storage
     let pendingDeposits: MerkleStack<RollupDeposit> =
@@ -79,6 +80,7 @@ class RequestService extends Service {
         tx.meta_data.status = 'executed';
       } catch (error) {
         console.log(error);
+        tx.meta_data.status = 'failed';
       }
     });
 

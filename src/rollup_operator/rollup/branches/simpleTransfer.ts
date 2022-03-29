@@ -49,7 +49,7 @@ export function simpleTransfer(
   // TODO: check if balance of sender account has enough to send
   senderAccount.nonce.equals(t.nonce);
 
-  senderAccount.balance = senderAccount.balance.sub(100);
+  senderAccount.balance = senderAccount.balance.sub(t.amount);
   senderAccount.nonce = senderAccount.nonce.add(1);
 
   // store the sender

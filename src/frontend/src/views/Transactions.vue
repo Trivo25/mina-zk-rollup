@@ -17,13 +17,13 @@
 
         <tr v-for="(tx, t) in transactions">
           <td>{{ crop(tx.hash) }}</td>
-          <td>{{ tx.status }}</td>
+          <td :class="tx.status">{{ tx.status }}</td>
           <td>{{ tx.method }}</td>
           <td>{{ crop(tx.from) }}</td>
           <td>{{ crop(tx.to) }}</td>
           <td>{{ tx.amount }} MINA</td>
           <td>{{ tx.fee }} MINA</td>
-          <td>{{ new Date(tx.time * 1).toLocaleDateString() }}</td>
+          <td>{{ new Date(parseInt(tx.time)).toLocaleTimeString() }}</td>
         </tr>
       </table>
       <div @click="refreshTx()" class="refresh">
@@ -110,5 +110,16 @@ tr:nth-child(odd) {
 .refresh:hover {
   cursor: pointer;
   color: var(--nord12);
+}
+
+.pending {
+  background-color: var(--nord12);
+}
+.executed {
+  background-color: var(--nord14);
+}
+
+.failed {
+  background-color: var(--nord11);
 }
 </style>

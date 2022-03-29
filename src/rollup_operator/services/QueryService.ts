@@ -16,7 +16,8 @@ class QueryService extends Service {
         DataStore.getTransactionHistory().map((tx) => {
           return tx.meta_data;
         })
-      );
+      )
+      .reverse();
   }
 
   // ! DUMMY CODE
