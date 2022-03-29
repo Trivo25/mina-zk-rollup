@@ -84,7 +84,7 @@ class RollupService extends Service {
 
         tx.meta_data.status = 'executed';
       } catch (error) {
-        console.log(error);
+        console.log(`Discontinuing proof production, got error ${error}`);
         tx.meta_data.status = 'failed';
       }
     });
