@@ -7,6 +7,7 @@
       <div v-if="notSet()">No valid keypair found, generate one first</div>
       <div v-else>
         <div @click="signAndProcess()" class="button">Sign and Send</div>
+        <br />
         <input
           class="input-field searchbar"
           type="text"
@@ -28,7 +29,15 @@
           name="usrnm"
           v-model="receiver"
         />
-        {{ nonce }}
+        <br /><br /><br />
+        <div v-if="receiver && amount && nonce">
+          You are about to send
+          <span style="color: black; font-weight: 800">{{ amount }}</span>
+          MINA to
+          <span style="color: black; font-weight: 800">
+            {{ crop(receiver == null ? '' : receiver) }}</span
+          >!
+        </div>
       </div>
     </div>
   </div>

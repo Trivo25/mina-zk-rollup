@@ -16,6 +16,7 @@
               crop(a.toString())
             }}</a>
           </td>
+
           <td>{{ acc.balance.value }} MINA</td>
           <td>{{ acc.nonce.value }}</td>
           <td>{{ acc.username ? acc.username : 'unknown' }}</td>
@@ -31,7 +32,7 @@
 <script lang="ts" setup>
 import refresh from '~icons/el/refresh';
 import axios from 'axios';
-
+import nanoToMina from '../../../lib/helpers/nanoToMina';
 import { ref, onMounted } from 'vue';
 
 const accounts = ref();

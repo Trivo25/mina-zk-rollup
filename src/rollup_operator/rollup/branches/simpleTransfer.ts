@@ -2,6 +2,7 @@ import { Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
 import { base58Encode } from '../../../lib/baseEncoding';
 import { KeyedMerkleStore } from '../../../lib/data_store/KeyedDataStore';
 import { MerkleStack } from '../../../lib/data_store/MerkleStack';
+import minaToNano from '../../../lib/helpers/minaToNano';
 import RollupAccount from '../models/RollupAccount';
 import RollupDeposit from '../models/RollupDeposit';
 import RollupState from '../models/RollupState';
@@ -58,8 +59,9 @@ export function simpleTransfer(
     senderAccount
   );
 
+  let fee = UInt64.fromNumber(0); //UInt64.fromNumber(minaToNano(0.1)); // ! Dummy fee of 0.1 MINA
   // add funds to receiver
-  receiverAccount.balance = receiverAccount.balance.add(t.amount);
+  receiverAccount.balance = receiverAccount.balance.add(t.amount.sub(fee));
 
   // store receiver
   accountDatabase.set(

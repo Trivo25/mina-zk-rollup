@@ -37,6 +37,8 @@
 import refresh from '~icons/el/refresh';
 import axios from 'axios';
 
+import nanoToMina from '../../../lib/helpers/nanoToMina';
+
 import { ref, onMounted } from 'vue';
 
 const transactions = ref();

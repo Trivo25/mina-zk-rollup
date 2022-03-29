@@ -25,6 +25,7 @@ import RollupDeposit from '../rollup/models/RollupDeposit';
 import RollupAccount from '../rollup/models/RollupAccount';
 import Indexer from '../indexer/Indexer';
 import { base58Decode, base58Encode } from '../../lib/baseEncoding';
+import minaToNano from '../../lib/helpers/minaToNano';
 
 class RequestService extends Service {
   constructor(indexer: typeof Indexer) {
@@ -159,7 +160,7 @@ class RequestService extends Service {
     let priv = PrivateKey.random();
 
     let newAcc = new RollupAccount(
-      UInt64.fromNumber(1000),
+      new UInt64(Field(1000)),
       priv.toPublicKey(),
       UInt32.fromNumber(0)
     );
