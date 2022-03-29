@@ -7,7 +7,6 @@ import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/enums/Events';
 import {
-  Circuit,
   Field,
   Poseidon,
   PrivateKey,
@@ -25,8 +24,7 @@ import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../rollup/models/RollupDeposit';
 import RollupAccount from '../rollup/models/RollupAccount';
 import Indexer from '../indexer/Indexer';
-import { base58Decode, base58Encode } from '../../lib/baseEncoding';
-import minaToNano from '../../lib/helpers/minaToNano';
+import { base58Encode } from '../../lib/baseEncoding';
 
 class RequestService extends Service {
   constructor(indexer: typeof Indexer) {
@@ -91,6 +89,16 @@ class RequestService extends Service {
       console.log(proofBatch.length);
       console.log('producing master proof');
       let masterProof = RollupProof.mergeBatch(proofBatch);
+      DataStore.getBlocks().push({
+        transactions: transactionsToProcess,
+        status: 'executed',
+        new_state_root:
+          masterProof.publicInput.target.accountDbCommitment.toString(),
+        previous_state_root:
+          masterProof.publicInput.source.accountDbCommitment.toString(),
+        id: (DataStore.getBlocks().length + 1).toString(),
+        time: Date.now().toString(),
+      });
       console.log(masterProof);
     } catch (error) {
       console.log(error);

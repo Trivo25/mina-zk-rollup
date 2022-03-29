@@ -38,6 +38,10 @@ class QueryService extends Service {
       pending_transactions_count: DataStore.getTransactionPool().length,
     };
   }
+
+  getBlocks(): any {
+    return DataStore.getBlocks();
+  }
 }
 
 export default QueryService;
