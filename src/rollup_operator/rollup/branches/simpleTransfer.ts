@@ -1,4 +1,4 @@
-import { Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { Bool, Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
 import { base58Encode } from '../../../lib/baseEncoding';
 import { KeyedMerkleStore } from '../../../lib/data_store/KeyedDataStore';
 import { MerkleStack } from '../../../lib/data_store/MerkleStack';
@@ -18,7 +18,6 @@ export function simpleTransfer(
 ): RollupProof {
   // verify correctness of the transaction
   s.verify(t.sender, t.toFields()).assertEquals(true);
-
   // store the current state
   let stateBefore = new RollupState(Field(0), accountDatabase.getMerkleRoot()!);
 
@@ -48,7 +47,16 @@ export function simpleTransfer(
 
   // deal with sender account
   // TODO: check if balance of sender account has enough to send
-  senderAccount.nonce.equals(t.nonce);
+  senderAccount.nonce.equals(t.nonce).assertEquals(true);
+
+  // ! seems like UInt64.lt(e) is having issues with comparing... using if for now
+  // sender must have enough funds
+  //t.amount.lt(senderAccount.balance).assertEquals(true);
+  if (
+    parseInt(senderAccount.balance.toString()) < parseInt(t.amount.toString())
+  ) {
+    throw new Error('not enough funds');
+  }
 
   senderAccount.balance = senderAccount.balance.sub(t.amount);
   senderAccount.nonce = senderAccount.nonce.add(1);
@@ -59,7 +67,7 @@ export function simpleTransfer(
     senderAccount
   );
 
-  let fee = UInt64.fromNumber(0); //UInt64.fromNumber(minaToNano(0.1)); // ! Dummy fee of 0.1 MINA
+  let fee = UInt64.fromNumber(1); //UInt64.fromNumber(minaToNano(0.1)); // ! Dummy fee of 0.1 MINA
   // add funds to receiver
   receiverAccount.balance = receiverAccount.balance.add(t.amount.sub(fee));
 

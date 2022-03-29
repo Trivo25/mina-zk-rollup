@@ -7,6 +7,7 @@ import { sha256 } from '../../lib/sha256';
 import EventHandler from '../setup/EvenHandler';
 import Events from '../../lib/models/enums/Events';
 import {
+  Circuit,
   Field,
   Poseidon,
   PrivateKey,
@@ -78,16 +79,22 @@ class RequestService extends Service {
           accountDb
         );
         proofBatch.push(p);
+
         tx.meta_data.status = 'executed';
       } catch (error) {
         console.log(error);
         tx.meta_data.status = 'failed';
       }
     });
-
-    console.log('producing master proof');
-    let masterProof = RollupProof.mergeBatch(proofBatch);
-    console.log(masterProof);
+    if (proofBatch.length === 0) return;
+    try {
+      console.log(proofBatch.length);
+      console.log('producing master proof');
+      let masterProof = RollupProof.mergeBatch(proofBatch);
+      console.log(masterProof);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**
@@ -146,7 +153,7 @@ class RequestService extends Service {
     // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
     // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
     // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
-    if (poolSize >= 2) {
+    if (poolSize >= 1) {
       EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 
