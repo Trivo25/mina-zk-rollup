@@ -16,13 +16,15 @@
               crop(a.toString())
             }}</a>
           </td>
+
           <td>{{ acc.balance.value }} MINA</td>
           <td>{{ acc.nonce.value }}</td>
           <td>{{ acc.username ? acc.username : 'unknown' }}</td>
         </tr>
       </table>
-      <div class="refresh" @click="refreshAccounts()">
-        <refresh style="font-size: 4rem; padding: 5px" />
+      <div @click="refreshAccounts()" class="refresh">
+        <refresh style="font-size: 2rem" />
+        <span style="font-size: 0.8rem">Refresh</span>
       </div>
     </div>
   </div>
@@ -31,19 +33,19 @@
 <script lang="ts" setup>
 import refresh from '~icons/el/refresh';
 import axios from 'axios';
-
+import nanoToMina from '../../../lib/helpers/nanoToMina';
 import { ref, onMounted } from 'vue';
 
 const accounts = ref();
 
 onMounted(async () => {
-  let res = await axios.get('http://localhost:5000/query/addresses');
+  let res = await axios.get('http://135.181.119.60:5000/query/addresses');
   accounts.value = res.data;
   console.log(accounts.value);
 });
 
 const refreshAccounts = async () => {
-  let res = await axios.get('http://localhost:5000/query/addresses');
+  let res = await axios.get('http://135.181.119.60:5000/query/addresses');
   accounts.value = res.data;
 };
 

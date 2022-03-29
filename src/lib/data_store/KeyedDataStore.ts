@@ -52,6 +52,11 @@ export class KeyedMerkleStore<K, V extends CircuitValue> {
    * @returns Merkle root or undefined if not found
    */
   getMerkleRoot(): Field | undefined {
+    // ! i might have to re-visit this section
+    this.merkleTree.tree.leaves = Array.from(this.dataStore.values()).map((x) =>
+      Poseidon.hash(x.toFields())
+    );
+    this.merkleTree.makeTree();
     return this.merkleTree.getMerkleRoot();
   }
 
@@ -95,18 +100,16 @@ export class KeyedMerkleStore<K, V extends CircuitValue> {
    */
   set(key: K, value: V) {
     let entry: V | undefined = this.dataStore.get(key);
+
     if (entry === undefined) {
       // key is new
-
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())], false);
-
       this.dataStore = this.dataStore.set(key, value);
     } else {
-      // element already exists in merkle tree, just change the entry so the order doesnt get mixed up#
-      let index = this.merkleTree.getIndex(Poseidon.hash(entry.toFields()));
-      this.merkleTree.tree.leaves[index!] = Poseidon.hash(value.toFields());
+      this.merkleTree.tree.leaves = Array.from(this.dataStore.values()).map(
+        (x) => Poseidon.hash(x.toFields())
+      );
       this.merkleTree.makeTree();
-      this.dataStore.set(key, value);
     }
   }
 

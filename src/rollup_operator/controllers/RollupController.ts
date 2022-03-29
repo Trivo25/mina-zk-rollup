@@ -64,7 +64,7 @@ class RollupController extends Controller<RollupService> {
           nonce: req.body.meta_data.nonce,
           method: req.body.meta_data.method, // TODO: maybe verify method via a signature?
           // NOTE: THIS IS DUMMY DATA
-          fee: '0.001',
+          fee: '1',
           time: Date.now().toString(),
         },
         transaction_data: {

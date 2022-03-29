@@ -4,8 +4,6 @@ import ITransaction from '../../lib/models/interfaces/ITransaction';
 import EnumError from '../../lib/models/enums/EnumError';
 import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
-import EventHandler from '../setup/EvenHandler';
-import Events from '../../lib/models/enums/Events';
 import {
   Field,
   Poseidon,
@@ -24,23 +22,29 @@ import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from '../rollup/models/RollupDeposit';
 import RollupAccount from '../rollup/models/RollupAccount';
 import Indexer from '../indexer/Indexer';
-import { base58Decode, base58Encode } from '../../lib/baseEncoding';
+import { base58Encode } from '../../lib/baseEncoding';
 
-class RequestService extends Service {
+class RollupService extends Service {
   constructor(indexer: typeof Indexer) {
     super(indexer);
   }
 
   static async produceRollupBlock() {
     console.log(
-      `producing a new rollup block with ${
+      `Trying to produce a new rollup block with ${
         DataStore.getTransactionPool().length
-      } transctions`
+      } transactions`
     );
 
     let transactionsToProcess: Array<ITransaction> = new Array<ITransaction>();
     Object.assign(transactionsToProcess, DataStore.getTransactionPool());
     DataStore.getTransactionPool().length = 0;
+
+    transactionsToProcess.forEach((tx) => {
+      tx.meta_data.status = 'executed';
+    });
+
+    DataStore.getTransactionHistory().push(...transactionsToProcess);
 
     // TODO: break out both account and pendingdepositst storage
     let pendingDeposits: MerkleStack<RollupDeposit> =
@@ -51,14 +55,17 @@ class RequestService extends Service {
     );
 
     let accountDb = DataStore.getAccountStore();
-
+    console.log(accountDb.getMerkleRoot()?.toString());
     // TODO: verify that on-chain merkle root actually matches with the one known to the operator
 
+    console.log(
+      `Current state root ${base58Encode(
+        DataStore.getAccountStore().getMerkleRoot()!.toString()
+      )}`
+    );
+    console.log(`Processing ${transactionsToProcess.length} transactions`);
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
-      console.log('---------------');
-      console.log(tx);
-      console.log('---------------');
       try {
         let signature: Signature = signatureFromInterface(
           tx.transaction_data.signature
@@ -74,15 +81,56 @@ class RequestService extends Service {
           accountDb
         );
         proofBatch.push(p);
+
         tx.meta_data.status = 'executed';
       } catch (error) {
-        console.log(error);
+        console.log(`Discontinuing proof production, got error ${error}`);
+        tx.meta_data.status = 'failed';
       }
     });
 
-    console.log('producing master proof');
-    let masterProof = RollupProof.mergeBatch(proofBatch);
-    console.log(masterProof);
+    if (proofBatch.length === 0) {
+      console.log(`Block contained no valid proofs, continuing..`);
+      return;
+    }
+    try {
+      console.log(
+        `Producing master proof, consisting of ${proofBatch.length} child proofs`
+      );
+      let masterProof = RollupProof.mergeBatch(proofBatch);
+      console.log(`Sucessfully produced a new master proof`);
+
+      DataStore.getBlocks().push({
+        transactions: transactionsToProcess,
+        status: 'executed',
+        new_state_root: base58Encode(
+          masterProof.publicInput.target.accountDbCommitment.toString()
+        ),
+        previous_state_root: base58Encode(
+          masterProof.publicInput.source.accountDbCommitment.toString()
+        ),
+        id: (DataStore.getBlocks().length + 1).toString(),
+        time: Date.now().toString(),
+      });
+      console.log(`Sucessfully produced a new rollup block`);
+      console.log(
+        `Master proof target root ${base58Encode(
+          masterProof.publicInput.target.accountDbCommitment.toString()
+        )}`
+      );
+      console.log(
+        `Master proof source root ${base58Encode(
+          masterProof.publicInput.source.accountDbCommitment.toString()
+        )}`
+      );
+      console.log(
+        `New state root ${base58Encode(
+          DataStore.getAccountStore().getMerkleRoot()!.toString()
+        )}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   /**
@@ -107,6 +155,7 @@ class RequestService extends Service {
   processTransaction(transaction: ITransaction): any {
     // verify signature so no faulty signature makes it into the pool
 
+    console.log(`New incoming transaction`);
     let signature: Signature = signatureFromInterface(
       transaction.transaction_data.signature
     );
@@ -141,8 +190,9 @@ class RequestService extends Service {
     // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
     // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
     // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
-    if (poolSize >= 2) {
-      EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
+    if (poolSize >= 8) {
+      RollupService.produceRollupBlock();
+      //EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
 
     return {
@@ -155,7 +205,7 @@ class RequestService extends Service {
     let priv = PrivateKey.random();
 
     let newAcc = new RollupAccount(
-      UInt64.fromNumber(1000),
+      new UInt64(Field(1000)),
       priv.toPublicKey(),
       UInt32.fromNumber(0)
     );
@@ -169,4 +219,4 @@ class RequestService extends Service {
   }
 }
 
-export default RequestService;
+export default RollupService;
