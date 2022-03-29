@@ -11,6 +11,8 @@ console.log = function () {
 init();
 
 async function init() {
+  console.log(`Starting operator..`);
+
   server.listen(PORT, () => {
     console.log(`Rollup operator running on port ${PORT}`);
   });

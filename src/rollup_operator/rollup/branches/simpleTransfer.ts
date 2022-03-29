@@ -20,7 +20,7 @@ export function simpleTransfer(
   s.verify(t.sender, t.toFields()).assertEquals(true);
   // store the current state
   let stateBefore = new RollupState(Field(0), accountDatabase.getMerkleRoot()!);
-  console.log(accountDatabase.getMerkleRoot()?.toString());
+
   // get both participants of the transaction
   let senderAccount: RollupAccount | undefined = accountDatabase.get(
     base58Encode(JSON.stringify(t.sender.toJSON()!))
@@ -78,7 +78,6 @@ export function simpleTransfer(
   );
 
   // get the updates state
-  console.log(accountDatabase.getMerkleRoot()?.toString());
   let stateAfter = new RollupState(Field(0), accountDatabase.getMerkleRoot()!);
 
   return new RollupProof(new RollupStateTransition(stateBefore, stateAfter));
