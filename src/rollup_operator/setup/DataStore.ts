@@ -8,7 +8,7 @@ import Account from '../rollup/models/RollupAccount';
 class DataStore {
   static accounts: KeyedMerkleStore<string, Account> | undefined;
   static transactionPool: Array<ITransaction> | undefined;
-
+  static transactionHistory: Array<ITransaction> | undefined;
   constructor() {
     throw new Error(`Use ${this}.getInstance() instead!`);
   }
@@ -25,6 +25,13 @@ class DataStore {
       DataStore.transactionPool = new Array<ITransaction>();
     }
     return DataStore.transactionPool;
+  }
+
+  static getTransactionHistory() {
+    if (DataStore.transactionHistory === undefined) {
+      DataStore.transactionHistory = new Array<ITransaction>();
+    }
+    return DataStore.transactionHistory;
   }
 }
 

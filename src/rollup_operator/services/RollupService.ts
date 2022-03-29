@@ -42,6 +42,11 @@ class RequestService extends Service {
     Object.assign(transactionsToProcess, DataStore.getTransactionPool());
     DataStore.getTransactionPool().length = 0;
 
+    transactionsToProcess.forEach((tx) => {
+      tx.meta_data.status = 'executed';
+      DataStore.getTransactionHistory().push(tx);
+    });
+
     // TODO: break out both account and pendingdepositst storage
     let pendingDeposits: MerkleStack<RollupDeposit> =
       new MerkleStack<RollupDeposit>();
@@ -56,9 +61,6 @@ class RequestService extends Service {
 
     let proofBatch: RollupProof[] = [];
     transactionsToProcess.forEach(async (tx) => {
-      console.log('---------------');
-      console.log(tx);
-      console.log('---------------');
       try {
         let signature: Signature = signatureFromInterface(
           tx.transaction_data.signature

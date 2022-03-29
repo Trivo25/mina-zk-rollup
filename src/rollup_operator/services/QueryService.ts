@@ -2,16 +2,21 @@ import ITransaction from '../../lib/models/interfaces/ITransaction';
 import DataStore from '../setup/DataStore';
 import Service from './Service';
 import Indexer from '../indexer/Indexer';
-import RollupAccount from '../rollup/models/RollupAccount';
 class QueryService extends Service {
   constructor(indexer: typeof Indexer) {
     super(indexer);
   }
 
   getTransactionPool(): ITransaction[] {
-    return DataStore.getTransactionPool().map((tx: any) => {
-      return tx.meta_data;
-    });
+    return DataStore.getTransactionPool()
+      .map((tx: any) => {
+        return tx.meta_data;
+      })
+      .concat(
+        DataStore.getTransactionHistory().map((tx) => {
+          return tx.meta_data;
+        })
+      );
   }
 
   // ! DUMMY CODE
