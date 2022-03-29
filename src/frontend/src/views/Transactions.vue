@@ -17,7 +17,9 @@
 
         <tr v-for="(tx, t) in transactions">
           <td>{{ crop(tx.hash) }}</td>
-          <td :class="tx.status">{{ tx.status }}</td>
+          <td>
+            <span class="status" :class="tx.status">{{ tx.status }}</span>
+          </td>
           <td>{{ tx.method }}</td>
           <td>{{ crop(tx.from) }}</td>
           <td>{{ crop(tx.to) }}</td>
@@ -114,6 +116,10 @@ tr:nth-child(odd) {
   color: var(--nord12);
 }
 
+.status {
+  padding: 3px;
+  font-weight: 600;
+}
 .pending {
   background-color: var(--nord12);
 }
