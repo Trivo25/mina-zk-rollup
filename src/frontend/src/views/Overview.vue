@@ -9,17 +9,17 @@
               <tx class="icon" />
             </div>
             <div class="right">
-              <h1>Total Transactions</h1>
-              <h1>0</h1>
+              <h1>Average TPS</h1>
+              <h1>{{ Math.ceil(parseInt(stats.average_tps)) }} per second</h1>
             </div>
           </div>
           <div class="stat">
             <div class="left">
-              <blocks class="icon" />
+              <tx class="icon" />
             </div>
             <div class="right">
-              <h1>Total Blocks</h1>
-              <h1>0</h1>
+              <h1>Total Transactions</h1>
+              <h1>{{ stats.total_transactions }}</h1>
             </div>
           </div>
           <div class="stat">
@@ -28,23 +28,23 @@
             </div>
             <div class="right">
               <h1>Total Accounts</h1>
-              <h1>0</h1>
+              <h1>{{ stats.total_addresses }}</h1>
             </div>
           </div>
         </div>
         <div class="bot">
           <div class="stat">
             <div class="left">
-              <blocks class="icon" />
+              <next class="icon" />
             </div>
             <div class="right">
-              <h1>Last Block Submitted</h1>
-              <h1>0</h1>
+              <h1>Uptime</h1>
+              <h1>{{ Math.ceil(parseInt(stats.uptime) / 60) }}min</h1>
             </div>
           </div>
           <div class="stat">
             <div class="left">
-              <next class="icon" />
+              <blocks class="icon" />
             </div>
             <div class="right">
               <h1>Next Block In</h1>
@@ -58,7 +58,7 @@
             </div>
             <div class="right">
               <h1>Transactions In Pool</h1>
-              <h1>0</h1>
+              <h1>{{ stats.pending_transactions_count }}</h1>
             </div>
           </div>
         </div>
@@ -91,8 +91,19 @@ import blocks from '~icons/clarity/blocks-group-line';
 import next from '~icons/carbon/next-outline';
 import accounts from '~icons/carbon/Events';
 import tx from '~icons/carbon/DataShare';
-
+import axios from 'axios';
 import pool from '~icons/icon-park-outline/swimming-pool';
+import { onMounted, ref } from 'vue';
+
+const stats = ref();
+stats.value = {};
+onMounted(async () => {
+  await getStats();
+});
+const getStats = async () => {
+  let res = await axios.get('http://localhost:5000/query/stats');
+  stats.value = res.data;
+};
 </script>
 
 <style scoped>

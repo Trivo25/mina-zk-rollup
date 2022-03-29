@@ -22,8 +22,9 @@
           <td>{{ acc.username ? acc.username : 'unknown' }}</td>
         </tr>
       </table>
-      <div class="refresh" @click="refreshAccounts()">
-        <refresh style="font-size: 4rem; padding: 5px" />
+      <div @click="refreshAccounts()" class="refresh">
+        <refresh style="font-size: 2rem" />
+        <span style="font-size: 0.8rem">Refresh</span>
       </div>
     </div>
   </div>

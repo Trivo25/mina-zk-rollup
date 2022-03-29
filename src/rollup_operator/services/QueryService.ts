@@ -26,9 +26,13 @@ class QueryService extends Service {
   }
 
   stats(): any {
+    let txCount = DataStore.getTransactionPool().concat(
+      DataStore.getTransactionHistory()
+    ).length;
     // just some dummy data
     return {
-      average_tps: 14,
+      average_tps: txCount / process.uptime(),
+      total_transactions: txCount,
       total_addresses: DataStore.getAccountStore().dataStore.size,
       uptime: process.uptime(),
       pending_transactions_count: DataStore.getTransactionPool().length,

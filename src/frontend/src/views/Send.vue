@@ -30,13 +30,21 @@
           v-model="receiver"
         />
         <br /><br /><br />
-        <div v-if="receiver && amount && nonce">
+        <div v-if="receiver && amount && nonce && txHash">
           You are about to send
           <span style="color: black; font-weight: 800">{{ amount }}</span>
           MINA to
           <span style="color: black; font-weight: 800">
             {{ crop(receiver == null ? '' : receiver) }}</span
           >!
+        </div>
+        <div
+          @click="copyToClipboard(txHash.toString())"
+          class="broadcasted"
+          v-if="txHash"
+        >
+          Broadcasted!
+          {{ txHash }}
         </div>
       </div>
     </div>
@@ -53,9 +61,9 @@ import RollupTransaction from '../../../rollup_operator/rollup/models/RollupTran
 import { isReady, PrivateKey, PublicKey, UInt32, UInt64 } from 'snarkyjs';
 
 const amount = ref();
-const nonce = ref();
 const receiver = ref();
-
+const nonce = ref();
+const txHash = ref();
 const signAndProcess = async () => {
   await isReady;
   let acc = JSON.parse(localStorage.getItem('account')!);
@@ -79,10 +87,15 @@ const signAndProcess = async () => {
     senderPriv!
   );
   console.log(payload);
-  let res = axios.post('http://localhost:5000/rollup/transaction', payload);
-  console.log(res);
+  let res = await axios.post(
+    'http://localhost:5000/rollup/transaction',
+    payload
+  );
+  txHash.value = res.data.payload.transcaction_hash;
 };
-
+const copyToClipboard = (s: string) => {
+  navigator.clipboard.writeText(s);
+};
 const notSet = () => {
   return localStorage.getItem('account') == null;
 };
@@ -135,5 +148,14 @@ const crop = (s: string) => {
   background-color: var(--nord2);
   color: white;
   transform: scale(1.02);
+}
+
+.broadcasted {
+  color: var(--nord14);
+  font-weight: 800;
+}
+
+.broadcasted:hover {
+  cursor: pointer;
 }
 </style>
