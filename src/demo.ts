@@ -45,6 +45,24 @@ class Test {
 test();
 async function test() {
   await isReady;
+
+  let store = new KeyedMerkleStore<String, Account>();
+
+  let a = new Account(UInt64.fromNumber(100));
+  let b = new Account(UInt64.fromNumber(200));
+  let c = new Account(UInt64.fromNumber(300));
+
+  console.log('1 root ', store.getMerkleRoot()?.toString());
+  store.set('A', a);
+  console.log('2 root ', store.getMerkleRoot()?.toString());
+  store.set('B', b);
+  console.log('3 root ', store.getMerkleRoot()?.toString());
+  b.balance = UInt64.fromNumber(300);
+  store.set('B', b);
+  console.log('4 root ', store.getMerkleRoot()?.toString());
+  store.set('C', c);
+  console.log('5 root ', store.getMerkleRoot()?.toString());
+
   shutdown();
 }
 
@@ -170,7 +188,7 @@ function keyedDataStoreDemo() {
 
   //store.set('C', accountCnew);
   console.log('ok?', ok);
-  store.merkleTree.printTree();
+  /*   store.merkleTree.printTree(); */
 
   for (let [key, value] of store.dataStore) {
     console.log(key + ' ' + value.balance.toString());
@@ -215,6 +233,12 @@ function keyedDataStoreDemo() {
         root
       )
     );
+    console.log('root old', root.toString());
+    console.log('balance old', accountA.balance.toString());
+    accountA.balance = UInt64.fromNumber(33333);
+    store.set('A', accountA);
+    console.log('root new', root.toString());
+    console.log('balance new', accountA.balance.toString());
   }
 
   console.log('C ', store.get('C')?.equals(accountCnew).toBoolean());

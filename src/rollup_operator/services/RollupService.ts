@@ -57,7 +57,7 @@ class RequestService extends Service {
     );
 
     let accountDb = DataStore.getAccountStore();
-
+    console.log(accountDb.getMerkleRoot()?.toString());
     // TODO: verify that on-chain merkle root actually matches with the one known to the operator
 
     let proofBatch: RollupProof[] = [];
@@ -105,6 +105,7 @@ class RequestService extends Service {
     } catch (error) {
       console.log(error);
     }
+    console.log(accountDb.getMerkleRoot()?.toString());
   }
 
   /**

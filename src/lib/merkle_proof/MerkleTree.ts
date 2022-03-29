@@ -68,6 +68,7 @@ export class MerkleTree {
   getIndex(element: Field): number | undefined {
     let result = undefined;
     this.tree.leaves.forEach((el, i) => {
+      console.log(el.toString());
       if (el.equals(element).toBoolean()) {
         result = i;
         return;
