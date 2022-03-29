@@ -77,7 +77,7 @@
           </tr>
           <template v-for="(block, b) in blocks">
             <tr>
-              <td>{{ b }}</td>
+              <td>{{ blocks.length - b }}</td>
               <td>{{ block.status }}</td>
               <td>{{ crop(block.new_state_root) }}</td>
               <td>{{ crop(block.previous_state_root) }}</td>

@@ -40,7 +40,7 @@ class QueryService extends Service {
   }
 
   getBlocks(): any {
-    return DataStore.getBlocks();
+    return DataStore.getBlocks().reverse();
   }
 }
 
