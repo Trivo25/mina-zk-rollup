@@ -71,23 +71,26 @@
             <th>Block</th>
             <th>Status</th>
             <th>New Root</th>
+            <th>Previous Root</th>
             <th>Transactions</th>
             <th>Time</th>
           </tr>
-          <tr>
-            <td>1</td>
-            <td>Executed</td>
-            <td>m1asd9124ghtadas7123gasd903</td>
-            <td>31</td>
-            <td>05:14:32 UTC, 28-03-2022</td>
-          </tr>
+          <template v-for="(block, b) in blocks">
+            <tr>
+              <td>{{ b }}</td>
+              <td>{{ block.status }}</td>
+              <td>{{ crop(block.new_state_root) }}</td>
+              <td>{{ crop(block.previous_state_root) }}</td>
+              <td>{{ block.transactions.length }}</td>
+              <td>{{ new Date(parseInt(block.time)).toLocaleTimeString() }}</td>
+            </tr>
+          </template>
         </table>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import blocks from '~icons/clarity/blocks-group-line';
 import next from '~icons/carbon/next-outline';
 import accounts from '~icons/carbon/Events';
 import tx from '~icons/carbon/DataShare';
@@ -96,13 +99,28 @@ import pool from '~icons/icon-park-outline/swimming-pool';
 import { onMounted, ref } from 'vue';
 
 const stats = ref();
+const blocks = ref();
+
 stats.value = {};
+blocks.value = [];
+
 onMounted(async () => {
   await getStats();
+  await getBlocks();
 });
+
+const crop = (s: string) => {
+  return `${s.slice(0, 8)}...${s.slice(s.length - 8, s.length)}`;
+};
+
 const getStats = async () => {
   let res = await axios.get('http://localhost:5000/query/stats');
   stats.value = res.data;
+};
+
+const getBlocks = async () => {
+  let res = await axios.get('http://localhost:5000/query/blocks');
+  blocks.value = res.data;
 };
 </script>
 

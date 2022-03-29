@@ -92,10 +92,12 @@ class RequestService extends Service {
       DataStore.getBlocks().push({
         transactions: transactionsToProcess,
         status: 'executed',
-        new_state_root:
-          masterProof.publicInput.target.accountDbCommitment.toString(),
-        previous_state_root:
-          masterProof.publicInput.source.accountDbCommitment.toString(),
+        new_state_root: base58Encode(
+          masterProof.publicInput.target.accountDbCommitment.toString()
+        ),
+        previous_state_root: base58Encode(
+          masterProof.publicInput.source.accountDbCommitment.toString()
+        ),
         id: (DataStore.getBlocks().length + 1).toString(),
         time: Date.now().toString(),
       });
