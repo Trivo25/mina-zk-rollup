@@ -190,7 +190,7 @@ class RollupService extends Service {
     // maybe even introduce a global state the operator has access to, including a variable LAST_PRODUCED_ROLLUP_TIME
     // if LAST_PRODUCED_ROLLUP_TIME <= CURRENT_TIME exceeds eg 1hr, produce a block
     // if poolSize >= TARGET_ROLLUP_BLOCK_SIZE produce a block
-    if (poolSize >= 8) {
+    if (poolSize >= 2) {
       RollupService.produceRollupBlock();
       //EventHandler.emit(Events.PENDING_TRANSACTION_POOL_FULL);
     }
