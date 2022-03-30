@@ -73,12 +73,12 @@ const computedBlocks = computed(() => {
 });
 
 onMounted(async () => {
-  let res = await axios.get('http://135.181.119.60:5000/query/blocks');
+  let res = await axios.get('http://localhost:5000/query/blocks');
   blocks.value = res.data;
 });
 
 const refreshBlocks = async () => {
-  let res = await axios.get('http://135.181.119.60:5000/query/blocks');
+  let res = await axios.get('http://localhost:5000/query/blocks');
   blocks.value = res.data;
 };
 

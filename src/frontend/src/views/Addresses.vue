@@ -39,13 +39,13 @@ import { ref, onMounted } from 'vue';
 const accounts = ref();
 
 onMounted(async () => {
-  let res = await axios.get('http://135.181.119.60:5000/query/addresses');
+  let res = await axios.get('http://localhost:5000/query/addresses');
   accounts.value = res.data;
   console.log(accounts.value);
 });
 
 const refreshAccounts = async () => {
-  let res = await axios.get('http://135.181.119.60:5000/query/addresses');
+  let res = await axios.get('http://localhost:5000/query/addresses');
   accounts.value = res.data;
 };
 

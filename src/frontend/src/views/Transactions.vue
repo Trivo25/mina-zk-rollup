@@ -65,16 +65,12 @@ const computedTransactions = computed(() => {
 });
 
 onMounted(async () => {
-  let res = await axios.get(
-    'http://rollup.technotro.com:5000/query/transactionPool'
-  );
+  let res = await axios.get('http://localhost:5000/query/transactionPool');
   transactions.value = res.data;
 });
 
 const refreshTx = async () => {
-  let res = await axios.get(
-    'http://rollup.technotro.com:5000/query/transactionPool'
-  );
+  let res = await axios.get('http://localhost:5000/query/transactionPool');
   transactions.value = res.data;
 };
 

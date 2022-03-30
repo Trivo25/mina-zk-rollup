@@ -102,11 +102,6 @@ class RollupSnapp extends SmartContract {
     let currentAcccountsCommitment: Field =
       await this.acccountsCommitment.get();
 
-    // // ! 'if' is probably not good here?
-    // if (merklePath.length === 0) {
-    //   return leafHash.equals(merkleRoot);
-    // }
-
     var proofHash: Field = leafHash;
     for (let x = 0; x < merklePath.length; x++) {
       proofHash = Circuit.if(

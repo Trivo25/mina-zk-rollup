@@ -106,9 +106,15 @@ export class KeyedMerkleStore<K, V extends CircuitValue> {
       this.merkleTree.addLeaves([Poseidon.hash(value.toFields())], false);
       this.dataStore = this.dataStore.set(key, value);
     } else {
-      this.merkleTree.tree.leaves = Array.from(this.dataStore.values()).map(
-        (x) => Poseidon.hash(x.toFields())
-      );
+      // element already exists in merkle tree, just change the entry so the order doesnt get mixed up#
+      let index = this.merkleTree.getIndex(Poseidon.hash(entry.toFields()));
+      this.merkleTree.tree.leaves[index!] = Poseidon.hash(value.toFields());
+      if (index === undefined) {
+        this.merkleTree.tree.leaves = Array.from(this.dataStore.values()).map(
+          (x) => Poseidon.hash(x.toFields())
+        );
+      }
+      this.dataStore.set(key, value);
       this.merkleTree.makeTree();
     }
   }
