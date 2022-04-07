@@ -114,12 +114,12 @@ const crop = (s: string) => {
 };
 
 const getStats = async () => {
-  let res = await axios.get('http://localhost:5000/query/stats');
+  let res = await axios.get('https://api.technotro.com/query/stats');
   stats.value = res.data;
 };
 
 const getBlocks = async () => {
-  let res = await axios.get('http://localhost:5000/query/blocks');
+  let res = await axios.get('https://api.technotro.com/query/blocks');
   blocks.value = res.data;
 };
 </script>

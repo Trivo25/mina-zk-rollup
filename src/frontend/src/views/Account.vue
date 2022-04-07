@@ -1,6 +1,6 @@
 <template>
   <div class="overview">
-    <h1 class="tag" style="text-align: center !important">Account</h1>
+    <h1 class="tag" style="text-align: center !important">Faucet</h1>
 
     <!-- ! DUMMY DATA -->
     <div class="content">
@@ -10,6 +10,12 @@
         <h3 style="color: red">
           Your private and public key will be stored in your browsers storage
           and used automatically to sign transactions
+        </h3>
+        <br />
+        <h3 style="color: red">
+          Go to "Addresses" and click on a address - it will be copied into your
+          clipboard and can then be pasted into the "Receiver" field under
+          "Send".
         </h3>
         <br />
         PublicKey: {{ crop(account.pub_enc) }}
@@ -27,7 +33,7 @@ import { ref, onMounted } from 'vue';
 const account = ref();
 
 const requestAccount = async () => {
-  let res = await axios.post('http://localhost:5000/rollup/createAccount');
+  let res = await axios.post('https://api.technotro.com/rollup/createAccount');
   account.value = res.data;
   let pair = {
     privateKey: account.value.priv,

@@ -29,7 +29,7 @@
       <router-link to="Account">
         <li :class="$route.name == 'Account' ? 'selected' : 'selecteable'">
           <div class="logo"><user class="i" /></div>
-          <span class="nav-item">Account</span>
+          <span class="nav-item">Faucet</span>
         </li>
       </router-link>
       <router-link to="Send">
@@ -41,10 +41,15 @@
     </ul>
 
     <div class="footer">
-      <h1>zk-Rollup</h1>
+      <img
+        style="position: relative; width: 150px; left: calc(50% - 75px)"
+        src="../assets/Made_On_Mina_badge_WHITE.svg"
+        alt=""
+      />
+      <!--       <h1>zk-Rollup</h1>
       <a href="https://github.com/Trivo25/mina-zk-rollup" target="_blank"
         ><github />GitHub</a
-      >
+      > -->
     </div>
   </nav>
 </template>
@@ -139,7 +144,7 @@ li {
   bottom: 100px;
   margin-top: 50px;
   width: 100%;
-  color: var(--nord3);
+  color: var(--nord5);
   line-height: 30px;
 }
 
