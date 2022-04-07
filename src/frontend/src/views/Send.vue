@@ -96,7 +96,7 @@ const signAndProcess = async () => {
   );
   console.log(payload);
   let res = await axios.post(
-    'http://localhost:5000/rollup/transaction',
+    'https://api.technotro.com/rollup/transaction',
     payload
   );
   txHash.value = res.data.payload.transcaction_hash;

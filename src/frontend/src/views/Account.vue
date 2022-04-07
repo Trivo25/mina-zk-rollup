@@ -27,7 +27,7 @@ import { ref, onMounted } from 'vue';
 const account = ref();
 
 const requestAccount = async () => {
-  let res = await axios.post('http://localhost:5000/rollup/createAccount');
+  let res = await axios.post('https://api.technotro.com/rollup/createAccount');
   account.value = res.data;
   let pair = {
     privateKey: account.value.priv,
