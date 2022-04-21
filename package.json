@@ -14,12 +14,16 @@
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
+    "demo": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/demo.js",
+    "demo:operator": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/index.js",
+    "demo:client": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/client_sdk/index.js",
+    "demo:ipfs": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/ipfs_demo.js",
     "build": "tsc -p tsconfig.json",
-    "coverage": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest --coverage",
+    "coverage": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --coverage",
     "format": "prettier --write --ignore-unknown **/*",
     "prepare": "husky install",
-    "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest",
-    "testw": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest --watch",
+    "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js",
+    "testw": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --watch",
     "lint": "npx eslint src/* --fix"
   },
   "lint-staged": {
@@ -29,6 +33,17 @@
     ]
   },
   "dependencies": {
+    "base-x": "^4.0.0",
+    "body-parser": "^1.20.0",
+    "buffer": "^6.0.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mina-signer": "^1.1.0",
+    "ipfs": "^0.62.1",
+    "ipfs-log": "^5.4.1",
+    "pg": "^8.7.3",
     "snarkyjs": "^0.2.0"
   },
   "devDependencies": {
