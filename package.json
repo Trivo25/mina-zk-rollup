@@ -1,32 +1,26 @@
 {
-  "name": "mina-zk-rollup",
-  "version": "0.1.4",
+  "name": "test",
+  "version": "0.1.5",
   "description": "",
   "author": "",
   "license": "Apache-2.0",
   "keywords": [
-    "mina-snapp",
+    "mina-zkapp",
     "mina-zk-app",
-    "mina-dapp"
+    "mina-dapp",
+    "zkapp"
   ],
   "type": "module",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
-    "demo": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/demo.js",
-    "demo:operator": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/index.js",
-    "demo:client": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/client_sdk/index.js",
-    "demo:ipfs": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/ipfs_demo.js",
     "build": "tsc -p tsconfig.json",
-    "coverage": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --coverage",
+    "coverage": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest --coverage",
     "format": "prettier --write --ignore-unknown **/*",
     "prepare": "husky install",
-    "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js",
-    "testw": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --watch",
-    "lint": "npx eslint src/* --fix",
-    "vue:dev": "vite",
-    "vue:build": "vue-tsc --noEmit && vite build",
-    "vue:preview": "vite preview"
+    "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest",
+    "testw": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads node_modules/.bin/jest --watch",
+    "lint": "npx eslint src/* --fix"
   },
   "lint-staged": {
     "**/*": [
@@ -35,32 +29,14 @@
     ]
   },
   "dependencies": {
-    "@o1labs/client-sdk": "^1.0.1",
-    "base-x": "^3.0.9",
-    "config": "^3.3.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.0",
-    "express": "^4.17.2",
-    "ipfs": "^0.62.1",
-    "ipfs-log": "^5.4.1",
-    "pg": "^8.7.3",
-    "snarkyjs": "0.2.0",
-    "unplugin-icons": "^0.14.1",
-    "vite-plugin-windicss": "^1.7.1",
-    "vue": "^3.2.25",
-    "vue-router": "^4.0.12",
-    "windicss": "^3.4.4"
+    "snarkyjs": "^0.2.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-typescript": "^7.16.0",
-    "@types/cors": "^2.8.12",
-    "@types/express": "^4.17.13",
     "@types/jest": "^27.0.3",
-    "@types/pg": "^8.6.4",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
-    "@vitejs/plugin-vue": "^2.2.0",
     "eslint": "^8.7.0",
     "eslint-plugin-snarkyjs": "^0.1.0",
     "husky": "^7.0.1",
@@ -68,8 +44,6 @@
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.5.2",
-    "vite": "^2.8.0",
-    "vue-tsc": "^0.29.8"
+    "typescript": "^4.5.2"
   }
 }
