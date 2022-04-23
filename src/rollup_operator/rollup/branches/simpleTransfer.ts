@@ -1,8 +1,7 @@
-import { Bool, Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { Field, Signature, UInt32, UInt64 } from 'snarkyjs';
 import { base58Encode } from '../../../lib/baseEncoding';
 import { KeyedMerkleStore } from '../../../lib/data_store/KeyedDataStore';
 import { MerkleStack } from '../../../lib/data_store/MerkleStack';
-import minaToNano from '../../../lib/helpers/minaToNano';
 import RollupAccount from '../models/RollupAccount';
 import RollupDeposit from '../models/RollupDeposit';
 import RollupState from '../models/RollupState';
@@ -10,7 +9,7 @@ import RollupStateTransition from '../models/RollupStateTransition';
 import RollupTransaction from '../models/RollupTransaction';
 import RollupProof from '../RollupProof';
 
-export function simpleTransfer(
+export default function simpleTransfer(
   t: RollupTransaction,
   s: Signature,
   pendingDeposits: MerkleStack<RollupDeposit>,
