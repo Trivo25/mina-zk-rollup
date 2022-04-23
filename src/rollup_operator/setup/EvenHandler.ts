@@ -1,5 +1,5 @@
 import events from 'events';
-import Events from '../../lib/models/enums/Events';
+import { Events } from '../../lib/models';
 import RollupService from '../services/RollupService';
 
 class EventHandler {

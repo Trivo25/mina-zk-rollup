@@ -12,7 +12,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { MerkleStack } from '../lib/data_store/MerkleStack';
+import { DataStack } from '../lib/data_store';
 import RollupAccount from '../rollup_operator/rollup/models/RollupAccount';
 import RollupDeposit from '../rollup_operator/rollup/models/RollupDeposit';
 import RollupProof from '../rollup_operator/rollup/RollupProof';
@@ -49,7 +49,7 @@ export default class RollupZkApp extends SmartContract {
     this.emitEvent(deposit);
 
     const oldCommitment = await this.pendingDepositsCommitment.get();
-    const newCommitment = MerkleStack.getCommitment(deposit, oldCommitment);
+    const newCommitment = DataStack.getCommitment(deposit, oldCommitment);
     this.pendingDepositsCommitment.set(newCommitment);
   }
 
@@ -64,7 +64,7 @@ export default class RollupZkApp extends SmartContract {
     let currentDepositCommitment: Field = originalCommitment;
 
     for (let i = 0; i < path.length; i++) {
-      currentDepositCommitment = MerkleStack.getCommitment(
+      currentDepositCommitment = DataStack.getCommitment(
         deposit,
         currentDepositCommitment
       );

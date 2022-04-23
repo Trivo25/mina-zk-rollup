@@ -1,7 +1,7 @@
 import { CircuitValue, Field, Poseidon } from 'snarkyjs';
-import { MerkleTree } from '../merkle_proof/MerkleTree';
+import { MerkleTree } from '../merkle_proof';
 
-export class MerkleStack<V extends CircuitValue> {
+export default class DataStack<V extends CircuitValue> {
   dataStore: Array<V>;
   merkleTree: MerkleTree;
 
@@ -51,5 +51,9 @@ export class MerkleStack<V extends CircuitValue> {
 
   getMerkleRoot(): Field | undefined {
     return this.merkleTree.getMerkleRoot();
+  }
+
+  static getCommitment<V extends CircuitValue>(v: V, oldCommitment: Field) {
+    return Poseidon.hash(v.toFields().concat(oldCommitment));
   }
 }

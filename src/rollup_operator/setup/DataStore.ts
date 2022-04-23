@@ -1,13 +1,12 @@
-import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
-import IBlock from '../../lib/models/interfaces/IBlock';
-import ITransaction from '../../lib/models/interfaces/ITransaction';
-import Account from '../rollup/models/RollupAccount';
+import { KeyedDataStore } from '../../lib/data_store';
+import { IBlock, ITransaction } from '../../lib/models';
+import { RollupAccount } from '../rollup';
 
 /*
 ! NOTE: This is jsut a dummy data structure and will be improved on in the future
 */
 class DataStore {
-  static accounts: KeyedMerkleStore<string, Account> | undefined;
+  static accounts: KeyedDataStore<string, RollupAccount> | undefined;
   static transactionPool: Array<ITransaction> | undefined;
   static transactionHistory: Array<ITransaction> | undefined;
   static blocks: Array<IBlock> | undefined;
@@ -17,7 +16,7 @@ class DataStore {
 
   static getAccountStore() {
     if (DataStore.accounts === undefined) {
-      DataStore.accounts = new KeyedMerkleStore<string, Account>();
+      DataStore.accounts = new KeyedDataStore<string, RollupAccount>();
     }
     return DataStore.accounts;
   }

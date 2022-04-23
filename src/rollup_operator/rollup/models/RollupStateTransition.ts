@@ -1,6 +1,6 @@
 import { CircuitValue, Field, prop } from 'snarkyjs';
 
-import RollupState from './RollupState';
+import { RollupState } from '../.';
 
 export default class RollupStateTransition extends CircuitValue {
   @prop source: RollupState;

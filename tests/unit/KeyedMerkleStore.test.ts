@@ -11,7 +11,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { KeyedMerkleStore } from '../../src/lib/data_store/KeyedMerkleStore';
+import { KeyedMerkleStore } from '../../src/lib/data_store';
 
 // demo purposes
 class Account extends CircuitValue {

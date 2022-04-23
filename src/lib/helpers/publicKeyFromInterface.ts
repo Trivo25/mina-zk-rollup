@@ -1,5 +1,5 @@
 import { PublicKey } from 'snarkyjs';
-import IPublicKey from '../models/interfaces/IPublicKey';
+import { IPublicKey } from '../models';
 
 export default function publicKeyFromInterface(
   publicKey: IPublicKey

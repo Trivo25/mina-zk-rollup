@@ -1,4 +1,4 @@
-import RollupProof from '../RollupProof';
+import { RollupProof } from '../.';
 
 export default function mergeBatch(batch: RollupProof[]): RollupProof {
   let mergedBatch: RollupProof[] = [];

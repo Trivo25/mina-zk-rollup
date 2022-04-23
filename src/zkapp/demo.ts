@@ -9,7 +9,7 @@ import {
   Circuit,
   shutdown,
 } from 'snarkyjs';
-import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
+import { MerkleTree } from '../lib/merkle_proof';
 import RollupZkApp from './RollupZkApp';
 
 test();

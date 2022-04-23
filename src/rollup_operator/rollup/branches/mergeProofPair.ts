@@ -1,5 +1,4 @@
-import RollupStateTransition from '../models/RollupStateTransition';
-import RollupProof from '../RollupProof';
+import { RollupProof, RollupStateTransition } from '../.';
 
 export default function mergeProofPair(
   first: RollupProof,

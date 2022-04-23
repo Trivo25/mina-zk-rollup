@@ -1,10 +1,12 @@
 import express from 'express';
 import Controller from './Controller';
 import RollupService from '../services/RollupService';
-import EnumError from '../../lib/models/enums/EnumError';
-import ISignature from '../../lib/models/interfaces/ISignature';
-import ITransaction from '../../lib/models/interfaces/ITransaction';
-import IPublicKey from '../../lib/models/interfaces/IPublicKey';
+import {
+  EnumError,
+  ISignature,
+  ITransaction,
+  IPublicKey,
+} from '../../lib/models';
 import Indexer from '../indexer/Indexer';
 
 class RollupController extends Controller<RollupService> {
