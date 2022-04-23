@@ -60,7 +60,7 @@ All the components will be explained in more detail later.
 #### 2.1 Architecture <span id="21"></span>
 
 <img
-     src="https://www.proxylabs.org/assets/img/rollup.svg"
+     src="./img/rollup.svg"
      style="margin-left: 30px; margin-right: 30px; width: 90%"/>
 
 ---
