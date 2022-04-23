@@ -26,6 +26,18 @@ describe('MerkleTree unit test', () => {
       nodeData.push(Field(Math.floor(Math.random() * 1000000000000)));
     }
 
+    /*                            h_ABCDE
+                                /       \
+                            h_ABCD      h_E
+                          /       \       \
+                        h_AB      h_CD    h_E
+                      /   \     /     \     \
+                    h_A   h_B   h_C   h_D   h_E
+                    |     |     |     |     |
+    nodeData[i]     0    1     2     3     4  
+
+    */
+
     let h_A = Poseidon.hash([nodeData[0]]);
     let h_B = Poseidon.hash([nodeData[1]]);
     let h_C = Poseidon.hash([nodeData[2]]);
