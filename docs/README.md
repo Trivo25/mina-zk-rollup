@@ -70,7 +70,7 @@ All the components will be explained in more detail later.
 ##### 2.2.1 Layer 1 <span id="221"></span>
 
 <img
-     src="https://www.proxylabs.org/assets/img/l1_chain.svg"
+     src="./img/l1_chain.svg"
      style="margin-left: 30px; margin-right: 30px; width: 90%"/>
 
 Mina serves as the layer 1. A rollup smart contract will be deployed to the chain. The contract serves the following purpose:
@@ -95,7 +95,7 @@ The contract will have (at least) the following methods:
 ##### 2.2.2 Rollup layer <span id="222"></span>
 
 <img
-     src="https://www.proxylabs.org/assets/img/rollup_component.svg"
+     src="./img/rollup_component.svg"
      style="margin-left: 30px; margin-right: 30px; width: 90%"/>
 
 The actual zk-rollup layer consists of one major part: the _rollup operator_
@@ -119,7 +119,7 @@ _TODO: Structure of transaction pool_
 ##### 2.2.3 Off-chain storage <span id="223"></span>
 
 <img
-     src="https://www.proxylabs.org/assets/img/off_chain_state.svg"
+     src="./img/off_chain_state.svg"
      style="margin-left: 30px; margin-right: 30px; width: 90%"/>
 
 The off-chain state will keep track of account balances and transaction history, allowing the node operator to update it and update the merkle root on-chain.
@@ -135,7 +135,7 @@ For the proof of concet, data will remain on the operators machine (memory) but 
 ##### 2.2.4 Frontend <span id="224"></span>
 
 <img
-     src="https://www.proxylabs.org/assets/img/frontend.svg"
+     src="./img/frontend.svg"
      style="margin-left: 30px; margin-right: 30px; height: 300px"/>
 
 The frontend will serve as a basic user interface, allowing users to interact directly with the on-chain smart contract and the off-chain rollup layer. The frontend will integrate with a browser extension-based wallet (eg Auro).
@@ -190,7 +190,7 @@ This section will briefly explain how the Merkle Tree implementation works.
 
 The tree structure consists of mainly 4 parts: the underlying data, leaf nodes which are the hashes of the corresponding data, nodes, and the root. An example is shown below.
 
-<img src="https://www.proxylabs.org/assets/img/merkle_tree_descriptors.svg" style="margin-top: 25px; margin-left: 10%; margin-right: 10%; width: 80%"/>
+<img src="./img/merkle_tree_descriptors.svg" style="margin-top: 25px; margin-left: 10%; margin-right: 10%; width: 80%"/>
 <p style="text-align: center;">Merkle Tree structure, odd leaves n = 5</p>
 
 The `Data` section of the tree is mainly being represented by the two implemented data structures `KeyedDataStore<K, V>` and `DataStack<V>`, which basically represents well known TypeScript structures like `Map<K, V>` and `Array<V>`, respectively, but only with the addition of a Merkle Tree that uses those data structures as its "foundation" while allowing for easy construction and rebuilding of the Merkle Tree.
@@ -203,7 +203,7 @@ For trees of odd size, like the one above, the remaining odd node **E** would si
 
 The Merkle Path allows users and developers to proof the integrity of a piece of data by only providing a path that leads from a given piece of data to the Merkle root.
 
-<img src="https://www.proxylabs.org/assets/img/merkle_path.svg" style="margin-top: 25px; margin-left: 15%; margin-right: 15%; width: 70%"/>
+<img src="./img/merkle_path.svg" style="margin-top: 25px; margin-left: 15%; margin-right: 15%; width: 70%"/>
 <p style="text-align: center;">Merkle Path</p>
 
 If we wanted to efficiently proof the integritiy, or rather existance in our case, of <b style="color: red">**A**</b>, we would proceed the following way:
