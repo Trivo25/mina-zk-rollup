@@ -1,6 +1,16 @@
-import { isReady, Mina, PrivateKey, Field, UInt64, Party, Poseidon, Circuit, shutdown } from "snarkyjs";
-import { MerkleTree } from "../lib/merkle_proof/MerkleTree";
-import RollupZkApp from "./RollupZkApp";
+import {
+  isReady,
+  Mina,
+  PrivateKey,
+  Field,
+  UInt64,
+  Party,
+  Poseidon,
+  Circuit,
+  shutdown,
+} from 'snarkyjs';
+import { MerkleTree } from '../lib/merkle_proof/MerkleTree';
+import RollupZkApp from './RollupZkApp';
 
 test();
 

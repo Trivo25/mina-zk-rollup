@@ -5,8 +5,8 @@ import { MerkleStack } from '../../lib/data_store/DataStack';
 import RollupDeposit from './models/RollupDeposit';
 import RollupAccount from './models/RollupAccount';
 import { KeyedMerkleStore } from '../../lib/data_store/KeyedDataStore';
-import  simpleTransfer from './branches/simpleTransfer';
-import  mergeBatch from './branches/mergeBatch';
+import simpleTransfer from './branches/simpleTransfer';
+import mergeBatch from './branches/mergeBatch';
 import mergeProofPair from './branches/mergeProofPair';
 
 @proofSystem
@@ -23,7 +23,7 @@ class RollupProof extends ProofWithInput<RollupStateTransition> {
 
   @branch
   static mergeBatch(batch: RollupProof[]): RollupProof {
-    return mergeBatch(batch)
+    return mergeBatch(batch);
   }
 
   @branch
