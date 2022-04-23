@@ -1,15 +1,6 @@
-import {
-  CircuitValue,
-  Field,
-  isReady,
-  Poseidon,
-  prop,
-  PublicKey,
-  shutdown,
-  UInt64,
-} from 'snarkyjs';
+import { Field, isReady, Poseidon, shutdown } from 'snarkyjs';
 
-import { MerkleTree, Tree } from '../../src/lib/merkle_proof/MerkleTree';
+import { MerkleTree } from '../../src/lib/merkle_proof';
 
 describe('MerkleTree unit test', () => {
   let merkleTree: MerkleTree;
