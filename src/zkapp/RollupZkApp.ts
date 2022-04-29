@@ -44,7 +44,7 @@ export default class RollupZkApp extends SmartContract {
   }
 
   @method async deposit(depositor: PublicKey, amount: UInt64) {
-    let deposit = new RollupDeposit(depositor, amount);
+    let deposit = new RollupDeposit(depositor, amount, UInt64.fromNumber(0));
 
     this.emitEvent(deposit);
 
@@ -58,7 +58,11 @@ export default class RollupZkApp extends SmartContract {
     originalAmount: UInt64,
     path: Field[]
   ) {
-    let deposit: RollupDeposit = new RollupDeposit(depositor, originalAmount);
+    let deposit: RollupDeposit = new RollupDeposit(
+      depositor,
+      originalAmount,
+      UInt64.fromNumber(0)
+    );
 
     let originalCommitment: Field = await this.pendingDepositsCommitment.get();
     let currentDepositCommitment: Field = originalCommitment;

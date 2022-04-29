@@ -57,7 +57,11 @@ class RollupService extends Service {
       new DataStack<RollupDeposit>();
 
     pendingDeposits.push(
-      new RollupDeposit(PrivateKey.random().toPublicKey(), UInt64.fromNumber(0))
+      new RollupDeposit(
+        PrivateKey.random().toPublicKey(),
+        UInt64.fromNumber(0),
+        UInt64.fromNumber(0)
+      )
     );
 
     let accountDb = DataStore.getAccountStore();
