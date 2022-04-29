@@ -27,7 +27,7 @@ export default class RollupState
   getHash(): Field {
     throw new Error('Method not implemented.');
   }
-  deserialize(xs: Field[]): RollupState {
+  static deserialize(xs: Field[]): RollupState {
     throw new Error('Method not implemented.');
   }
   serialize(): Field[] {

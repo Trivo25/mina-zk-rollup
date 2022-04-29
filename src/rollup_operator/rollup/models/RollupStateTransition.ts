@@ -29,7 +29,7 @@ export default class RollupStateTransition
   getHash(): Field {
     throw new Error('Method not implemented.');
   }
-  deserialize(xs: Field[]): RollupStateTransition {
+  static deserialize(xs: Field[]): RollupStateTransition {
     throw new Error('Method not implemented.');
   }
   serialize(): Field[] {

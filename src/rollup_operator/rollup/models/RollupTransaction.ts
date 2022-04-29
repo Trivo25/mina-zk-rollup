@@ -55,7 +55,7 @@ export default class RollupTransaction
     throw new Error('Method not implemented.');
   }
 
-  deserialize(xs: Field[]): RollupTransaction {
+  static deserialize(xs: Field[]): RollupTransaction {
     throw new Error('Method not implemented.');
   }
 
