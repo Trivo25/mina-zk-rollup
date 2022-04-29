@@ -20,6 +20,7 @@ import {
 /**
  * A {@link RollupTransaction} describes the transactions that take place on the layer 2.
  */
+
 export default class RollupTransaction
   extends CircuitValue
   implements
@@ -47,15 +48,16 @@ export default class RollupTransaction
     this.receiver = receiver;
     this.tokenId = tokenId;
   }
+
+  deserializeInto(xs: Field[]) {
+    throw new Error('Method not implemented.');
+  }
+
   getHash(): Field {
     throw new Error('Method not implemented.');
   }
 
   serialize(): Field[] {
-    throw new Error('Method not implemented.');
-  }
-
-  static deserialize(xs: Field[]): RollupTransaction {
     throw new Error('Method not implemented.');
   }
 

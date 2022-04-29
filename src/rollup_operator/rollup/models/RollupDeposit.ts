@@ -30,7 +30,7 @@ export default class RollupDeposit
   serialize(): Field[] {
     throw new Error('Method not implemented.');
   }
-  static deserialize(xs: Field[]): RollupDeposit {
+  deserializeInto(xs: Field[]): RollupDeposit {
     throw new Error('Method not implemented.');
   }
 }

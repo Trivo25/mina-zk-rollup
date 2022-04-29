@@ -26,12 +26,18 @@ export default class RollupStateTransition
     this.source = source;
     this.target = target;
   }
+  deserializeInto(xs: Field[]): RollupStateTransition {
+    throw new Error('Method not implemented.');
+  }
+
   getHash(): Field {
     throw new Error('Method not implemented.');
   }
+
   static deserialize(xs: Field[]): RollupStateTransition {
     throw new Error('Method not implemented.');
   }
+
   serialize(): Field[] {
     throw new Error('Method not implemented.');
   }

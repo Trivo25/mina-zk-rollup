@@ -38,7 +38,7 @@ export default class RollupAccount
   getHash(): Field {
     throw new Error('Method not implemented.');
   }
-  static deserialize(xs: Field[]): RollupAccount {
+  deserializeInto(xs: Field[]): RollupAccount {
     throw new Error('Method not implemented.');
   }
   serialize(): Field[] {
