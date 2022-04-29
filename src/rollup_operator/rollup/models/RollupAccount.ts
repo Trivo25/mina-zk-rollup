@@ -1,5 +1,9 @@
 import { CircuitValue, Field, prop, PublicKey, UInt32, UInt64 } from 'snarkyjs';
-import { ISerializable, IDeserializable } from '../../../lib/models';
+import {
+  ISerializableField,
+  IDeserializableField,
+  IHashable,
+} from '../../../lib/models';
 
 /**
  * A {@link RollupAccount} describes an account on the layer 2.
@@ -11,7 +15,7 @@ import { ISerializable, IDeserializable } from '../../../lib/models';
  */
 export default class RollupAccount
   extends CircuitValue
-  implements ISerializable, IDeserializable
+  implements ISerializableField, IDeserializableField<RollupAccount>, IHashable
 {
   // essential properties
   @prop balance: UInt64;
@@ -28,7 +32,10 @@ export default class RollupAccount
     this.publicKey = publicKey;
     this.nonce = nonce;
   }
-  deserialize(xs: Field[]): Object {
+  getHash(): Field {
+    throw new Error('Method not implemented.');
+  }
+  deserialize(xs: Field[]): RollupAccount {
     throw new Error('Method not implemented.');
   }
   serialize(): Field[] {

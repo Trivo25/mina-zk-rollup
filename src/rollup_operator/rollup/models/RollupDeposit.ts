@@ -1,12 +1,12 @@
 import { CircuitValue, Field, prop, PublicKey, UInt64 } from 'snarkyjs';
-import { ISerializable, IDeserializable } from '../../../lib/models';
+import { ISerializableField, IDeserializableField } from '../../../lib/models';
 
 /**
  * A {@link RollupDeposit} descibes the action when a user wants to deposit funds to the layer 2.
  */
 export default class RollupDeposit
   extends CircuitValue
-  implements ISerializable, IDeserializable
+  implements ISerializableField, IDeserializableField<RollupDeposit>
 {
   @prop publicKey: PublicKey;
   @prop amount: UInt64;
@@ -20,7 +20,7 @@ export default class RollupDeposit
   serialize(): Field[] {
     throw new Error('Method not implemented.');
   }
-  deserialize(xs: Field[]): Object {
+  deserialize(xs: Field[]): RollupDeposit {
     throw new Error('Method not implemented.');
   }
 }

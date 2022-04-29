@@ -1,5 +1,5 @@
 import { CircuitValue, Field, prop } from 'snarkyjs';
-import { ISerializable, IDeserializable } from '../../../lib/models';
+import { ISerializableField, IDeserializableField } from '../../../lib/models';
 
 /**
  * The {@link RollupState} descibes the current state of the layer 2.
@@ -8,7 +8,7 @@ import { ISerializable, IDeserializable } from '../../../lib/models';
  */
 export default class RollupState
   extends CircuitValue
-  implements ISerializable, IDeserializable
+  implements ISerializableField, IDeserializableField<RollupState>
 {
   @prop pendingDepositsCommitment: Field;
   @prop accountDbCommitment: Field;
@@ -17,7 +17,7 @@ export default class RollupState
     this.pendingDepositsCommitment = p;
     this.accountDbCommitment = c;
   }
-  deserialize(xs: Field[]): Object {
+  deserialize(xs: Field[]): RollupState {
     throw new Error('Method not implemented.');
   }
   serialize(): Field[] {

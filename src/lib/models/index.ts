@@ -6,8 +6,9 @@ import IHTTPResponse from './interfaces/IHTTPResponse';
 import IPublicKey from './interfaces/IPublicKey';
 import ISignature from './interfaces/ISignature';
 import ITransaction from './interfaces/ITransaction';
-import ISerializable from './interfaces/ISerializable';
-import IDeserializable from './interfaces/IDeserializable';
+import ISerializableField from './interfaces/ISerializableField';
+import IDeserializableField from './interfaces/IDeserializableField';
+import IHashable from './interfaces/IHashable';
 
 export { EnumError, Events };
 export type {
@@ -16,6 +17,7 @@ export type {
   IPublicKey,
   ISignature,
   ITransaction,
-  IDeserializable,
-  ISerializable,
+  IDeserializableField,
+  ISerializableField,
+  IHashable,
 };
