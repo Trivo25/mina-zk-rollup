@@ -1,7 +1,11 @@
 import { CircuitValue, Field, prop } from 'snarkyjs';
 
 import { RollupState } from '../.';
-import { ISerializableField, IDeserializableField } from '../../../lib/models';
+import {
+  ISerializableField,
+  IDeserializableField,
+  IHashable,
+} from '../../../lib/models';
 
 /**
  * A {@link RollupStateTransition} descibes the transition that takes place when
@@ -10,7 +14,10 @@ import { ISerializableField, IDeserializableField } from '../../../lib/models';
  */
 export default class RollupStateTransition
   extends CircuitValue
-  implements ISerializableField, IDeserializableField<RollupStateTransition>
+  implements
+    ISerializableField,
+    IDeserializableField<RollupStateTransition>,
+    IHashable<RollupStateTransition>
 {
   @prop source: RollupState;
   @prop target: RollupState;
@@ -18,6 +25,9 @@ export default class RollupStateTransition
     super();
     this.source = source;
     this.target = target;
+  }
+  getHash(): Field {
+    throw new Error('Method not implemented.');
   }
   deserialize(xs: Field[]): RollupStateTransition {
     throw new Error('Method not implemented.');

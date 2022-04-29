@@ -15,7 +15,10 @@ import {
  */
 export default class RollupAccount
   extends CircuitValue
-  implements ISerializableField, IDeserializableField<RollupAccount>, IHashable
+  implements
+    ISerializableField,
+    IDeserializableField<RollupAccount>,
+    IHashable<RollupAccount>
 {
   // essential properties
   @prop balance: UInt64;
