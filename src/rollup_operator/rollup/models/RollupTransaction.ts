@@ -8,23 +8,35 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-export default class RollupTransaction extends CircuitValue {
+// ! dummy value
+const DEFAULT_TOKEN_ID: Field = Field(0);
+
+/**
+ * A {@link RollupTransaction} describes the transactions that take place on the layer 2.
+ */
+export default class RollupTransaction
+  extends CircuitValue
+  implements Serializable, Deserializable
+{
   @prop amount: UInt64;
   @prop nonce: UInt32;
   @prop sender: PublicKey;
   @prop receiver: PublicKey;
+  @prop tokenId: Field;
 
   constructor(
     amount: UInt64,
     nonce: UInt32,
     sender: PublicKey,
-    receiver: PublicKey
+    receiver: PublicKey,
+    tokenId: Field
   ) {
     super();
     this.amount = amount;
     this.nonce = nonce;
     this.sender = sender;
     this.receiver = receiver;
+    this.tokenId = tokenId;
   }
 
   /**
@@ -39,7 +51,8 @@ export default class RollupTransaction extends CircuitValue {
       new UInt64(payload[0]),
       new UInt32(payload[1]),
       sender,
-      receiver
+      receiver,
+      DEFAULT_TOKEN_ID
     );
   }
 }
