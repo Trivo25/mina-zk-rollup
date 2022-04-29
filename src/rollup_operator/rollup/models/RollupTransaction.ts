@@ -11,12 +11,14 @@ import {
 // ! dummy value
 const DEFAULT_TOKEN_ID: Field = Field(0);
 
+import { IDeserializable, ISerializable } from '../../../lib/models';
+
 /**
  * A {@link RollupTransaction} describes the transactions that take place on the layer 2.
  */
 export default class RollupTransaction
   extends CircuitValue
-  implements Serializable, Deserializable
+  implements ISerializable, IDeserializable
 {
   @prop amount: UInt64;
   @prop nonce: UInt32;
@@ -37,6 +39,14 @@ export default class RollupTransaction
     this.sender = sender;
     this.receiver = receiver;
     this.tokenId = tokenId;
+  }
+
+  serialize(): Field[] {
+    throw new Error('Method not implemented.');
+  }
+
+  deserialize(ser: Field[]): RollupTransaction {
+    throw new Error('Method not implemented.');
   }
 
   /**

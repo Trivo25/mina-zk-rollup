@@ -1,4 +1,5 @@
 import { CircuitValue, Field, prop, PublicKey, UInt32, UInt64 } from 'snarkyjs';
+import { ISerializable, IDeserializable } from '../../../lib/models';
 
 /**
  * A {@link RollupAccount} describes an account on the layer 2.
@@ -8,7 +9,10 @@ import { CircuitValue, Field, prop, PublicKey, UInt32, UInt64 } from 'snarkyjs';
  * the non-essential part only includes some meta information or "nice-to-haves" like
  * `identifier` or `aliveSince`
  */
-export default class RollupAccount extends CircuitValue {
+export default class RollupAccount
+  extends CircuitValue
+  implements ISerializable, IDeserializable
+{
   // essential properties
   @prop balance: UInt64;
   @prop nonce: UInt32;
@@ -23,5 +27,11 @@ export default class RollupAccount extends CircuitValue {
     this.balance = balance;
     this.publicKey = publicKey;
     this.nonce = nonce;
+  }
+  deserialize(xs: Field[]): Object {
+    throw new Error('Method not implemented.');
+  }
+  serialize(): Field[] {
+    throw new Error('Method not implemented.');
   }
 }
