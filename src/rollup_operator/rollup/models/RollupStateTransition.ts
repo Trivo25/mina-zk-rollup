@@ -1,6 +1,6 @@
 import { CircuitValue, Field, prop } from 'snarkyjs';
 
-import RollupState from './RollupState';
+import { RollupState } from '../.';
 
 /**
  * A {@link RollupStateTransition} descibes the transition that takes place when

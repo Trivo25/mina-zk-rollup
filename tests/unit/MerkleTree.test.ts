@@ -1,15 +1,6 @@
-import {
-  CircuitValue,
-  Field,
-  isReady,
-  Poseidon,
-  prop,
-  PublicKey,
-  shutdown,
-  UInt64,
-} from 'snarkyjs';
+import { Field, isReady, Poseidon, shutdown } from 'snarkyjs';
 
-import { MerkleTree, Tree } from '../../src/lib/merkle_proof/MerkleTree';
+import { MerkleTree } from '../../src/lib/merkle_proof';
 
 describe('MerkleTree unit test', () => {
   let merkleTree: MerkleTree;
@@ -34,6 +25,18 @@ describe('MerkleTree unit test', () => {
     for (let index = 0; index <= 4; index++) {
       nodeData.push(Field(Math.floor(Math.random() * 1000000000000)));
     }
+
+    /*                            h_ABCDE
+                                /       \
+                            h_ABCD      h_E
+                          /       \       \
+                        h_AB      h_CD    h_E
+                      /   \     /     \     \
+                    h_A   h_B   h_C   h_D   h_E
+                    |     |     |     |     |
+    nodeData[i]     0    1     2     3     4  
+
+    */
 
     let h_A = Poseidon.hash([nodeData[0]]);
     let h_B = Poseidon.hash([nodeData[1]]);

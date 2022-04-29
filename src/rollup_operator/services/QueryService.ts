@@ -1,4 +1,4 @@
-import ITransaction from '../../lib/models/interfaces/ITransaction';
+import { ITransaction } from '../../lib/models';
 import DataStore from '../setup/DataStore';
 import Service from './Service';
 import Indexer from '../indexer/Indexer';

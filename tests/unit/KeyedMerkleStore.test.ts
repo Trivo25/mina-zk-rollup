@@ -11,7 +11,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { KeyedMerkleStore } from '../../src/lib/data_store/KeyedMerkleStore';
+import { KeyedDataStore } from '../../src/lib/data_store';
 
 // demo purposes
 class Account extends CircuitValue {
@@ -26,7 +26,7 @@ class Account extends CircuitValue {
 }
 
 describe('KeyedDataStore primitive string key', () => {
-  let store: KeyedMerkleStore<string, Account>;
+  let store: KeyedDataStore<string, Account>;
   let dataLeaves: Map<string, Account>;
 
   let accountA: Account,
@@ -43,7 +43,7 @@ describe('KeyedDataStore primitive string key', () => {
   });
 
   beforeEach(() => {
-    store = new KeyedMerkleStore<string, Account>();
+    store = new KeyedDataStore<string, Account>();
     dataLeaves = new Map<string, Account>();
 
     let p1 = PrivateKey.random().toPublicKey();
