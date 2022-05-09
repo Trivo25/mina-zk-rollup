@@ -3,16 +3,17 @@
 
 */
 
-import * as MinaSDK from '@o1labs/client-sdk';
-
-import { isReady, UInt64, UInt32, PrivateKey } from 'snarkyjs';
+import Client from 'mina-signer';
+import { Keypair } from 'mina-signer/dist/src/TSTypes';
+import { isReady, UInt64, UInt32, PrivateKey, Field } from 'snarkyjs';
 import RollupTransaction from '../rollup_operator/rollup/models/RollupTransaction';
 import { createAndSignPayment } from './lib/transaction';
 
 await isReady;
 
-let senderKeypair = MinaSDK.genKeys();
-let receiverKeypair = MinaSDK.genKeys();
+let c = new Client({ network: 'mainnet' });
+let senderKeypair = c.genKeys();
+let receiverKeypair = c.genKeys();
 
 // let k = PrivateKey.random();
 // console.log(k.toJSON());
@@ -34,7 +35,8 @@ let rollupTransaction = new RollupTransaction(
   UInt64.fromNumber(100),
   UInt32.fromNumber(0),
   senderPub!,
-  receiverPub!
+  receiverPub!,
+  Field(0)
 );
 
 let payload = createAndSignPayment(

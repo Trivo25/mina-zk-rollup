@@ -1,20 +1,20 @@
-import { Bool, Field, Poseidon, Signature, UInt32, UInt64 } from 'snarkyjs';
-import { base58Encode } from '../../../lib/baseEncoding';
-import { KeyedMerkleStore } from '../../../lib/data_store/KeyedDataStore';
-import { MerkleStack } from '../../../lib/data_store/MerkleStack';
-import minaToNano from '../../../lib/helpers/minaToNano';
-import RollupAccount from '../models/RollupAccount';
-import RollupDeposit from '../models/RollupDeposit';
-import RollupState from '../models/RollupState';
-import RollupStateTransition from '../models/RollupStateTransition';
-import RollupTransaction from '../models/RollupTransaction';
-import RollupProof from '../RollupProof';
+import { Field, Signature, UInt32, UInt64 } from 'snarkyjs';
+import { base58Encode } from '../../../lib/base_encoding';
+import { DataStack, KeyedDataStore } from '../../../lib/data_store';
+import {
+  RollupAccount,
+  RollupDeposit,
+  RollupState,
+  RollupStateTransition,
+  RollupTransaction,
+  RollupProof,
+} from '../.';
 
-export function simpleTransfer(
+export default function simpleTransfer(
   t: RollupTransaction,
   s: Signature,
-  pendingDeposits: MerkleStack<RollupDeposit>,
-  accountDatabase: KeyedMerkleStore<string, RollupAccount>
+  pendingDeposits: DataStack<RollupDeposit>,
+  accountDatabase: KeyedDataStore<string, RollupAccount>
 ): RollupProof {
   // verify correctness of the transaction
   s.verify(t.sender, t.toFields()).assertEquals(true);

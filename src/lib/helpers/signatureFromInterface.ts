@@ -1,5 +1,5 @@
 import { Signature } from 'snarkyjs';
-import ISignature from '../models/interfaces/ISignature';
+import { ISignature } from '../models';
 
 export default function signatureFromInterface(
   sigInterface: ISignature

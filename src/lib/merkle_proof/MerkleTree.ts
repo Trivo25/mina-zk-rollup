@@ -1,23 +1,8 @@
 import { Circuit, Field, Poseidon } from 'snarkyjs';
-
-export interface Tree {
-  leaves: Field[];
-  levels: Field[][];
-}
-
-/**
- * A MerklePathElement has the following structure:
- * direction: Field - Direction of the node, Field(0) for left, Field(1) for right
- * hash: Field - Hash of the node
- * With a list of MerklePathElements you can recreate the merkle root for a specific leaf
- */
-export type MerklePathElement = {
-  direction: Field;
-  hash: Field;
-};
-
-export class MerkleTree {
-  tree: Tree;
+import BinaryTree from './BinaryTree';
+import MerklePathElement from './MerklePathElement';
+export default class MerkleTree {
+  tree: BinaryTree;
   constructor() {
     this.tree = {
       leaves: [],

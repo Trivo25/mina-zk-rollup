@@ -16,17 +16,14 @@ import {
   branch,
   ProofWithInput,
 } from 'snarkyjs';
-
-import { MerkleTree, Tree } from './lib/merkle_proof/MerkleTree';
-
-import { KeyedMerkleStore } from './lib/data_store/KeyedDataStore';
-
-import { MerkleStack } from './lib/data_store/DataStack';
-import IPublicKey from './lib/models/interfaces/IPublicKey';
-import RollupAccount from './rollup_operator/rollup/models/RollupAccount';
-import RollupStateTransition from './rollup_operator/rollup/models/RollupStateTransition';
-import RollupState from './rollup_operator/rollup/models/RollupState';
-import RollupProof from './rollup_operator/rollup/RollupProof';
+import { MerkleTree } from './lib/merkle_proof';
+import { DataStack, KeyedDataStore } from './lib/data_store';
+import { IPublicKey } from './lib/models';
+import {
+  RollupAccount,
+  RollupStateTransition,
+  RollupState,
+} from './rollup_operator/rollup';
 
 class Account extends CircuitValue {
   @prop balance: UInt64;
@@ -46,7 +43,7 @@ test();
 async function test() {
   await isReady;
 
-  let store = new KeyedMerkleStore<String, Account>();
+  let store = new KeyedDataStore<String, Account>();
 
   let a = new Account(UInt64.fromNumber(100));
   let b = new Account(UInt64.fromNumber(200));
@@ -70,7 +67,7 @@ async function test() {
 class TestProof extends ProofWithInput<RollupStateTransition> {
   @branch
   static example(
-    db: KeyedMerkleStore<string, RollupAccount>,
+    db: KeyedDataStore<string, RollupAccount>,
     pub: PublicKey
   ): TestProof {
     return example(db, pub);
@@ -78,7 +75,7 @@ class TestProof extends ProofWithInput<RollupStateTransition> {
 }
 
 function example(
-  db: KeyedMerkleStore<string, RollupAccount>,
+  db: KeyedDataStore<string, RollupAccount>,
   pub: PublicKey
 ): TestProof {
   let acc = db.get(pub.toJSON()!.toString());
@@ -141,7 +138,7 @@ function testF(store: Map<IPublicKey, Account>) {
 }
 
 function dataStackDemo() {
-  let stack = new MerkleStack();
+  let stack = new DataStack();
   stack.merkleTree.printTree();
 
   let a = PrivateKey.random().toPublicKey();
@@ -163,7 +160,7 @@ function dataStackDemo() {
 function keyedDataStoreDemo() {
   // dummy account
 
-  let store = new KeyedMerkleStore<String, Account>();
+  let store = new KeyedDataStore<String, Account>();
   let dataLeaves = new Map<String, Account>();
 
   let accountA = new Account(UInt64.fromNumber(100));

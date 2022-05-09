@@ -1,7 +1,10 @@
 import Service from './Service';
-import ISignature from '../../lib/models/interfaces/ISignature';
-import ITransaction from '../../lib/models/interfaces/ITransaction';
-import EnumError from '../../lib/models/enums/EnumError';
+import {
+  ITransaction,
+  ISignature,
+  EnumError,
+  IPublicKey,
+} from '../../lib/models';
 import DataStore from '../setup/DataStore';
 import { sha256 } from '../../lib/sha256';
 import {
@@ -13,16 +16,19 @@ import {
   UInt32,
   UInt64,
 } from 'snarkyjs';
-import signatureFromInterface from '../../lib/helpers/signatureFromInterface';
-import publicKeyFromInterface from '../../lib/helpers/publicKeyFromInterface';
-import IPublicKey from '../../lib/models/interfaces/IPublicKey';
-import RollupProof from '../rollup/RollupProof';
-import RollupTransaction from '../rollup/models/RollupTransaction';
-import { MerkleStack } from '../../lib/data_store/DataStack';
-import RollupDeposit from '../rollup/models/RollupDeposit';
-import RollupAccount from '../rollup/models/RollupAccount';
+import {
+  signatureFromInterface,
+  publicKeyFromInterface,
+} from '../../lib/helpers';
+import {
+  RollupProof,
+  RollupTransaction,
+  RollupDeposit,
+  RollupAccount,
+} from '../rollup';
+import { DataStack } from '../../lib/data_store';
 import Indexer from '../indexer/Indexer';
-import { base58Encode } from '../../lib/baseEncoding';
+import { base58Encode } from '../../lib/base_encoding';
 
 class RollupService extends Service {
   constructor(indexer: typeof Indexer) {
@@ -47,11 +53,15 @@ class RollupService extends Service {
     DataStore.getTransactionHistory().push(...transactionsToProcess);
 
     // TODO: break out both account and pendingdepositst storage
-    let pendingDeposits: MerkleStack<RollupDeposit> =
-      new MerkleStack<RollupDeposit>();
+    let pendingDeposits: DataStack<RollupDeposit> =
+      new DataStack<RollupDeposit>();
 
     pendingDeposits.push(
-      new RollupDeposit(PrivateKey.random().toPublicKey(), UInt64.fromNumber(0))
+      new RollupDeposit(
+        PrivateKey.random().toPublicKey(),
+        UInt64.fromNumber(0),
+        UInt64.fromNumber(0)
+      )
     );
 
     let accountDb = DataStore.getAccountStore();
