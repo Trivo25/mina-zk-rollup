@@ -32,6 +32,7 @@
     ]
   },
   "dependencies": {
+    "abstract-level": "^1.0.3",
     "base-x": "^4.0.0",
     "body-parser": "^1.20.0",
     "buffer": "^6.0.3",
