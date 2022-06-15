@@ -1,5 +1,5 @@
-class DataStore {
-  constructor() {}
-}
+export default interface DataStore {
+  clearInstructions(): void;
 
-export default DataStore;
+  commit(): void;
+}

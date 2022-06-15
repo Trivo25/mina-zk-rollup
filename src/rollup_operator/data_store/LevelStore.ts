@@ -17,18 +17,29 @@ type SubLevel = AbstractSublevel<
   string
 >;
 
-export default class LevelStore extends DataStore {
+export default class LevelStore implements DataStore {
   private store: Level<string, any>;
   private nodes: SubLevel;
   private leaves: SubLevel;
 
-  private instructionStack: (Put | Delete)[];
+  private instructions: (Put | Delete)[];
 
-  constructor(db: Level<string, any>, id: string) {
-    super();
-    this.instructionStack = [];
-    this.store = db;
+  constructor(path: string, id: string) {
+    this.instructions = [];
+    this.store = new Level<string, any>(path, { valueEncoding: 'json' });
     this.nodes = this.store.sublevel(id);
     this.leaves = this.store.sublevel(id + '-leaf');
+  }
+
+  clearInstructions(): void {
+    this.instructions = [];
+  }
+
+  async commit(): Promise<void> {
+    if (this.instructions.length > 0) {
+      await this.store.batch(this.instructions);
+    }
+
+    this.clearInstructions();
   }
 }
