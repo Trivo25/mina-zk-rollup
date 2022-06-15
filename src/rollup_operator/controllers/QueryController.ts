@@ -1,7 +1,6 @@
 import express from 'express';
 import Controller from './Controller';
 import QueryService from '../services/QueryService';
-import Indexer from '../indexer/Indexer';
 class QueryController extends Controller<QueryService> {
   constructor(service: QueryService) {
     super(service);
@@ -39,4 +38,4 @@ class QueryController extends Controller<QueryService> {
   }
 }
 
-export default new QueryController(new QueryService(Indexer));
+export default QueryController;
