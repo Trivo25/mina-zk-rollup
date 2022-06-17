@@ -27,6 +27,10 @@ export class LevelStore implements DataStore {
     this.store = new Level<string, any>(path, { valueEncoding: 'json' });
   }
 
+  clear(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+
   clearInstructions(): void {
     this.instructions = [];
   }
