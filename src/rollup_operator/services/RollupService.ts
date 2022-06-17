@@ -6,7 +6,6 @@ import {
   EnumError,
   IPublicKey,
 } from '../../lib/models';
-import { sha256 } from '../../lib/sha256';
 import {
   Field,
   Poseidon,
@@ -27,7 +26,7 @@ import {
   RollupAccount,
 } from '../proof_system';
 import { DataStore } from '../data_store';
-import { base58Encode } from '../../lib/base_encoding';
+import { base58Encode, sha256 } from '../../lib/helpers';
 import SequencerEvents from '../events/events';
 import { EventEmitter } from 'events';
 

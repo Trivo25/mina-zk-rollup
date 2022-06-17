@@ -1,5 +1,5 @@
 import { Field, Signature, UInt32, UInt64 } from 'snarkyjs';
-import { base58Encode } from '../../../lib/base_encoding';
+import { base58Encode } from '../../../lib/helpers';
 import { DataStack, KeyedDataStore } from '../../../lib/data_store';
 import {
   RollupAccount,

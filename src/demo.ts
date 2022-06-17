@@ -1,5 +1,5 @@
-import { CircuitValue, isReady, prop, shutdown, UInt32 } from 'snarkyjs';
-import MerkleStore from './rollup_operator/data_store/MerkleTreeStoretore';
+/* import { CircuitValue, isReady, prop, shutdown, UInt32 } from 'snarkyjs';
+import MerkleStore from './rollup_operator/data_store';
 
 class Test extends CircuitValue {
   @prop balance: UInt32;
@@ -18,4 +18,6 @@ const init = async () => {
   shutdown();
 };
 
-init();
+init(); */
+
+export {};
