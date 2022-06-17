@@ -11,7 +11,11 @@ import QueryService from '../services/QueryService';
 import { LevelStore } from '../data_store';
 import { GlobalEventHandler } from '../events';
 
-function setupServer(): express.Application {
+interface Application {
+  express: express.Application;
+}
+
+function setupServer(): Application {
   const server = express();
   server.use(cors());
   server.use(bodyParser.json());
@@ -26,7 +30,9 @@ function setupServer(): express.Application {
   );
 
   setRoutes(server, rc, qc);
-  return server;
+  return {
+    express: server,
+  };
 }
 
 export default setupServer();
