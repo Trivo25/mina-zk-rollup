@@ -1,5 +1,7 @@
 export default interface DataStore {
   clearInstructions(): void;
 
-  commit(): void;
+  commit(): Promise<void>;
+
+  clear(): Promise<void>;
 }

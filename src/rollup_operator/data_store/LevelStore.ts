@@ -7,28 +7,24 @@ import {
   AbstractSublevel,
 } from 'abstract-level';
 
-type Put = AbstractBatchPutOperation<Level<string, any>, string, any>;
-type Delete = AbstractBatchDelOperation<Level<string, any>, string>;
+export type Put = AbstractBatchPutOperation<Level<string, any>, string, any>;
+export type Delete = AbstractBatchDelOperation<Level<string, any>, string>;
 
-type SubLevel = AbstractSublevel<
+export type SubLevel = AbstractSublevel<
   Level<string, any>,
   string | Buffer | Uint8Array,
   string,
   string
 >;
 
-export default class LevelStore implements DataStore {
-  private store: Level<string, any>;
-  private nodes: SubLevel;
-  private leaves: SubLevel;
+export class LevelStore implements DataStore {
+  protected store: Level<string, any>;
 
-  private instructions: (Put | Delete)[];
+  protected instructions: (Put | Delete)[];
 
-  constructor(path: string, id: string) {
+  constructor(path: string) {
     this.instructions = [];
     this.store = new Level<string, any>(path, { valueEncoding: 'json' });
-    this.nodes = this.store.sublevel(id);
-    this.leaves = this.store.sublevel(id + '-leaf');
   }
 
   clearInstructions(): void {

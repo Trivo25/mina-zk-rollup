@@ -10,17 +10,13 @@ import QueryService from '../services/QueryService';
 
 import { LevelStore } from '../data_store';
 import { GlobalEventHandler } from '../events';
-import { Level } from 'level';
 
 function setupServer(): express.Application {
   const server = express();
   server.use(cors());
   server.use(bodyParser.json());
 
-  let globalStore = new LevelStore(
-    new Level<string, any>('./db', { valueEncoding: 'json' }),
-    'rollup_sequencer'
-  );
+  let globalStore = new LevelStore('./db');
 
   let rc = new RollupController(
     new RollupService(globalStore, GlobalEventHandler)

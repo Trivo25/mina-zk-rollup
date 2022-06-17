@@ -1,3 +1,4 @@
 import DataStore from './DataStore';
-import LevelStore from './LevelStore';
-export { DataStore, LevelStore };
+import { LevelStore } from './LevelStore';
+export { LevelStore };
+export type { DataStore };
