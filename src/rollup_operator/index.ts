@@ -1,19 +1,16 @@
 import 'dotenv/config';
-import server from './setup/server.js';
-const PORT = process.env.PORT || 5000;
+import Application from './setup/server.js';
 
-let oldLog = console.log;
-console.log = function () {
-  var args = [].slice.call(arguments);
-  oldLog.apply(console.log, [`[${new Date().toISOString()}]`].concat(args));
-};
+import logger from '../lib/log';
 
-init();
+const PORT = process.env.SEQUENCER_REST_PORT || 5000;
 
-async function init() {
-  console.log(`Starting operator..`);
+start();
 
-  server.listen(PORT, () => {
-    console.log(`Rollup operator running on port ${PORT}`);
+async function start() {
+  logger.info(`Starting operator..`);
+
+  Application.express.listen(PORT, () => {
+    logger.info(`Rollup operator running on port ${PORT}`);
   });
 }

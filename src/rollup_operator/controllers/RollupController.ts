@@ -7,14 +7,12 @@ import {
   ITransaction,
   IPublicKey,
 } from '../../lib/models';
-import Indexer from '../indexer/Indexer';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {
     super(service);
     this.verify = this.verify.bind(this);
     this.transaction = this.transaction.bind(this);
-    this.createAccount = this.createAccount.bind(this);
   }
 
   async verify(
@@ -98,22 +96,6 @@ class RollupController extends Controller<RollupService> {
       });
     }
   }
-
-  // ! DUMMY DATA
-  async createAccount(
-    req: express.Request,
-    res: express.Response
-  ): Promise<express.Response> {
-    try {
-      return res.status(200).send(this.service.createAccount());
-    } catch (error) {
-      console.log(error);
-      return res.status(400).send({
-        error: error,
-        payload: undefined,
-      });
-    }
-  }
 }
 
-export default new RollupController(new RollupService(Indexer));
+export default RollupController;

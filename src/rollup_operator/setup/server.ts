@@ -2,12 +2,37 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import setRoutes from './routes';
 import cors from 'cors';
-function setupServer(): express.Application {
+
+import RollupController from '../controllers/RollupController';
+import RollupService from '../services/RollupService';
+import QueryController from '../controllers/QueryController';
+import QueryService from '../services/QueryService';
+
+import { LevelStore } from '../data_store';
+import { GlobalEventHandler } from '../events';
+
+interface Application {
+  express: express.Application;
+}
+
+function setupServer(): Application {
   const server = express();
   server.use(cors());
   server.use(bodyParser.json());
-  setRoutes(server);
-  return server;
+
+  let globalStore = new LevelStore('./db');
+
+  let rc = new RollupController(
+    new RollupService(globalStore, GlobalEventHandler)
+  );
+  let qc = new QueryController(
+    new QueryService(globalStore, GlobalEventHandler)
+  );
+
+  setRoutes(server, rc, qc);
+  return {
+    express: server,
+  };
 }
 
 export default setupServer();

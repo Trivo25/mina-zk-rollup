@@ -13,9 +13,9 @@ import {
 } from 'snarkyjs';
 
 import { DataStack } from '../lib/data_store';
-import RollupAccount from '../rollup_operator/rollup/models/RollupAccount';
-import RollupDeposit from '../rollup_operator/rollup/models/RollupDeposit';
-import RollupProof from '../rollup_operator/rollup/RollupProof';
+import RollupAccount from '../rollup_operator/proof_system/models/RollupAccount';
+import RollupDeposit from '../rollup_operator/proof_system/models/RollupDeposit';
+import RollupProof from '../rollup_operator/proof_system/RollupProof';
 
 export default class RollupZkApp extends SmartContract {
   // Merkle root of all accounts
