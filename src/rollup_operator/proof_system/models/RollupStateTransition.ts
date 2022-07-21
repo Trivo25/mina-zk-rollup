@@ -1,6 +1,6 @@
 import { CircuitValue, Field, prop } from 'snarkyjs';
 
-import { RollupState } from '../.';
+import { RollupState } from '..';
 import {
   ISerializableField,
   IDeserializableField,

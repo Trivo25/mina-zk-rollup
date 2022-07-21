@@ -1,5 +1,4 @@
 import EnumError from './enums/EnumError';
-import Events from './enums/Events';
 
 import IBlock from './interfaces/IBlock';
 import IHTTPResponse from './interfaces/IHTTPResponse';
@@ -10,7 +9,7 @@ import ISerializableField from './interfaces/ISerializableField';
 import IDeserializableField from './interfaces/IDeserializableField';
 import IHashable from './interfaces/IHashable';
 
-export { EnumError, Events };
+export { EnumError };
 export type {
   IBlock,
   IHTTPResponse,
