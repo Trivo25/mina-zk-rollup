@@ -6,25 +6,6 @@ import {
   EnumError,
   IPublicKey,
 } from '../../lib/models';
-import {
-  Field,
-  Poseidon,
-  PrivateKey,
-  PublicKey,
-  Signature,
-  UInt32,
-  UInt64,
-} from 'snarkyjs';
-import {
-  signatureFromInterface,
-  publicKeyFromInterface,
-} from '../../lib/helpers';
-import {
-  RollupProof,
-  RollupTransaction,
-  RollupDeposit,
-  RollupAccount,
-} from '../proof_system';
 import { DataStore } from '../data_store';
 import { base58Encode, sha256 } from '../../lib/helpers';
 import SequencerEvents from '../events/events';
