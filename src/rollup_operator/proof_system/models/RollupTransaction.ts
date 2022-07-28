@@ -1,33 +1,19 @@
 import {
   CircuitValue,
   Field,
-  Group,
+  Poseidon,
   prop,
   PublicKey,
   UInt32,
   UInt64,
 } from 'snarkyjs';
-
-// ! dummy value
-const DEFAULT_TOKEN_ID: Field = Field(0);
-
-import {
-  IDeserializableField,
-  IHashable,
-  ISerializableField,
-} from '../../../lib/models';
+import { base58Encode } from '../../../lib/helpers';
 
 /**
  * A {@link RollupTransaction} describes the transactions that take place on the layer 2.
  */
 
-export default class RollupTransaction
-  extends CircuitValue
-  implements
-    ISerializableField,
-    IDeserializableField<RollupTransaction>,
-    IHashable<RollupTransaction>
-{
+export default class RollupTransaction extends CircuitValue {
   @prop amount: UInt64;
   @prop nonce: UInt32;
   @prop sender: PublicKey;
@@ -49,32 +35,11 @@ export default class RollupTransaction
     this.tokenId = tokenId;
   }
 
-  deserializeInto(xs: Field[]) {
-    throw new Error('Method not implemented.');
-  }
-
   getHash(): Field {
-    throw new Error('Method not implemented.');
+    return Poseidon.hash(this.toFields());
   }
 
-  serialize(): Field[] {
-    throw new Error('Method not implemented.');
-  }
-
-  /**
-   * Deserializes an array of Field elements in string format into a RollupTransaction object
-   * @param payload Field elements in string format
-   * @returns RollupTransaction
-   */
-  static deserializePayload(payload: Field[]): RollupTransaction {
-    let sender: PublicKey = new PublicKey(new Group(payload[2], payload[3]));
-    let receiver: PublicKey = new PublicKey(new Group(payload[4], payload[5]));
-    return new RollupTransaction(
-      new UInt64(payload[0]),
-      new UInt32(payload[1]),
-      sender,
-      receiver,
-      DEFAULT_TOKEN_ID
-    );
+  getBase58Hash(): string {
+    return base58Encode(this.getHash().toString());
   }
 }
