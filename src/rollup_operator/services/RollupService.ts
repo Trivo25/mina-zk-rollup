@@ -1,11 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Service from './Service';
-import {
-  ITransaction,
-  ISignature,
-  EnumError,
-  IPublicKey,
-} from '../../lib/models';
+import { ITransaction, EnumError } from '../../lib/models';
 import { DataStore } from '../data_store';
 import { base58Encode, sha256 } from '../../lib/helpers';
 import SequencerEvents from '../events/events';
@@ -25,11 +20,7 @@ class RollupService extends Service {
    * @param signature Signature to verify
    * @returns true if signature is valid
    */
-  async verify(
-    signature: ISignature,
-    payload: string[],
-    publicKey: IPublicKey
-  ): Promise<any> {
+  async verify(payload: string[]): Promise<any> {
     throw new Error('Not implemented');
   }
 

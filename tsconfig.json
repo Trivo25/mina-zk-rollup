@@ -18,6 +18,9 @@
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true
+    /*     "paths": {
+      "snarkyjs": ["./snarkyjs_temp"]
+    } */
   },
   "include": ["./src"],
   "exclude": ["./src/**/*.test.ts", "./build/**/*"]

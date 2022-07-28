@@ -1,6 +1,5 @@
 import BinaryTree from './BinaryTree';
-import MerklePathElement from './MerklePathElement';
-import MerkleTree from './MerkleTree';
+import { MerkleTree, MerkleProof } from './MerkleTree';
 
-export { MerkleTree };
-export type { BinaryTree, MerklePathElement };
+export { MerkleTree, MerkleProof };
+export type { BinaryTree };

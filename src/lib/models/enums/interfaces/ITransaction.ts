@@ -1,6 +1,3 @@
-import IPublicKey from './IPublicKey';
-import ISignature from './ISignature';
-
 /**
  * Interface for REST API transactions.
  */
@@ -19,9 +16,9 @@ export default interface ITransaction {
   };
   // transaction_data includes the important information such as signature and payload
   transaction_data: {
-    sender_publicKey: IPublicKey;
-    receiver_publicKey: IPublicKey;
+    //sender_publicKey: IPublicKey;
+    //receiver_publicKey: IPublicKey;
     payload: string[];
-    signature: ISignature;
+    //signature: ISignature;
   };
 }

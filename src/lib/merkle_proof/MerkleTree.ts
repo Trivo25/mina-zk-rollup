@@ -1,7 +1,47 @@
-import { Circuit, Field, Poseidon } from 'snarkyjs';
+import {
+  arrayProp,
+  Circuit,
+  CircuitValue,
+  Field,
+  Poseidon,
+  prop,
+} from 'snarkyjs';
 import BinaryTree from './BinaryTree';
-import MerklePathElement from './MerklePathElement';
-export default class MerkleTree {
+
+const PATH_LENGTH = 4;
+
+export class MerklePathElement extends CircuitValue {
+  @prop direction: Field;
+  @prop hash: Field;
+
+  constructor(direction: Field, hash: Field) {
+    super(direction, hash);
+    this.direction = direction;
+    this.hash = hash;
+  }
+}
+
+export class MerkleProof extends CircuitValue {
+  @arrayProp(MerklePathElement, PATH_LENGTH) xs: MerklePathElement[];
+
+  private constructor(xs: MerklePathElement[]) {
+    super(xs);
+    this.xs = xs;
+  }
+
+  static fromElements([...xs]: MerklePathElement[]): MerkleProof {
+    // cap the array size to n elements
+    xs = xs.slice(0, PATH_LENGTH);
+    let nullChar = new MerklePathElement(new Field(2), Field.zero);
+    // pad the array to n elements
+    for (let i = xs.length; i < PATH_LENGTH; i++) {
+      xs[i] = nullChar;
+    }
+    return new MerkleProof(xs);
+  }
+}
+
+export class MerkleTree {
   tree: BinaryTree;
   constructor() {
     this.tree = {
@@ -23,7 +63,7 @@ export default class MerkleTree {
   /**
    * Static function that returns a Merkle Tree
    * @param {Field[]} dataArray data leaves
-   * @param {boolean} hash if true elements in the array will be hased using Poseidon, if false they will be inserted directly
+   * @param {boolean} hash if true elements in the array will be hashed using Poseidon, if false they will be inserted directly
    * @return {MerkleStore} Merkle store
    */
   static fromDataLeaves(dataArray: Field[], hash = true): MerkleTree {
@@ -91,12 +131,12 @@ export default class MerkleTree {
   /**
    * Returns a merkle path of an element at a given index
    * @param {number} index of element
-   * @returns {MerklePathElement[] | undefined} merkle path or undefined
+   * @returns {MerkleProof undefined} merkle proof or undefined
    */
-  getProof(index: number): MerklePathElement[] {
+  getProof(index: number): MerkleProof | undefined {
     let currentRowIndex: number = this.tree.levels.length - 1;
     if (index < 0 || index > this.tree.levels[currentRowIndex].length - 1) {
-      return []; // the index it out of the bounds of the leaf array
+      return MerkleProof.fromElements([]); // the index it out of the bounds of the leaf array
     }
 
     let path: MerklePathElement[] = [];
@@ -119,17 +159,17 @@ export default class MerkleTree {
       let siblingPosition: Field = isRightNode ? Field(0) : Field(1);
       let siblingValue: Field = this.tree.levels[x][siblingIndex];
 
-      let sibling: MerklePathElement = {
-        direction: siblingPosition,
-        hash: siblingValue,
-      };
+      let sibling: MerklePathElement = new MerklePathElement(
+        siblingPosition,
+        siblingValue
+      );
 
       path.push(sibling);
 
       index = Math.floor(index / 2); // set index to the parent index
     }
 
-    return path;
+    return MerkleProof.fromElements(path);
   }
 
   /**
@@ -140,25 +180,25 @@ export default class MerkleTree {
    * @returns {boolean} true when the merkle path matches the merkle root
    */
   static validateProof(
-    merklePath: MerklePathElement[],
+    merkleProof: MerkleProof,
     targetHash: Field,
     merkleRoot: Field
   ): boolean {
     // NOTE: can probably remove this?
-    if (merklePath.length === 0) {
+    if (merkleProof.xs.length === 0) {
       return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
     }
 
     var proofHash: Field = targetHash;
-    for (let x = 0; x < merklePath.length; x++) {
+    for (let x = 0; x < merkleProof.xs.length; x++) {
       proofHash = Circuit.if(
-        merklePath[x].direction.equals(Field(0)),
-        Poseidon.hash([merklePath[x].hash, proofHash]),
+        merkleProof.xs[x].direction.equals(Field(0)),
+        Poseidon.hash([merkleProof.xs[x].hash, proofHash]),
         proofHash
       );
       proofHash = Circuit.if(
-        merklePath[x].direction.equals(Field(1)),
-        Poseidon.hash([proofHash, merklePath[x].hash]),
+        merkleProof.xs[x].direction.equals(Field(1)),
+        Poseidon.hash([proofHash, merkleProof.xs[x].hash]),
         proofHash
       );
     }

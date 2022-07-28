@@ -8,7 +8,6 @@ export default (
   qc: QueryController
 ) => {
   server.post(`/rollup/verify`, rc.verify);
-  server.post(`/rollup/transaction`, rc.transaction);
 
   server.get(`/query/transactionPool`, qc.getTransactionPool);
   server.get(`/query/addresses`, qc.getAddresses);

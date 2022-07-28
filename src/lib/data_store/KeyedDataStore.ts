@@ -1,6 +1,6 @@
 import { Field, CircuitValue, Poseidon } from 'snarkyjs';
 
-import { MerkleTree, MerklePathElement } from '../merkle_proof';
+import { MerkleTree, MerkleProof } from '../merkle_proof';
 
 // ! NOTE use primitive types as Key, JS uses === for checks inside the map, hence advanced data types such as Objects WILL NOT yield the same result
 export default class KeyedDataStore<K, V extends CircuitValue> {
@@ -40,11 +40,11 @@ export default class KeyedDataStore<K, V extends CircuitValue> {
    * @returns true if proof is valid
    */
   validateProof(
-    merklePath: MerklePathElement[],
+    merkleProof: MerkleProof,
     targetHash: Field,
     merkleRoot: Field
   ): boolean {
-    return MerkleTree.validateProof(merklePath, targetHash, merkleRoot);
+    return MerkleTree.validateProof(merkleProof, targetHash, merkleRoot);
   }
 
   /**
@@ -65,13 +65,13 @@ export default class KeyedDataStore<K, V extends CircuitValue> {
    * @param key Key of the element in the map
    * @returns Merkle path
    */
-  getProofByKey(key: K): MerklePathElement[] {
+  getProofByKey(key: K): MerkleProof {
     let value = this.dataStore.get(key);
     if (value === undefined) {
-      return [];
+      return MerkleProof.fromElements([]);
     }
 
-    return this.getProof(Poseidon.hash(value.toFields()));
+    return this.getProof(Poseidon.hash(value.toFields()))!;
   }
 
   /**
@@ -79,8 +79,8 @@ export default class KeyedDataStore<K, V extends CircuitValue> {
    * @param value Value in map
    * @returns Merkle path
    */
-  getProofByValue(value: V): MerklePathElement[] {
-    return this.getProof(Poseidon.hash(value.toFields()));
+  getProofByValue(value: V): MerkleProof {
+    return this.getProof(Poseidon.hash(value.toFields()))!;
   }
 
   /**
@@ -124,10 +124,10 @@ export default class KeyedDataStore<K, V extends CircuitValue> {
    * @param hash hash of the value
    * @returns Merkle path
    */
-  getProof(hash: Field): MerklePathElement[] {
+  getProof(hash: Field): MerkleProof | undefined {
     let index: number | undefined = this.merkleTree.getIndex(hash);
     if (index === undefined) {
-      return [];
+      return MerkleProof.fromElements([]);
     }
     return this.merkleTree.getProof(index);
   }
