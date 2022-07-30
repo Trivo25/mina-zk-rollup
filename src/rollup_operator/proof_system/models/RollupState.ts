@@ -8,7 +8,7 @@ export default class RollupState extends CircuitValue {
   @prop pendingDepositsCommitment: Field;
   @prop accountDbCommitment: Field;
   constructor(p: Field, c: Field) {
-    super();
+    super(p, c);
     this.pendingDepositsCommitment = p;
     this.accountDbCommitment = c;
   }

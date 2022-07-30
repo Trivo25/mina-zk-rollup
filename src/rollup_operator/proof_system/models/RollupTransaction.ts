@@ -31,13 +31,22 @@ export default class RollupTransaction extends CircuitValue {
     tokenId: Field,
     signature: Signature
   ) {
-    super();
+    super(amount, nonce, sender, receiver, tokenId, signature);
     this.amount = amount;
     this.nonce = nonce;
     this.sender = sender;
     this.receiver = receiver;
     this.tokenId = tokenId;
     this.signature = signature;
+  }
+
+  toFields(): Field[] {
+    return this.amount
+      .toFields()
+      .concat(this.nonce.toFields())
+      .concat(this.sender.publicKey.toFields())
+      .concat(this.receiver.publicKey.toFields())
+      .concat(this.tokenId.toFields());
   }
 
   getHash(): Field {

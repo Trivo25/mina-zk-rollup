@@ -22,7 +22,9 @@ export default class RollupAccount extends CircuitValue {
   @prop balance: UInt64;
   @prop nonce: UInt32;
   @prop publicKey: PublicKey;
-  merkleProof: MerkleProof;
+  @prop merkleProof: MerkleProof;
+
+  address: string;
 
   constructor(
     balance: UInt64,
@@ -30,11 +32,12 @@ export default class RollupAccount extends CircuitValue {
     publicKey: PublicKey,
     merkleProof: MerkleProof
   ) {
-    super(balance, nonce, publicKey);
+    super(balance, nonce, publicKey, merkleProof);
     this.balance = balance;
     this.nonce = nonce;
     this.publicKey = publicKey;
     this.merkleProof = merkleProof;
+    this.address = publicKey.toBase58();
   }
 
   getHash(): Field {
@@ -44,5 +47,25 @@ export default class RollupAccount extends CircuitValue {
       .concat(this.nonce.toFields())
       .concat(this.publicKey.toFields());
     return Poseidon.hash(preImage);
+  }
+
+  toFields(): Field[] {
+    return this.balance
+      .toFields()
+      .concat(this.nonce.toFields())
+      .concat(this.publicKey.toFields());
+  }
+
+  clone(): RollupAccount {
+    return new RollupAccount(
+      this.balance,
+      this.nonce,
+      this.publicKey,
+      this.merkleProof
+    );
+  }
+
+  getAddress(): string {
+    return this.publicKey.toBase58();
   }
 }

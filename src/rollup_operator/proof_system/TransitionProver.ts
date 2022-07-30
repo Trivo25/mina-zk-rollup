@@ -1,49 +1,71 @@
 import {
+  Field,
   isReady,
   PrivateKey,
   shutdown,
+  Signature,
   UInt32,
   UInt64,
   ZkProgram,
 } from 'snarkyjs';
-import { RollupAccount, RollupStateTransition } from './';
+import {
+  RollupAccount,
+  RollupStateTransition,
+  RollupTransaction,
+  TransactionBatch,
+} from './';
 
-import { MerkleTree, MerkleProof } from '../../lib/merkle_proof';
+import { MerkleProof } from '../../lib/merkle_proof';
+import { KeyedDataStore } from '../../lib/data_store';
+import { calculateMerkleRoot, simulateTransition } from './sim/simulate';
+import { proverTest } from './sim/proverTest';
 
-let MyProgram = ZkProgram({
+let Prover = ZkProgram({
   publicInput: RollupStateTransition,
 
   methods: {
     proveTransaction: {
       // eslint-disable-next-line no-undef
-      privateInputs: [],
+      privateInputs: [TransactionBatch],
 
-      method(stateTransition: RollupStateTransition) {
-        /* RECEIVER and SENDER
-        
+      method(stateTransition: RollupStateTransition, batch: TransactionBatch) {
+        let stateRoot = stateTransition.source.accountDbCommitment;
+        batch.xs.forEach((tx) => {
+          tx.signature.verify(tx.sender.publicKey, tx.toFields());
+          // sender is in state root
+          calculateMerkleRoot(
+            tx.sender.getHash(),
+            tx.sender.merkleProof
+          ).assertEquals(stateRoot);
 
-        SENDER.merklePath == TRUE with hash
-        RECEIVER.merklePath == TRUE with hash
-        stateTransition.before == SENDER.merklePath.root
+          tx.amount.assertLte(tx.sender.balance);
 
-        -> both accounts are in the state root
+          tx.sender.balance = tx.sender.balance.sub(tx.amount);
+          /*           tx.sender.nonce.assertEquals(tx.nonce);
+          tx.sender.nonce = tx.sender.nonce.add(1);
+ */
+          let tempRoot = calculateMerkleRoot(
+            tx.sender.getHash(),
+            tx.sender.merkleProof
+          );
+          // temp root is now our up to date state root
+          // we verify that sender is also within our now updated state root,
+          // which has previously been constrained to the original state root!
+          calculateMerkleRoot(
+            tx.receiver.getHash(),
+            tx.receiver.merkleProof
+          ).assertEquals(tempRoot);
+          // verifying the receiver like that makes sure its a valid entry
 
-        SENDER apply changes
-        tempRoot = calc new merkle path
-        
-        RECEIVER.newMerklePath == tempRoot with hash -> is valid account
-        RECEIVER apply changes
+          tx.receiver.balance = tx.receiver.balance.add(tx.amount);
 
-        -> calculate new merkle path based on RECEIVER
-
-        stateTransition.after == RECEIVER.merklePath.root
-        --> inductive!
-
-
-
-
-
-        */
+          let newRoot = calculateMerkleRoot(
+            tx.receiver.getHash(),
+            tx.receiver.merkleProof
+          );
+          stateRoot = newRoot; //newRoot.assertEquals(stateTransition.target.accountDbCommitment);
+        });
+        stateRoot.assertEquals(stateTransition.target.accountDbCommitment);
       },
     },
   },
@@ -51,59 +73,64 @@ let MyProgram = ZkProgram({
 
 await isReady;
 
-let accounts = [];
-
+let accounts = new Map<string, RollupAccount>();
+let addresses = [];
 for (let i = 0; i < 8; i++) {
   let privateKey = PrivateKey.random();
-  accounts[i] = {
-    privateKey: privateKey,
-    account: new RollupAccount(
-      UInt64.fromNumber(100),
-      UInt32.fromNumber(0),
-      PrivateKey.random().toPublicKey(),
-      MerkleProof.fromElements([])
-    ),
-  };
-}
-let store = MerkleTree.fromDataLeaves(
-  accounts.map((e: any) => e.account.getHash()),
-  false
-);
-
-store.printTree();
-
-console.log('merkle root', store.getMerkleRoot()?.toString());
-
-const simulateTransition = (
-  sender: RollupAccount,
-  receiver: RollupAccount,
-  amount: number,
-  store: MerkleTree
-) => {
-  let preHash = sender.getHash().toString();
-  sender.merkleProof = store.getProof(store.getIndex(sender.getHash())!)!;
-  console.log('preHash ', preHash);
-  console.log(
-    'isValid? ',
-    MerkleTree.validateProof(
-      sender.merkleProof,
-      sender.getHash(),
-      store.getMerkleRoot()!
-    )
+  let acc = new RollupAccount(
+    UInt64.fromNumber(1000000),
+    UInt32.fromNumber(0),
+    privateKey.toPublicKey(),
+    MerkleProof.fromElements([])
   );
+  addresses[i] = {
+    addr: acc.getAddress(),
+    privateKey,
+  };
+  accounts.set(acc.getAddress(), acc);
+}
 
-  console.log(sender.merkleProof.xs.length);
+let store = new KeyedDataStore<string, RollupAccount>();
+store.fromData(accounts);
 
-  //let tx = new RollupTransaction();
+const dummySignature = () => {
+  return Signature.create(PrivateKey.random(), [Field.zero]);
 };
 
-let tx = simulateTransition(
-  accounts[0].account,
-  accounts[1].account,
-  50,
-  store
+let txs = [];
+
+for (let i = 0; i < 1; i++) {
+  let sender = store.get(addresses[0].addr)!.clone();
+  sender.nonce = UInt32.fromNumber(i);
+  let tx = new RollupTransaction(
+    UInt64.fromNumber(10),
+    UInt32.fromNumber(i),
+    sender,
+    store.get(addresses[1].addr)!,
+    Field.zero,
+    dummySignature()
+  );
+
+  tx.signature = Signature.create(addresses[0].privateKey, tx.toFields());
+  txs.push(tx);
+}
+
+let batch = TransactionBatch.fromElements(txs);
+
+let stateTransition = simulateTransition(batch, store);
+
+/* let temp = calculateMerkleRoot(
+  txs[0].sender.getHash(),
+  txs[0].sender.merkleProof
+);
+console.log(
+  temp.equals(stateTransition.source.accountDbCommitment).toBoolean()
 );
 
-await MyProgram.compile();
-
+console.log(
+  calculateMerkleRoot(txs[0].receiver.getHash(), txs[0].receiver.merkleProof)
+    .equals(temp)
+    .toBoolean()
+); */
+proverTest(stateTransition, batch);
 shutdown();

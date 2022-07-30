@@ -3,6 +3,7 @@ import RollupDeposit from './models/RollupDeposit';
 import RollupState from './models/RollupState';
 import RollupStateTransition from './models/RollupStateTransition';
 import RollupTransaction from './models/RollupTransaction';
+import TransactionBatch from './models/TransactionBatch';
 
 export {
   RollupAccount,
@@ -10,4 +11,5 @@ export {
   RollupState,
   RollupStateTransition,
   RollupTransaction,
+  TransactionBatch,
 };
