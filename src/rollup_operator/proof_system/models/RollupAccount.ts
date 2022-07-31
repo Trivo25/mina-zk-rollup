@@ -68,4 +68,11 @@ export default class RollupAccount extends CircuitValue {
   getAddress(): string {
     return this.publicKey.toBase58();
   }
+
+  print() {
+    console.log({
+      balance: this.balance.toString(),
+      nonce: this.nonce.toString(),
+    });
+  }
 }

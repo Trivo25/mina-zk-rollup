@@ -74,12 +74,12 @@ const setupDemoStore = async () => {
   return { store, raw };
 };
 
-const testRun = (rc: RollupController, qc: any, raw: any) => {
+const testRun = (rc: RollupController, qc: any, raw: any, nonce: number) => {
   let tx: ITransaction = {
     from: raw[0].publicKey,
     to: raw[1].publicKey,
     amount: '100',
-    nonce: '0',
+    nonce: nonce.toString(),
     tokenId: '0',
     signature: {
       r: '1',
@@ -116,8 +116,11 @@ async function setupServer(): Promise<Application> {
     new QueryService(globalStore, GlobalEventHandler)
   );
 
-  testRun(rc, qc, demo.raw);
-
+  testRun(rc, qc, demo.raw, 0);
+  testRun(rc, qc, demo.raw, 1);
+  testRun(rc, qc, demo.raw, 2);
+  testRun(rc, qc, demo.raw, 2);
+  testRun(rc, qc, demo.raw, 3);
   setRoutes(server, rc, qc);
   return {
     express: server,
