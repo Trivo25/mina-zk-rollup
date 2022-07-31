@@ -1,4 +1,3 @@
-import { ITransaction } from '../../lib/models';
 import Service from './Service';
 import { DataStore } from '../data_store';
 import { EventEmitter } from 'events';
@@ -8,19 +7,44 @@ class QueryService extends Service {
     super(store, eventHandler);
   }
 
-  getTransactionPool(): ITransaction[] {
-    return new Array<ITransaction>();
+  getTransactionPool(): any[] {
+    return this.store.transactionPool.map((tx) => {
+      return {
+        to: tx.to.toBase58(),
+        from: tx.from.toBase58(),
+        amount: tx.amount.toString(),
+        nonce: tx.amount.toString(),
+      };
+    });
   }
 
-  getAddresses(): any {
-    this.eventHandler.emit('myEvent', {
-      hey: '123',
+  getAccounts(): any {
+    let xs = [];
+    for (let [, val] of this.store.accountTree.dataStore.entries()) {
+      xs.push({
+        publicKey: val.address,
+        balance: val.balance.toString(),
+        nonce: val.nonce.toString(),
+      });
+    }
+    return xs;
+  }
+
+  getTransactionHistory(): any {
+    return this.store.transactionHistory.map((tx) => {
+      return {
+        to: tx.to.toBase58(),
+        from: tx.from.toBase58(),
+        amount: tx.amount.toString(),
+        nonce: tx.amount.toString(),
+      };
     });
-    return 'null';
   }
 
   stats(): any {
-    return null;
+    return {
+      stateRoot: this.store.accountTree.getMerkleRoot()?.toString(),
+    };
   }
 
   getBlocks(): any {

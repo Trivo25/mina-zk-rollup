@@ -10,7 +10,7 @@ start();
 async function start() {
   logger.info(`Starting operator..`);
 
-  Application.express.listen(PORT, () => {
+  (await Application).express.listen(PORT, () => {
     logger.info(`Rollup operator running on port ${PORT}`);
   });
 }
