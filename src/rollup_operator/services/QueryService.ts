@@ -44,6 +44,8 @@ class QueryService extends Service {
   stats(): any {
     return {
       stateRoot: this.store.accountTree.getMerkleRoot()?.toString(),
+      totalAccounts: this.store.accountTree.dataStore.size,
+      totalTransactions: this.store.transactionHistory.length,
     };
   }
 

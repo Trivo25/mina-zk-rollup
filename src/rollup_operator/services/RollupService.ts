@@ -49,6 +49,11 @@ class RollupService extends Service {
         this.store.accountTree.get(tx.to)!.clone()
       );
 
+      this.store.transactionPool.push(rTx);
+      console.log(
+        `Got ${this.store.transactionPool.length} transactions in pool`
+      );
+      /*
       let rootBefore = this.store.accountTree.getMerkleRoot()!;
 
       let appliedTx = applyTransition(rTx, this.store.accountTree);
@@ -62,6 +67,8 @@ class RollupService extends Service {
       console.log('rootBefore ', rootBefore.toString());
       console.log('rootAfter ', rootAfter.toString());
       proverTest(stateTransition, [appliedTx]);
+
+      */
     } catch (error) {
       console.log(error);
       return false;
