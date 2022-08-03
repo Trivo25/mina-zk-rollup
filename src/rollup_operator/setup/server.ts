@@ -9,7 +9,7 @@ import QueryController from '../controllers/QueryController';
 import QueryService from '../services/QueryService';
 
 import { DataStore } from '../data_store';
-import { GlobalEventHandler } from '../events';
+import { Events, GlobalEventHandler } from '../events';
 import { KeyedDataStore } from '../../lib/data_store';
 import { RollupAccount } from '../proof_system';
 import {
@@ -115,16 +115,15 @@ async function setupServer(): Promise<Application> {
   let qc = new QueryController(
     new QueryService(globalStore, GlobalEventHandler)
   );
-
   testRun(rc, qc, demo.raw, 0);
   testRun(rc, qc, demo.raw, 1);
   testRun(rc, qc, demo.raw, 2);
   testRun(rc, qc, demo.raw, 2);
   testRun(rc, qc, demo.raw, 3);
+
   setRoutes(server, rc, qc);
   return {
     express: server,
   };
 }
-
 export default setupServer();

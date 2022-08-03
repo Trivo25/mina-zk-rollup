@@ -9,19 +9,47 @@ import {
   RollupState,
   RollupStateTransition,
   RollupTransaction,
+  TransactionBatch,
 } from '../proof_system';
 import { Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
 import { applyTransition } from '../proof_system/sim/apply';
 import { verifyTransaction } from '../proof_system/sim/ verify';
 import { proverTest } from '../proof_system/sim/proverTest';
-
+import Config from '../../config/config';
 class RollupService extends Service {
   constructor(store: DataStore, eventHandler: EventEmitter) {
     super(store, eventHandler);
   }
 
   async produceRollupBlock() {
-    throw new Error('Not implemented');
+    let rootBefore = this.store.accountTree.getMerkleRoot()!;
+    let appliedTxns: RollupTransaction[] = [];
+
+    this.store.transactionPool.forEach((tx) => {
+      try {
+        let aTx = applyTransition(tx, this.store.accountTree);
+        appliedTxns.push(aTx);
+      } catch (error) {
+        console.log('Skipping invalid tx');
+        console.log('nonce ', tx.nonce.toString());
+      }
+    });
+    this.store.transactionPool = [];
+    let rootAfter = this.store.accountTree.getMerkleRoot()!;
+    let stateTransition = new RollupStateTransition(
+      new RollupState(Field.zero, rootBefore),
+      new RollupState(Field.zero, rootAfter)
+    );
+    console.log('rootBefore ', rootBefore.toString());
+    console.log('rootAfter ', rootAfter.toString());
+    console.log(appliedTxns.length);
+    if (!Config.prover.produceProof) {
+      console.log('dummy prover test');
+      proverTest(stateTransition, appliedTxns);
+    } else {
+      console.log('producing proofs');
+    }
+    this.store.transactionHistory.push(...appliedTxns);
   }
 
   /**
@@ -53,22 +81,10 @@ class RollupService extends Service {
       console.log(
         `Got ${this.store.transactionPool.length} transactions in pool`
       );
-      /*
-      let rootBefore = this.store.accountTree.getMerkleRoot()!;
 
-      let appliedTx = applyTransition(rTx, this.store.accountTree);
-
-      let rootAfter = this.store.accountTree.getMerkleRoot()!;
-      let stateTransition = new RollupStateTransition(
-        new RollupState(Field.zero, rootBefore),
-        new RollupState(Field.zero, rootAfter)
-      );
-      console.log('NONCE IS ', appliedTx.nonce.toString());
-      console.log('rootBefore ', rootBefore.toString());
-      console.log('rootAfter ', rootAfter.toString());
-      proverTest(stateTransition, [appliedTx]);
-
-      */
+      if (this.store.transactionPool.length >= 5) {
+        await this.produceRollupBlock();
+      }
     } catch (error) {
       console.log(error);
       return false;

@@ -11,6 +11,7 @@ export default (
   server.post(`/rollup/processTransaction`, rc.processTransaction);
 
   server.get(`/query/transactionPool`, qc.getTransactionPool);
+  server.get(`/query/transactionHistory`, qc.getTransactionHistory);
   server.get(`/query/accounts`, qc.getAccounts);
   server.get(`/query/blocks`, qc.getBlocks);
   server.get(`/query/stats`, qc.stats);

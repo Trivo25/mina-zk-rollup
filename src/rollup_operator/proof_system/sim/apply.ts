@@ -11,10 +11,16 @@ export const applyTransition = (
   let sender = store.get(senderAddr)!.clone();
   let receiver = store.get(receiverAddr)!.clone();
 
+  tx.from.assertEquals(sender.publicKey);
+  tx.signature.verify(sender!.publicKey, tx.toFields()).assertTrue();
+
   tx.sender = sender.clone();
   tx.receiver = receiver.clone();
 
   tx.sender!.merkleProof = store.getProofByKey(senderAddr);
+
+  tx.amount.assertLte(tx.sender.balance);
+  tx.nonce.assertEquals(tx.sender.nonce);
 
   sender.balance = sender.balance.sub(tx.amount);
   sender.nonce = sender.nonce.add(1);
