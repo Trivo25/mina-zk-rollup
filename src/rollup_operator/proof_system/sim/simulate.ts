@@ -38,7 +38,7 @@ export const simulateTransition = (
     tx.receiver = receiver;
 
     txs.push(
-      new RollupTransaction(
+      RollupTransaction.from(
         tx.amount,
         tx.nonce,
         sender.publicKey,
@@ -66,7 +66,7 @@ export const calculateMerkleRoot = (
   merkleProof: MerkleProof
 ): Field => {
   let proofHash: Field = targetHash;
-  for (let x = 0; x < 3; x++) {
+  for (let x = 0; x < 2; x++) {
     proofHash = Circuit.if(
       merkleProof.xs[x].direction.equals(Field(0)),
       Poseidon.hash([merkleProof.xs[x].hash, proofHash]),

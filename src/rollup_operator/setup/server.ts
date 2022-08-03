@@ -25,7 +25,7 @@ import { MerkleProof } from '../../lib/merkle_proof';
 import { ITransaction } from '../../lib/models';
 import {} from 'crypto';
 import { signTx } from '../../client_sdk';
-
+import { Prover } from '../proof_system/TransitionProver';
 // ! for demo purposes only
 const setupDemoStore = async () => {
   await isReady;
@@ -74,10 +74,16 @@ const setupDemoStore = async () => {
   return { store, raw };
 };
 
-const testRun = (rc: RollupController, qc: any, raw: any, nonce: number) => {
+const testRun = (
+  rc: RollupController,
+  qc: any,
+  from: any,
+  to: any,
+  nonce: number
+) => {
   let tx: ITransaction = {
-    from: raw[0].publicKey,
-    to: raw[1].publicKey,
+    from: from.publicKey,
+    to: to.publicKey,
     amount: '100',
     nonce: nonce.toString(),
     tokenId: '0',
@@ -87,7 +93,7 @@ const testRun = (rc: RollupController, qc: any, raw: any, nonce: number) => {
     },
   };
 
-  tx = signTx(tx, PrivateKey.fromBase58(raw[0].privateKey));
+  tx = signTx(tx, PrivateKey.fromBase58(from.privateKey));
   rc.service.processTransaction(tx);
 };
 
@@ -109,17 +115,26 @@ async function setupServer(): Promise<Application> {
     transactionHistory: [],
   };
 
+  try {
+    await Prover.compile();
+  } catch (error) {
+    console.log(error);
+  }
+  console.log('Prover compiled');
   let rc = new RollupController(
-    new RollupService(globalStore, GlobalEventHandler)
+    new RollupService(globalStore, GlobalEventHandler, Prover)
   );
   let qc = new QueryController(
     new QueryService(globalStore, GlobalEventHandler)
   );
-  testRun(rc, qc, demo.raw, 0);
-  testRun(rc, qc, demo.raw, 1);
-  testRun(rc, qc, demo.raw, 2);
-  testRun(rc, qc, demo.raw, 2);
-  testRun(rc, qc, demo.raw, 3);
+  testRun(rc, qc, demo.raw[0], demo.raw[1], 0);
+  testRun(rc, qc, demo.raw[0], demo.raw[2], 1);
+  testRun(rc, qc, demo.raw[0], demo.raw[3], 2);
+  testRun(rc, qc, demo.raw[0], demo.raw[2], 3);
+  testRun(rc, qc, demo.raw[0], demo.raw[3], 4);
+  /*
+  testRun(rc, qc, demo.raw[0], demo.raw[3], 2);
+  testRun(rc, qc, demo.raw[0], demo.raw[1], 3); */
 
   setRoutes(server, rc, qc);
   return {

@@ -12,6 +12,7 @@ import {
 import { base58Encode } from '../../../lib/helpers';
 import { RollupAccount } from '../.';
 import { EnumFinality, ITransaction } from '../../../lib/models';
+import { MerkleProof } from '../../../lib/merkle_proof';
 
 /**
  * A {@link RollupTransaction} describes the transactions that take place on the layer 2.
@@ -20,8 +21,8 @@ import { EnumFinality, ITransaction } from '../../../lib/models';
 export default class RollupTransaction extends CircuitValue {
   @prop amount: UInt64;
   @prop nonce: UInt32;
-  @prop sender: RollupAccount | undefined;
-  @prop receiver: RollupAccount | undefined;
+  @prop sender: RollupAccount;
+  @prop receiver: RollupAccount;
   @prop tokenId: Field;
   @prop signature: Signature;
 
@@ -30,21 +31,45 @@ export default class RollupTransaction extends CircuitValue {
 
   state: EnumFinality = EnumFinality.PENDING;
 
-  constructor(
+  private constructor(
     amount: UInt64,
     nonce: UInt32,
     from: PublicKey,
     to: PublicKey,
     tokenId: Field,
-    signature: Signature
+    signature: Signature,
+    sender: RollupAccount,
+    receiver: RollupAccount
   ) {
-    super(amount, nonce, to, from, tokenId, signature);
+    super(amount, nonce, to, from, tokenId, signature, sender, receiver);
     this.amount = amount;
     this.nonce = nonce;
     this.from = from;
     this.to = to;
     this.tokenId = tokenId;
     this.signature = signature;
+    this.sender = sender;
+    this.receiver = receiver;
+  }
+
+  static from(
+    amount: UInt64,
+    nonce: UInt32,
+    from: PublicKey,
+    to: PublicKey,
+    tokenId: Field,
+    signature: Signature
+  ): RollupTransaction {
+    return new RollupTransaction(
+      amount,
+      nonce,
+      from,
+      to,
+      tokenId,
+      signature,
+      dummyAccount(),
+      dummyAccount()
+    );
   }
 
   toFields(): Field[] {
@@ -68,7 +93,7 @@ export default class RollupTransaction extends CircuitValue {
 
   static fromInterface(tx: ITransaction): RollupTransaction {
     try {
-      return new RollupTransaction(
+      return RollupTransaction.from(
         UInt64.fromString(tx.amount),
         UInt32.fromString(tx.nonce),
         PublicKey.fromBase58(tx.from),
@@ -101,3 +126,12 @@ export default class RollupTransaction extends CircuitValue {
     this.signature = Signature.create(priv, this.toFields());
   }
 }
+
+const dummyAccount = (): RollupAccount => {
+  return new RollupAccount(
+    UInt64.from(0),
+    UInt32.from(0),
+    PrivateKey.random().toPublicKey(),
+    MerkleProof.fromElements([])
+  );
+};

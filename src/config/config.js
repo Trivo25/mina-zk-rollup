@@ -1,9 +1,10 @@
 const config = {
   app: {
     port: 3000,
+    batchSize: 4,
   },
   prover: {
-    produceProof: false,
+    produceProof: true,
   },
   db: {
     host: 'localhost',

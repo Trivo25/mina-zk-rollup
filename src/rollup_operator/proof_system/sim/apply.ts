@@ -1,5 +1,6 @@
 import { KeyedDataStore } from '../../../lib/data_store';
 import { RollupTransaction, RollupAccount } from '..';
+import { calculateMerkleRoot } from './simulate';
 
 export const applyTransition = (
   tx: RollupTransaction,
@@ -17,7 +18,7 @@ export const applyTransition = (
   tx.sender = sender.clone();
   tx.receiver = receiver.clone();
 
-  tx.sender!.merkleProof = store.getProofByKey(senderAddr);
+  tx.sender.merkleProof = store.getProofByKey(senderAddr);
 
   tx.amount.assertLte(tx.sender.balance);
   tx.nonce.assertEquals(tx.sender.nonce);

@@ -11,14 +11,25 @@ import {
   RollupTransaction,
   TransactionBatch,
 } from '../proof_system';
-import { Field, PublicKey, Signature, UInt32, UInt64 } from 'snarkyjs';
+import {
+  Field,
+  PublicKey,
+  Signature,
+  UInt32,
+  UInt64,
+  ZkProgram,
+} from 'snarkyjs';
 import { applyTransition } from '../proof_system/sim/apply';
 import { verifyTransaction } from '../proof_system/sim/ verify';
 import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
+import { Prover } from '../proof_system/TransitionProver';
 class RollupService extends Service {
-  constructor(store: DataStore, eventHandler: EventEmitter) {
+  prover;
+
+  constructor(store: DataStore, eventHandler: EventEmitter, prover: any) {
     super(store, eventHandler);
+    this.prover = prover;
   }
 
   async produceRollupBlock() {
@@ -31,7 +42,6 @@ class RollupService extends Service {
         appliedTxns.push(aTx);
       } catch (error) {
         console.log('Skipping invalid tx');
-        console.log('nonce ', tx.nonce.toString());
       }
     });
     this.store.transactionPool = [];
@@ -48,6 +58,13 @@ class RollupService extends Service {
       proverTest(stateTransition, appliedTxns);
     } else {
       console.log('producing proofs');
+      console.time('txProof');
+      let proof = await Prover.proveTransaction(
+        stateTransition,
+        TransactionBatch.fromElements(appliedTxns)
+      );
+      console.timeEnd('txProof');
+      console.log(proof.verify());
     }
     this.store.transactionHistory.push(...appliedTxns);
   }
@@ -69,6 +86,7 @@ class RollupService extends Service {
   async processTransaction(tx: ITransaction): Promise<any> {
     try {
       let rTx = RollupTransaction.fromInterface(tx);
+
       rTx.signature.verify(rTx.from, rTx.toFields()).assertTrue();
 
       verifyTransaction(
@@ -82,7 +100,7 @@ class RollupService extends Service {
         `Got ${this.store.transactionPool.length} transactions in pool`
       );
 
-      if (this.store.transactionPool.length >= 5) {
+      if (this.store.transactionPool.length >= Config.app.batchSize) {
         await this.produceRollupBlock();
       }
     } catch (error) {
