@@ -1,5 +1,5 @@
-import { Circuit, Field, Poseidon, UInt64, ZkProgram } from 'snarkyjs';
-import { RollupStateTransition, RollupTransaction, TransactionBatch } from './';
+import { Proof, ZkProgram } from 'snarkyjs';
+import { RollupStateTransition, RollupTransaction, TransactionBatch } from '.';
 
 import { calculateMerkleRoot } from './sim/simulate';
 
@@ -27,7 +27,7 @@ export const Prover = ZkProgram({
           tx.signature.verify(tx.sender.publicKey, tx.toFields()).assertTrue();
           // make sure the sender has the funds!
           tx.amount.assertLte(tx.sender.balance);
-          tx.nonce.assertEquals(tx.sender!.nonce);
+          tx.nonce.assertEquals(tx.sender.nonce);
 
           // apply changes to the sender account
 
@@ -71,3 +71,4 @@ export const Prover = ZkProgram({
     },
   },
 });
+export class RollupStateTransitionProof extends Proof<RollupStateTransition> {}

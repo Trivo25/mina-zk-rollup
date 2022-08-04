@@ -9,12 +9,13 @@ import QueryController from '../controllers/QueryController';
 import QueryService from '../services/QueryService';
 
 import { DataStore } from '../data_store';
-import { Events, GlobalEventHandler } from '../events';
+import { GlobalEventHandler } from '../events';
 import { KeyedDataStore } from '../../lib/data_store';
-import { RollupAccount } from '../proof_system';
+import { RollupAccount, RollupStateTransition } from '../proof_system';
 import {
   Field,
   isReady,
+  Mina,
   PrivateKey,
   PublicKey,
   Signature,
@@ -25,7 +26,9 @@ import { MerkleProof } from '../../lib/merkle_proof';
 import { ITransaction } from '../../lib/models';
 import {} from 'crypto';
 import { signTx } from '../../client_sdk';
-import { Prover } from '../proof_system/TransitionProver';
+import { Prover, RollupStateTransitionProof } from '../proof_system/prover';
+import { BlockchainInterface } from '../blockchain';
+import { RollupZkApp } from '../../zkapp/RollupZkApp';
 // ! for demo purposes only
 const setupDemoStore = async () => {
   await isReady;
@@ -97,6 +100,47 @@ const testRun = (
   rc.service.processTransaction(tx);
 };
 
+const setupLocalContract = async (): Promise<BlockchainInterface> => {
+  // setting up local contract
+  let Local = Mina.LocalBlockchain();
+  Mina.setActiveInstance(Local);
+  let feePayer = Local.testAccounts[0].privateKey;
+
+  // the zkapp account
+  let zkappKey = PrivateKey.random();
+  let zkappAddress = zkappKey.toPublicKey();
+  let initialBalance = 10_000_000_000;
+
+  let zkapp = new RollupZkApp(zkappAddress);
+  console.log('compiling contract');
+  try {
+    await RollupZkApp.compile(zkappAddress);
+  } catch (error) {
+    console.log(error);
+  }
+  /*   console.log('deploying contract');
+  let tx = await Mina.transaction(feePayer, () => {
+    Party.fundNewAccount(feePayer, { initialBalance });
+    zkapp.deploy({ zkappKey });
+  });
+  tx.send();
+  console.log('deployed'); */
+
+  return {
+    async submitProof(
+      stateTransition: RollupStateTransition,
+      stateTransitionProof: RollupStateTransitionProof
+    ) {
+      let tx = await Mina.transaction(feePayer, () => {
+        zkapp.verifyBatch(/* stateTransitionProof, */ stateTransition);
+        zkapp.sign(zkappKey);
+      });
+      await tx.prove();
+      tx.send();
+    },
+  };
+};
+
 interface Application {
   express: express.Application;
 }
@@ -120,9 +164,12 @@ async function setupServer(): Promise<Application> {
   } catch (error) {
     console.log(error);
   }
+
+  let localBlockchain = await setupLocalContract();
+
   console.log('Prover compiled');
   let rc = new RollupController(
-    new RollupService(globalStore, GlobalEventHandler, Prover)
+    new RollupService(globalStore, GlobalEventHandler, Prover, localBlockchain)
   );
   let qc = new QueryController(
     new QueryService(globalStore, GlobalEventHandler)

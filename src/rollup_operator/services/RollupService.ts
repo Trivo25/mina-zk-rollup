@@ -23,13 +23,23 @@ import { applyTransition } from '../proof_system/sim/apply';
 import { verifyTransaction } from '../proof_system/sim/ verify';
 import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
-import { Prover } from '../proof_system/TransitionProver';
+import { Prover } from '../proof_system/prover';
+import { RollupZkApp } from '../../zkapp/RollupZkApp';
+import { BlockchainInterface } from '../blockchain';
+
 class RollupService extends Service {
   prover;
+  nodeInterface;
 
-  constructor(store: DataStore, eventHandler: EventEmitter, prover: any) {
+  constructor(
+    store: DataStore,
+    eventHandler: EventEmitter,
+    prover: any,
+    nodeInterface: BlockchainInterface
+  ) {
     super(store, eventHandler);
     this.prover = prover;
+    this.nodeInterface = nodeInterface;
   }
 
   async produceRollupBlock() {
@@ -50,21 +60,19 @@ class RollupService extends Service {
       new RollupState(Field.zero, rootBefore),
       new RollupState(Field.zero, rootAfter)
     );
-    console.log('rootBefore ', rootBefore.toString());
-    console.log('rootAfter ', rootAfter.toString());
-    console.log(appliedTxns.length);
+
     if (!Config.prover.produceProof) {
       console.log('dummy prover test');
       proverTest(stateTransition, appliedTxns);
     } else {
       console.log('producing proofs');
-      console.time('txProof');
       let proof = await Prover.proveTransaction(
         stateTransition,
         TransactionBatch.fromElements(appliedTxns)
       );
       console.timeEnd('txProof');
-      console.log(proof.verify());
+      //console.log(proof.verify());
+      console.log('-----');
     }
     this.store.transactionHistory.push(...appliedTxns);
   }

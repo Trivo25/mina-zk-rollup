@@ -4,11 +4,11 @@ import Config from '../../../config/config';
 const BATCH_SIZE = Config.app.batchSize;
 
 export default class TransactionBatch extends CircuitValue {
-  @arrayProp(RollupTransaction, BATCH_SIZE) xs: RollupTransaction[];
+  @arrayProp(RollupTransaction, BATCH_SIZE)
+  xs!: RollupTransaction[];
 
   constructor(xs: RollupTransaction[]) {
     super(xs);
-    this.xs = xs;
   }
 
   static fromElements(xs: RollupTransaction[]): TransactionBatch {
