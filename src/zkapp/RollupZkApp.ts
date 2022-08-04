@@ -8,6 +8,7 @@ import {
   UInt64,
   Permissions,
   Proof,
+  Circuit,
 } from 'snarkyjs';
 import {
   RollupState,
@@ -34,11 +35,18 @@ export class RollupZkApp extends SmartContract {
   }
 
   @method verifyBatch(
-    //stateTransitionProof: RollupStateTransitionProof,
+    stateTransitionProof: RollupStateTransitionProof,
     stateTransition: RollupStateTransition
   ) {
-    //stateTransitionProof.verify();
-
+    stateTransitionProof.verify();
+    Circuit.asProver(() => {
+      console.log(
+        stateTransitionProof.publicInput.source.accountDbCommitment.toString()
+      );
+      console.log(
+        stateTransitionProof.publicInput.target.accountDbCommitment.toString()
+      );
+    });
     this.emitEvent('stateTransition', stateTransition);
   }
 }

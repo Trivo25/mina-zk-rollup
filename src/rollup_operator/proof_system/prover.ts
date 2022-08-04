@@ -1,4 +1,4 @@
-import { Proof, ZkProgram } from 'snarkyjs';
+import { ZkProgram } from 'snarkyjs';
 import { RollupStateTransition, RollupTransaction, TransactionBatch } from '.';
 
 import { calculateMerkleRoot } from './sim/simulate';
@@ -71,4 +71,5 @@ export const Prover = ZkProgram({
     },
   },
 });
-export class RollupStateTransitionProof extends Proof<RollupStateTransition> {}
+let RollupStateTransitionProof_ = ZkProgram.Proof(Prover);
+export class RollupStateTransitionProof extends RollupStateTransitionProof_ {}

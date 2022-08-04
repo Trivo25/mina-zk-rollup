@@ -25,21 +25,21 @@ import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
 import { Prover } from '../proof_system/prover';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
-import { BlockchainInterface } from '../blockchain';
+import { ContractInterface } from '../blockchain';
 
 class RollupService extends Service {
   prover;
-  nodeInterface;
+  contract;
 
   constructor(
     store: DataStore,
     eventHandler: EventEmitter,
     prover: any,
-    nodeInterface: BlockchainInterface
+    contract: ContractInterface
   ) {
     super(store, eventHandler);
     this.prover = prover;
-    this.nodeInterface = nodeInterface;
+    this.contract = contract;
   }
 
   async produceRollupBlock() {
@@ -66,13 +66,16 @@ class RollupService extends Service {
       proverTest(stateTransition, appliedTxns);
     } else {
       console.log('producing proofs');
+      console.time('txProof');
+
       let proof = await Prover.proveTransaction(
         stateTransition,
         TransactionBatch.fromElements(appliedTxns)
       );
-      console.timeEnd('txProof');
       //console.log(proof.verify());
+      console.timeEnd('txProof');
       console.log('-----');
+      this.contract.submitProof(stateTransition, proof);
     }
     this.store.transactionHistory.push(...appliedTxns);
   }

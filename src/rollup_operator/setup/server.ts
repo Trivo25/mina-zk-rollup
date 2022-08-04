@@ -16,6 +16,7 @@ import {
   Field,
   isReady,
   Mina,
+  Party,
   PrivateKey,
   PublicKey,
   Signature,
@@ -27,7 +28,7 @@ import { ITransaction } from '../../lib/models';
 import {} from 'crypto';
 import { signTx } from '../../client_sdk';
 import { Prover, RollupStateTransitionProof } from '../proof_system/prover';
-import { BlockchainInterface } from '../blockchain';
+import { ContractInterface } from '../blockchain';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
 // ! for demo purposes only
 const setupDemoStore = async () => {
@@ -100,7 +101,7 @@ const testRun = (
   rc.service.processTransaction(tx);
 };
 
-const setupLocalContract = async (): Promise<BlockchainInterface> => {
+const setupLocalContract = async (): Promise<ContractInterface> => {
   // setting up local contract
   let Local = Mina.LocalBlockchain();
   Mina.setActiveInstance(Local);
@@ -109,7 +110,6 @@ const setupLocalContract = async (): Promise<BlockchainInterface> => {
   // the zkapp account
   let zkappKey = PrivateKey.random();
   let zkappAddress = zkappKey.toPublicKey();
-  let initialBalance = 10_000_000_000;
 
   let zkapp = new RollupZkApp(zkappAddress);
   console.log('compiling contract');
@@ -118,13 +118,13 @@ const setupLocalContract = async (): Promise<BlockchainInterface> => {
   } catch (error) {
     console.log(error);
   }
-  /*   console.log('deploying contract');
+  console.log('deploying contract');
   let tx = await Mina.transaction(feePayer, () => {
-    Party.fundNewAccount(feePayer, { initialBalance });
+    Party.fundNewAccount(feePayer);
     zkapp.deploy({ zkappKey });
   });
   tx.send();
-  console.log('deployed'); */
+  console.log('deployed');
 
   return {
     async submitProof(
@@ -132,11 +132,12 @@ const setupLocalContract = async (): Promise<BlockchainInterface> => {
       stateTransitionProof: RollupStateTransitionProof
     ) {
       let tx = await Mina.transaction(feePayer, () => {
-        zkapp.verifyBatch(/* stateTransitionProof, */ stateTransition);
+        zkapp.verifyBatch(stateTransitionProof, stateTransition);
         zkapp.sign(zkappKey);
       });
       await tx.prove();
       tx.send();
+      console.log('proof submitted');
     },
   };
 };
@@ -165,11 +166,11 @@ async function setupServer(): Promise<Application> {
     console.log(error);
   }
 
-  let localBlockchain = await setupLocalContract();
+  let contract = await setupLocalContract();
 
   console.log('Prover compiled');
   let rc = new RollupController(
-    new RollupService(globalStore, GlobalEventHandler, Prover, localBlockchain)
+    new RollupService(globalStore, GlobalEventHandler, Prover, contract)
   );
   let qc = new QueryController(
     new QueryService(globalStore, GlobalEventHandler)
@@ -178,7 +179,7 @@ async function setupServer(): Promise<Application> {
   testRun(rc, qc, demo.raw[0], demo.raw[2], 1);
   testRun(rc, qc, demo.raw[0], demo.raw[3], 2);
   testRun(rc, qc, demo.raw[0], demo.raw[2], 3);
-  testRun(rc, qc, demo.raw[0], demo.raw[3], 4);
+  //testRun(rc, qc, demo.raw[0], demo.raw[3], 4);
   /*
   testRun(rc, qc, demo.raw[0], demo.raw[3], 2);
   testRun(rc, qc, demo.raw[0], demo.raw[1], 3); */
