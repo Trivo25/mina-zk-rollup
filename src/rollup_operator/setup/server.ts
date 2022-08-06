@@ -78,29 +78,6 @@ const setupDemoStore = async () => {
   return { store, raw };
 };
 
-const testRun = (
-  rc: RollupController,
-  qc: any,
-  from: any,
-  to: any,
-  nonce: number
-) => {
-  let tx: ITransaction = {
-    from: from.publicKey,
-    to: to.publicKey,
-    amount: '100',
-    nonce: nonce.toString(),
-    tokenId: '0',
-    signature: {
-      r: '1',
-      s: '1',
-    },
-  };
-
-  tx = signTx(tx, PrivateKey.fromBase58(from.privateKey));
-  rc.service.processTransaction(tx);
-};
-
 const setupLocalContract = async (): Promise<ContractInterface> => {
   // setting up local contract
   let Local = Mina.LocalBlockchain();
@@ -144,6 +121,7 @@ const setupLocalContract = async (): Promise<ContractInterface> => {
 
 interface Application {
   express: express.Application;
+  rollupService: RollupService;
 }
 
 async function setupServer(): Promise<Application> {
@@ -169,24 +147,17 @@ async function setupServer(): Promise<Application> {
   let contract = await setupLocalContract();
 
   console.log('Prover compiled');
-  let rc = new RollupController(
-    new RollupService(globalStore, GlobalEventHandler, Prover, contract)
-  );
+
+  let rs = new RollupService(globalStore, GlobalEventHandler, Prover, contract);
+  let rc = new RollupController(rs);
   let qc = new QueryController(
     new QueryService(globalStore, GlobalEventHandler)
   );
-  testRun(rc, qc, demo.raw[0], demo.raw[1], 0);
-  testRun(rc, qc, demo.raw[0], demo.raw[2], 1);
-  testRun(rc, qc, demo.raw[0], demo.raw[3], 2);
-  testRun(rc, qc, demo.raw[0], demo.raw[2], 3);
-  //testRun(rc, qc, demo.raw[0], demo.raw[3], 4);
-  /*
-  testRun(rc, qc, demo.raw[0], demo.raw[3], 2);
-  testRun(rc, qc, demo.raw[0], demo.raw[1], 3); */
 
   setRoutes(server, rc, qc);
   return {
     express: server,
+    rollupService: rs,
   };
 }
 export default setupServer();
