@@ -11,8 +11,9 @@ export const verifyTransaction = (
 
     receiver.publicKey.assertEquals(tx.to);
 
-    tx.signature.verify(tx.from, tx.toFields()).assertTrue();
-
+    let isValidSig = tx.signature.verify(tx.from, tx.toFields());
+    console.log('is valid sig', isValidSig.toString());
+    isValidSig.assertTrue();
     /*     tx.amount.assertLte(sender.balance);
     tx.nonce.assertEquals(sender.nonce); */
   } catch (error) {

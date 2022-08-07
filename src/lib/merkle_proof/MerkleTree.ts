@@ -6,10 +6,9 @@ import {
   Poseidon,
   prop,
 } from 'snarkyjs';
-import { JSONValue } from 'snarkyjs/dist/server/snarky';
 import BinaryTree from './BinaryTree';
 
-const PATH_LENGTH = 3;
+export const PATH_LENGTH = 4;
 
 export class MerklePathElement extends CircuitValue {
   @prop direction: Field;

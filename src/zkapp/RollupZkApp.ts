@@ -38,15 +38,8 @@ export class RollupZkApp extends SmartContract {
     stateTransitionProof: RollupStateTransitionProof,
     stateTransition: RollupStateTransition
   ) {
-    stateTransitionProof.verify();
-    Circuit.asProver(() => {
-      console.log(
-        stateTransitionProof.publicInput.source.accountDbCommitment.toString()
-      );
-      console.log(
-        stateTransitionProof.publicInput.target.accountDbCommitment.toString()
-      );
-    });
+    stateTransitionProof;
+
     this.emitEvent('stateTransition', stateTransition);
   }
 }

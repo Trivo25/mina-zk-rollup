@@ -13,7 +13,7 @@ class QueryService extends Service {
         to: tx.to.toBase58(),
         from: tx.from.toBase58(),
         amount: tx.amount.toString(),
-        nonce: tx.amount.toString(),
+        nonce: tx.nonce.toString(),
       };
     });
   }
@@ -37,6 +37,8 @@ class QueryService extends Service {
         from: tx.from.toBase58(),
         amount: tx.amount.toString(),
         nonce: tx.nonce.toString(),
+        type: tx.type,
+        state: tx.state.toString(),
       };
     });
   }

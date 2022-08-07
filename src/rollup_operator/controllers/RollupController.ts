@@ -22,6 +22,7 @@ class RollupController extends Controller<RollupService> {
     req: express.Request,
     res: express.Response
   ): Promise<express.Response> {
+    console.log('RECEIVING ', req.body);
     return res
       .status(200)
       .send(await this.service.processTransaction(req.body));

@@ -7,6 +7,8 @@ export default class TransactionBatch extends CircuitValue {
   @arrayProp(RollupTransaction, BATCH_SIZE)
   xs!: RollupTransaction[];
 
+  static batchSize = BATCH_SIZE;
+
   constructor(xs: RollupTransaction[]) {
     super(xs);
   }

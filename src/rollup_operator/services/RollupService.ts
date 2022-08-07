@@ -54,26 +54,32 @@ class RollupService extends Service {
         console.log('Skipping invalid tx');
       }
     });
+
     this.store.transactionPool = [];
+
     let rootAfter = this.store.accountTree.getMerkleRoot()!;
     let stateTransition = new RollupStateTransition(
       new RollupState(Field.zero, rootBefore),
       new RollupState(Field.zero, rootAfter)
     );
 
+    if (appliedTxns.length < TransactionBatch.batchSize) {
+      console.log('not enough valid tx.. waiting');
+    }
+
     if (!Config.prover.produceProof) {
       console.log('dummy prover test');
       proverTest(stateTransition, appliedTxns);
     } else {
       console.log('producing proofs');
-      console.time('txProof');
 
+      console.time('txProof');
       let proof = await Prover.proveTransaction(
         stateTransition,
         TransactionBatch.fromElements(appliedTxns)
       );
-      //console.log(proof.verify());
       console.timeEnd('txProof');
+
       console.log('-----');
       this.contract.submitProof(stateTransition, proof);
     }
@@ -97,7 +103,6 @@ class RollupService extends Service {
   async processTransaction(tx: ITransaction): Promise<any> {
     try {
       let rTx = RollupTransaction.fromInterface(tx);
-
       rTx.signature.verify(rTx.from, rTx.toFields()).assertTrue();
 
       verifyTransaction(
@@ -107,6 +112,8 @@ class RollupService extends Service {
       );
 
       this.store.transactionPool.push(rTx);
+      console.log('a', rTx.nonce.toString());
+
       console.log(
         `Got ${this.store.transactionPool.length} transactions in pool`
       );

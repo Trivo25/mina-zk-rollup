@@ -14,7 +14,7 @@
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
-    "demo": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/proof_system/TransitionProver",
+    "demo": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/proof_system/test",
     "demo:operator": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/rollup_operator/index.js",
     "demo:client": "npx tsc -p tsconfig.json && node --experimental-specifier-resolution=node ./build/src/client_sdk/index.js",
     "build": "tsc -p tsconfig.json",

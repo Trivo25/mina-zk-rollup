@@ -37,8 +37,8 @@ const setupDemoStore = async () => {
 
   let raw = [
     {
-      publicKey: 'B62qknga8UzXgEm4Zup2FhNh8gxkMygt63Z5SQzqce4xkCLwHCRVusD',
-      privateKey: 'EKEnt7fD5HWNdf2nJ82VmA1kmywc6Rhh1u1HNZ5uMn72fk7wMFhe',
+      publicKey: 'B62qpkPHkmoG73CdpDxHzNVkYse7vRH13jwNjcM3sgCVcJt5az64Aru',
+      privateKey: 'EKEfcsQRnT4FDeu2jKWFQJB168GAqZyPiVhC5dvTgSsFsAozXPaG',
     },
     {
       publicKey: 'B62qmh1etPvw576SaENiQvD9sMURNfQ4B6fCXLHWzhuzSiAHkycr8NS',

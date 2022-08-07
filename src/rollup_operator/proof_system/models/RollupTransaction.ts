@@ -29,8 +29,8 @@ export default class RollupTransaction extends CircuitValue {
   @prop to: PublicKey;
   @prop from: PublicKey;
 
-  //state: EnumFinality = EnumFinality.PENDING;
-
+  state: EnumFinality = EnumFinality.PENDING;
+  type: string = 'TRANSFER';
   constructor(
     amount: UInt64,
     nonce: UInt32,
@@ -93,6 +93,7 @@ export default class RollupTransaction extends CircuitValue {
 
   static fromInterface(tx: ITransaction): RollupTransaction {
     try {
+      console.log(tx);
       return RollupTransaction.from(
         UInt64.fromString(tx.amount),
         UInt32.fromString(tx.nonce),
