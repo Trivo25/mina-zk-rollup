@@ -12,9 +12,9 @@ export default class TransactionBatch extends CircuitValue {
   }
 
   static fromElements(xs: RollupTransaction[]): TransactionBatch {
-    if (xs.length > BATCH_SIZE) {
+    if (xs.length !== BATCH_SIZE) {
       throw Error(
-        `Cannot process more than ${BATCH_SIZE} transactions in one batch.`
+        `Can only process exactly ${BATCH_SIZE} transactions in one batch.`
       );
     }
     return new TransactionBatch(xs);

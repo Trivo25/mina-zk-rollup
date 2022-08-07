@@ -29,9 +29,9 @@ export default class RollupTransaction extends CircuitValue {
   @prop to: PublicKey;
   @prop from: PublicKey;
 
-  state: EnumFinality = EnumFinality.PENDING;
+  //state: EnumFinality = EnumFinality.PENDING;
 
-  private constructor(
+  constructor(
     amount: UInt64,
     nonce: UInt32,
     from: PublicKey,

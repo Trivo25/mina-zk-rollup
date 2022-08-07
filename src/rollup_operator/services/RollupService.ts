@@ -20,7 +20,7 @@ import {
   ZkProgram,
 } from 'snarkyjs';
 import { applyTransition } from '../proof_system/sim/apply';
-import { verifyTransaction } from '../proof_system/sim/ verify';
+import { verifyTransaction } from '../proof_system/sim/verify';
 import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
 import { Prover } from '../proof_system/prover';
