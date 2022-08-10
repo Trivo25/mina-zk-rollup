@@ -33,6 +33,7 @@ import { Prover, RollupStateTransitionProof } from '../proof_system/prover';
 import { ContractInterface } from '../blockchain';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
 import logger from '../../lib/log';
+import MerkleList from '../proof_system/models/Deposits';
 
 // ! for demo purposes only
 const setupDemoStore = async () => {
@@ -140,6 +141,7 @@ async function setupServer(): Promise<Application> {
     accountTree: demo.store,
     transactionPool: [],
     transactionHistory: [],
+    pendingDeposits: new MerkleList(),
     state: {
       committed: new RollupState(
         Field.zero,
