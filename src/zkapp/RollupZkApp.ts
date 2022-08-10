@@ -11,6 +11,7 @@ import {
   Circuit,
 } from 'snarkyjs';
 import {
+  RollupAccount,
   RollupDeposit,
   RollupState,
   RollupStateTransition,
@@ -37,7 +38,14 @@ export class RollupZkApp extends SmartContract {
   }
 
   @method deposit(deposit: RollupDeposit) {
+    deposit.signature.verify(deposit.publicKey, deposit.toFields());
     this.emitEvent('deposit', deposit);
+  }
+
+  @method withdraw(account: RollupAccount, amount: UInt64) {
+    // TODO: verify state inclusion
+    // apply amount diff and transition to new state
+    // emit event
   }
 
   @method verifyBatch(

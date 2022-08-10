@@ -30,6 +30,13 @@ export default class RollupDeposit extends CircuitValue {
     this.signature = signature;
   }
 
+  toFields(): Field[] {
+    return this.amount
+      .toFields()
+      .concat(this.publicKey.toFields())
+      .concat(this.tokenId.toFields());
+  }
+
   getHash(): Field {
     return Poseidon.hash(this.toFields());
   }
