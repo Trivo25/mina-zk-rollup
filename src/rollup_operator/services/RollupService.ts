@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Service from './Service';
-import { ITransaction } from '../../lib/models';
+import { EnumFinality, ITransaction } from '../../lib/models';
 import { DataStore } from '../data_store';
 import { base58Encode, sha256 } from '../../lib/helpers';
 import SequencerEvents from '../events/events';
@@ -19,13 +19,14 @@ import {
   UInt64,
   ZkProgram,
 } from 'snarkyjs';
-import { applyTransition } from '../proof_system/sim/apply';
+import { applyTransitionSimulation } from '../proof_system/sim/apply';
 import { verifyTransaction } from '../proof_system/sim/verify';
 import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
 import { Prover } from '../proof_system/prover';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
 import { ContractInterface } from '../blockchain';
+import logger from '../../lib/log';
 
 class RollupService extends Service {
   prover;
@@ -43,35 +44,28 @@ class RollupService extends Service {
   }
 
   async produceRollupBlock() {
-    let rootBefore = this.store.accountTree.getMerkleRoot()!;
-    let appliedTxns: RollupTransaction[] = [];
+    logger.info('Producing new rollup block..');
 
-    this.store.transactionPool.forEach((tx) => {
-      try {
-        let aTx = applyTransition(tx, this.store.accountTree);
-        appliedTxns.push(aTx);
-      } catch (error) {
-        console.log('Skipping invalid tx');
-      }
-    });
+    // have to copy tx pool before new ones land
+    let appliedTxns: RollupTransaction[] = [...this.store.transactionPool];
+    appliedTxns.map((tx) => (tx.state = EnumFinality.PROVING));
+    this.store.transactionPool = []; // clean up transaction pool
 
-    this.store.transactionPool = [];
-
-    let rootAfter = this.store.accountTree.getMerkleRoot()!;
-    let stateTransition = new RollupStateTransition(
-      new RollupState(Field.zero, rootBefore),
-      new RollupState(Field.zero, rootAfter)
+    let current = new RollupState(
+      Field.zero,
+      this.store.accountTree.getMerkleRoot()!
     );
 
-    if (appliedTxns.length < TransactionBatch.batchSize) {
-      console.log('not enough valid tx.. waiting');
-    }
+    let stateTransition = new RollupStateTransition(
+      this.store.state.committed,
+      current
+    );
 
     if (!Config.prover.produceProof) {
-      console.log('dummy prover test');
+      logger.info('Using dummy prover');
       proverTest(stateTransition, appliedTxns);
     } else {
-      console.log('producing proofs');
+      logger.info('Using real prover');
 
       console.time('txProof');
       let proof = await Prover.proveTransaction(
@@ -79,11 +73,11 @@ class RollupService extends Service {
         TransactionBatch.fromElements(appliedTxns)
       );
       console.timeEnd('txProof');
-
-      console.log('-----');
       this.contract.submitProof(stateTransition, proof);
     }
+    appliedTxns.map((tx) => (tx.state = EnumFinality.PROVEN));
     this.store.transactionHistory.push(...appliedTxns);
+    logger.info('New rollup block produced!');
   }
 
   /**
@@ -102,25 +96,28 @@ class RollupService extends Service {
 
   async processTransaction(tx: ITransaction): Promise<any> {
     try {
+      logger.info('Received new transaction');
+
       let rTx = RollupTransaction.fromInterface(tx);
       rTx.signature.verify(rTx.from, rTx.toFields()).assertTrue();
 
-      verifyTransaction(
-        rTx,
-        this.store.accountTree.get(tx.from)!.clone(),
-        this.store.accountTree.get(tx.to)!.clone()
-      );
+      try {
+        let aTx = applyTransitionSimulation(rTx, this.store.accountTree);
+        this.store.transactionPool.push(aTx);
+      } catch (error) {
+        rTx.state = EnumFinality.REJECTED;
+        this.store.transactionHistory.push(rTx);
+        logger.warn('Skipping invalid transaction');
+      }
 
-      this.store.transactionPool.push(rTx);
-      console.log('a', rTx.nonce.toString());
-
-      console.log(
+      logger.info(
         `Got ${this.store.transactionPool.length} transactions in pool`
       );
 
       if (this.store.transactionPool.length >= Config.app.batchSize) {
         await this.produceRollupBlock();
       }
+      return true;
     } catch (error) {
       console.log(error);
       return false;

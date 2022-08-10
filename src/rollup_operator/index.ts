@@ -15,10 +15,10 @@ async function start() {
 
   let App = await Application;
 
-  testRun(App.rollupService, raw[0], raw[1], 0);
+  /*   testRun(App.rollupService, raw[0], raw[1], 0);
   testRun(App.rollupService, raw[0], raw[2], 1);
   testRun(App.rollupService, raw[0], raw[3], 2);
-  testRun(App.rollupService, raw[0], raw[2], 3);
+  testRun(App.rollupService, raw[0], raw[2], 3); */
 
   App.express.listen(Config.app.port, () => {
     logger.info(`Rollup operator running on port ${Config.app.port}`);

@@ -7,10 +7,10 @@ import { CircuitValue, Field, Poseidon, prop } from 'snarkyjs';
 export default class RollupState extends CircuitValue {
   @prop pendingDepositsCommitment: Field;
   @prop accountDbCommitment: Field;
-  constructor(p: Field, c: Field) {
-    super(p, c);
-    this.pendingDepositsCommitment = p;
-    this.accountDbCommitment = c;
+  constructor(pendingDepositsCommitment: Field, accountDbCommitment: Field) {
+    super(pendingDepositsCommitment, accountDbCommitment);
+    this.pendingDepositsCommitment = pendingDepositsCommitment;
+    this.accountDbCommitment = accountDbCommitment;
   }
   getHash(): Field {
     return Poseidon.hash(this.toFields());

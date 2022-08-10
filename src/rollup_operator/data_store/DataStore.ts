@@ -8,10 +8,14 @@
  */
 
 import { KeyedDataStore } from '../../lib/data_store';
-import { RollupAccount, RollupTransaction } from '../proof_system';
+import { RollupAccount, RollupState, RollupTransaction } from '../proof_system';
 
 export default interface DataStore {
   accountTree: KeyedDataStore<string, RollupAccount>;
   transactionPool: RollupTransaction[];
   transactionHistory: RollupTransaction[];
+  state: {
+    committed: RollupState;
+    current: RollupState;
+  };
 }

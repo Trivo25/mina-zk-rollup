@@ -93,7 +93,6 @@ export default class RollupTransaction extends CircuitValue {
 
   static fromInterface(tx: ITransaction): RollupTransaction {
     try {
-      console.log(tx);
       return RollupTransaction.from(
         UInt64.fromString(tx.amount),
         UInt32.fromString(tx.nonce),

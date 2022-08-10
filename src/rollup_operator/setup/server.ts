@@ -11,7 +11,11 @@ import QueryService from '../services/QueryService';
 import { DataStore } from '../data_store';
 import { GlobalEventHandler } from '../events';
 import { KeyedDataStore } from '../../lib/data_store';
-import { RollupAccount, RollupStateTransition } from '../proof_system';
+import {
+  RollupAccount,
+  RollupState,
+  RollupStateTransition,
+} from '../proof_system';
 import {
   Field,
   isReady,
@@ -24,12 +28,12 @@ import {
   UInt64,
 } from 'snarkyjs';
 import { MerkleProof } from '../../lib/merkle_proof';
-import { ITransaction } from '../../lib/models';
 import {} from 'crypto';
-import { signTx } from '../../client_sdk';
 import { Prover, RollupStateTransitionProof } from '../proof_system/prover';
 import { ContractInterface } from '../blockchain';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
+import logger from '../../lib/log';
+
 // ! for demo purposes only
 const setupDemoStore = async () => {
   await isReady;
@@ -129,24 +133,36 @@ async function setupServer(): Promise<Application> {
   server.use(cors());
   server.use(bodyParser.json());
 
-  //let globalStore = new LevelStore('./db');
+  logger.info('Setting up store');
   let demo = await setupDemoStore();
 
   let globalStore: DataStore = {
     accountTree: demo.store,
     transactionPool: [],
     transactionHistory: [],
+    state: {
+      committed: new RollupState(
+        Field.zero,
+        Field.fromString(demo.store.getMerkleRoot()!.toString()!)
+      ),
+      current: new RollupState(
+        Field.zero,
+        Field.fromString(demo.store.getMerkleRoot()!.toString()!)
+      ),
+    },
   };
 
   try {
+    logger.info('Compiling Prover');
     await Prover.compile();
+    logger.info('Prover Compiled');
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 
+  logger.info('Setting up Contract');
   let contract = await setupLocalContract();
-
-  console.log('Prover compiled');
+  logger.info('Contract set up');
 
   let rs = new RollupService(globalStore, GlobalEventHandler, Prover, contract);
   let rc = new RollupController(rs);

@@ -17,24 +17,13 @@ export const proverTest = (
       tx.sender!.getHash(),
       tx.sender!.merkleProof
     );
-    let is = expectedSenderRoot.equals(intermediateStateRoot);
-    tx.sender!.print();
-    tx.receiver!.print();
 
-    console.log('is the sender in the state root? ', is.toBoolean());
-    console.log('expected sender root ', expectedSenderRoot.toString());
-
-    // now we verify signature and account properties and apply changes
-
-    console.log(' verify with', tx.sender!.publicKey.toBase58());
+    expectedSenderRoot.assertEquals(intermediateStateRoot);
 
     tx.signature.verify(tx.sender!.publicKey, tx.toFields()).assertTrue();
     // make sure the sender has the funds!
     tx.amount.assertLte(tx.sender!.balance);
     tx.nonce.assertEquals(tx.sender!.nonce);
-    console.log('se', tx.sender!.nonce.toString());
-
-    console.log('tx', tx.nonce.toString());
 
     // apply changes to the sender account
 
@@ -60,9 +49,7 @@ export const proverTest = (
     //then the receiver merkle path has to be in the update state root
     // that we get from the sender after applying the changes to the sender
 
-    let is2 = expectedReceiverRoot.equals(tempRoot);
-    console.log('is the receiver in the new root? ', is2.toBoolean());
-    console.log('expected receiver root ', expectedReceiverRoot.toString());
+    expectedReceiverRoot.assertEquals(tempRoot);
 
     // apply change to the receiver
     tx.receiver!.balance = tx.receiver!.balance.add(tx.amount);
@@ -75,14 +62,7 @@ export const proverTest = (
 
   // at the end we want to match the stateTransition.traget root!
 
-  let isValidTransition = stateTransition.target.accountDbCommitment.equals(
+  stateTransition.target.accountDbCommitment.assertEquals(
     intermediateStateRoot
   );
-  console.log(
-    'target: ',
-    stateTransition.target.accountDbCommitment.toString()
-  );
-  console.log('actual: ', intermediateStateRoot.toString());
-
-  console.log('target matched? ', isValidTransition.toBoolean());
 };

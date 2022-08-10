@@ -4,7 +4,7 @@ const config = {
     batchSize: 4,
   },
   prover: {
-    produceProof: true,
+    produceProof: false,
   },
   db: {
     host: 'localhost',
