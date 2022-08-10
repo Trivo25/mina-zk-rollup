@@ -38,7 +38,8 @@ export class RollupZkApp extends SmartContract {
     stateTransitionProof: RollupStateTransitionProof,
     stateTransition: RollupStateTransition
   ) {
-    stateTransitionProof;
+    stateTransition.assertEquals(stateTransitionProof.publicInput);
+    stateTransitionProof.verify();
 
     this.emitEvent('stateTransition', stateTransition);
   }
