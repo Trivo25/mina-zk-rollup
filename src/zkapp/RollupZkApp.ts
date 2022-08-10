@@ -15,8 +15,10 @@ import {
   RollupDeposit,
   RollupState,
   RollupStateTransition,
+  RollupTransaction,
 } from '../rollup_operator/proof_system';
 import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
+import { calculateMerkleRoot } from '../rollup_operator/proof_system/sim/simulate';
 
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();
@@ -24,6 +26,7 @@ export class RollupZkApp extends SmartContract {
   events = {
     stateTransition: RollupStateTransition,
     deposit: RollupDeposit,
+    forceWithdraw: RollupTransaction,
   };
 
   deploy(args: DeployArgs) {
@@ -42,8 +45,18 @@ export class RollupZkApp extends SmartContract {
     this.emitEvent('deposit', deposit);
   }
 
-  @method withdraw(account: RollupAccount, amount: UInt64) {
-    // TODO: verify state inclusion
+  @method forceWithdraw(tx: RollupTransaction) {
+    let currentState = this.currentState.get();
+    this.currentState.assertEquals(currentState);
+
+    let tempRoot = calculateMerkleRoot(
+      tx.sender.getHash(),
+      tx.sender.merkleProof
+    );
+    tempRoot.assertEquals(currentState.accountDbCommitment);
+
+    // ..
+
     // apply amount diff and transition to new state
     // emit event
   }
