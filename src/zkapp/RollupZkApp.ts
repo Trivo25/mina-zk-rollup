@@ -7,16 +7,14 @@ import {
   State,
   UInt64,
   Permissions,
-  Proof,
-  Circuit,
 } from 'snarkyjs';
 import {
-  RollupAccount,
   RollupDeposit,
   RollupState,
   RollupStateTransition,
   RollupTransaction,
 } from '../rollup_operator/proof_system';
+import Deposits from '../rollup_operator/proof_system/models/Deposits';
 import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
 import { calculateMerkleRoot } from '../rollup_operator/proof_system/sim/simulate';
 
@@ -40,9 +38,16 @@ export class RollupZkApp extends SmartContract {
     this.currentState.set(new RollupState(Field.zero, Field.zero));
   }
 
-  @method deposit(deposit: RollupDeposit) {
+  @method deposit(deposit: RollupDeposit, deposits: Deposits) {
     deposit.signature.verify(deposit.publicKey, deposit.toFields());
+
+    let depositCommitment = this.currentState.get().accountDbCommitment;
+    this.currentState.get().accountDbCommitment.assertEquals(depositCommitment);
+
+    deposits.getHash().assertEquals(depositCommitment);
+
     this.emitEvent('deposit', deposit);
+    this.balance.addInPlace(deposit.amount);
   }
 
   @method forceWithdraw(tx: RollupTransaction) {
