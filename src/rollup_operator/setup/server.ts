@@ -91,7 +91,7 @@ const setupLocalContract = async (): Promise<ContractInterface> => {
   let Instance;
   await RollupZkApp.compile(zkappKey.toPublicKey());
   let zkapp = new RollupZkApp(zkappKey.toPublicKey());
-  if (Config.graphql.endpoint != '') {
+  if (Config.graphql.remote) {
     Instance = Mina.BerkeleyQANet(Config.graphql.endpoint);
   } else {
     // setting up local contract

@@ -43,6 +43,23 @@ class QueryService extends Service {
     });
   }
 
+  getTransactionHistoryForAddress(address: string): any {
+    return this.store.transactionHistory
+      .filter(
+        (tx) => tx.from.toBase58() == address || tx.to.toBase58() == address
+      )
+      .map((tx) => {
+        return {
+          to: tx.to.toBase58(),
+          from: tx.from.toBase58(),
+          amount: tx.amount.toString(),
+          nonce: tx.nonce.toString(),
+          type: tx.type,
+          state: tx.state.toString(),
+        };
+      });
+  }
+
   stats(): any {
     return {
       stateRoot: this.store.accountTree.getMerkleRoot()?.toString(),
