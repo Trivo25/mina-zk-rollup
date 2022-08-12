@@ -12,8 +12,8 @@ const config = {
       publicKey: 'B62qpkPHkmoG73CdpDxHzNVkYse7vRH13jwNjcM3sgCVcJt5az64Aru',
     },
     zkApp: {
-      privateKey: 'EKE6AxrCkbGRJDqL3RdRwiCKi6UXbUiz3SZ3doro65YrA857FK8J', // just a dummy key :))))
-      publicKey: 'B62qikGt3GMNqCQtcsJ6DRTTwUC79haVtt4yJrXEei4K81Cj3uyepgm',
+      privateKey: 'EKF4tcSsAjugCyYjSvTVhTzL2YRjFmvHRHgvDDspajzwmXnZ76n5', // just a dummy key :))))
+      publicKey: 'B62qrnS2e7Ffmc5hAr8VsiN1SJEGhwKicGVPF5MwjqtqnyhQGAawu59',
       isDeployed: false,
     },
   },
