@@ -35,6 +35,8 @@ import { RollupZkApp } from '../../zkapp/RollupZkApp';
 import logger from '../../lib/log';
 import MerkleList from '../proof_system/models/Deposits';
 
+import Config from '../../config/config';
+import { isDeployed, deploy } from './deploy';
 // ! for demo purposes only
 const setupDemoStore = async () => {
   await isReady;
@@ -84,42 +86,36 @@ const setupDemoStore = async () => {
 };
 
 const setupLocalContract = async (): Promise<ContractInterface> => {
-  // setting up local contract
-  let Local = Mina.LocalBlockchain();
-  Mina.setActiveInstance(Local);
-  let feePayer = Local.testAccounts[0].privateKey;
+  let feePayer = PrivateKey.fromBase58(Config.accounts.feePayer.privateKey);
+  let zkappKey = PrivateKey.fromBase58(Config.accounts.zkApp.privateKey);
 
-  // the zkapp account
-  let zkappKey = PrivateKey.random();
-  let zkappAddress = zkappKey.toPublicKey();
-
-  let zkapp = new RollupZkApp(zkappAddress);
-  console.log('compiling contract');
-  try {
-    await RollupZkApp.compile(zkappAddress);
-  } catch (error) {
-    console.log(error);
+  let Instance;
+  await RollupZkApp.compile(zkappKey.toPublicKey());
+  let zkapp = new RollupZkApp(zkappKey.toPublicKey());
+  if (Config.graphql.endpoint != '') {
+    Instance = Mina.BerkeleyQANet(Config.graphql.endpoint);
+  } else {
+    // setting up local contract
+    Instance = Mina.LocalBlockchain();
   }
-  console.log('deploying contract');
-  let tx = await Mina.transaction(feePayer, () => {
-    Party.fundNewAccount(feePayer);
-    zkapp.deploy({ zkappKey });
-  });
-  tx.send();
-  console.log('deployed');
+  Mina.setActiveInstance(Instance);
 
   return {
     async submitProof(
       stateTransition: RollupStateTransition,
       stateTransitionProof: RollupStateTransitionProof
     ) {
-      let tx = await Mina.transaction(feePayer, () => {
-        zkapp.verifyBatch(stateTransitionProof, stateTransition);
-        zkapp.sign(zkappKey);
-      });
+      let tx = await Mina.transaction(
+        { feePayerKey: feePayer, fee: 100_000_000 },
+        () => {
+          zkapp.verifyBatch(stateTransitionProof, stateTransition);
+          zkapp.sign(zkappKey);
+        }
+      );
       await tx.prove();
-      tx.send();
-      console.log('proof submitted');
+      let res = await tx.send().wait();
+      console.log('proof submitted !!!!!!!!');
+      console.log(JSON.stringify(res));
     },
   };
 };
@@ -141,7 +137,7 @@ async function setupServer(): Promise<Application> {
     accountTree: demo.store,
     transactionPool: [],
     transactionHistory: [],
-    pendingDeposits: new MerkleList(),
+    pendingDeposits: new MerkleList([]),
     state: {
       committed: new RollupState(
         Field.zero,
