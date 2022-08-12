@@ -36,7 +36,6 @@ import logger from '../../lib/log';
 import MerkleList from '../proof_system/models/Deposits';
 
 import Config from '../../config/config';
-import { isDeployed, deploy } from './deploy';
 // ! for demo purposes only
 const setupDemoStore = async () => {
   await isReady;
