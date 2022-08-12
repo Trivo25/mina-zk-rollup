@@ -34,17 +34,23 @@ export class RollupZkApp extends SmartContract {
       editState: Permissions.proofOrSignature(),
       send: Permissions.proofOrSignature(),
     });
-    this.balance.addInPlace(UInt64.fromNumber(0));
-    this.currentState.set(new RollupState(Field.zero, Field.zero));
+    this.currentState.set(
+      new RollupState(
+        Field.zero,
+        Field.fromString(
+          '19584779366779968710219558176224754481763634630472304415471586047809164902895'
+        )
+      )
+    );
   }
 
   @method deposit(deposit: RollupDeposit, deposits: Deposits) {
     deposit.signature.verify(deposit.publicKey, deposit.toFields());
 
-    let depositCommitment = this.currentState.get().accountDbCommitment;
-    this.currentState.get().accountDbCommitment.assertEquals(depositCommitment);
+    let currentState = this.currentState.get();
+    this.currentState.assertEquals(currentState);
 
-    deposits.getHash().assertEquals(depositCommitment);
+    deposits.getHash().assertEquals(currentState.accountDbCommitment);
 
     this.emitEvent('deposit', deposit);
     this.balance.addInPlace(deposit.amount);
