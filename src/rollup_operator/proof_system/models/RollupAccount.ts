@@ -1,4 +1,5 @@
 import {
+  Bool,
   CircuitValue,
   Field,
   Poseidon,
@@ -69,10 +70,19 @@ export default class RollupAccount extends CircuitValue {
     return this.publicKey.toBase58();
   }
 
-  print() {
-    console.log({
-      balance: this.balance.toString(),
-      nonce: this.nonce.toString(),
-    });
+  isEmpty(): Bool {
+    return this.publicKey
+      .equals(PublicKey.empty())
+      .and(this.balance.equals(UInt64.from(0)))
+      .and(this.nonce.equals(UInt32.from(0)));
+  }
+
+  static empty(): RollupAccount {
+    return new RollupAccount(
+      UInt64.from(0),
+      UInt32.from(0),
+      PublicKey.empty(),
+      MerkleProof.fromElements([])
+    );
   }
 }

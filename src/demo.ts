@@ -1,4 +1,4 @@
-import { isReady, shutdown } from 'snarkyjs';
+import { isReady, PublicKey, shutdown } from 'snarkyjs';
 
 const init = async () => {
   await isReady;

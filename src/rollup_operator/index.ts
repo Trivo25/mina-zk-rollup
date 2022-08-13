@@ -3,11 +3,6 @@ import Application from './setup/server.js';
 import Config from '../config/config';
 
 import logger from '../lib/log';
-import { PrivateKey } from 'snarkyjs';
-import { signTx } from '../client_sdk/index.js';
-import { ITransaction } from '../lib/models/index.js';
-import RollupService from './services/RollupService.js';
-
 start();
 
 async function start() {
@@ -15,16 +10,16 @@ async function start() {
 
   let App = await Application;
 
-  testRun(App.rollupService, raw[0], raw[1], 0);
+  /*   testRun(App.rollupService, raw[0], raw[1], 0);
   testRun(App.rollupService, raw[0], raw[2], 1);
   testRun(App.rollupService, raw[0], raw[3], 2);
   testRun(App.rollupService, raw[0], raw[2], 3);
-
+ */
   App.express.listen(Config.app.port, () => {
     logger.info(`Rollup operator running on port ${Config.app.port}`);
   });
 }
-
+/* 
 let raw = [
   {
     publicKey: 'B62qpkPHkmoG73CdpDxHzNVkYse7vRH13jwNjcM3sgCVcJt5az64Aru',
@@ -60,3 +55,4 @@ const testRun = (rs: RollupService, from: any, to: any, nonce: number) => {
   tx = signTx(tx, PrivateKey.fromBase58(from.privateKey));
   rs.processTransaction(tx);
 };
+ */

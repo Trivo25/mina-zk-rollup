@@ -25,7 +25,7 @@ import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
 import { Prover } from '../proof_system/prover';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
-import { ContractInterface } from '../blockchain';
+import { ContractInterface } from '../contract';
 import logger from '../../lib/log';
 
 class RollupService extends Service {

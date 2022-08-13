@@ -8,7 +8,7 @@ import {
 } from 'snarkyjs';
 import BinaryTree from './BinaryTree';
 
-export const PATH_LENGTH = 4;
+export const PATH_LENGTH = 14;
 
 export class MerklePathElement extends CircuitValue {
   @prop direction: Field;
