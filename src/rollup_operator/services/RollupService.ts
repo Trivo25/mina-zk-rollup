@@ -25,7 +25,7 @@ import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
 import { Prover } from '../proof_system/prover';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
-import { ContractInterface } from '../contract';
+import { Contract } from '../contract';
 import logger from '../../lib/log';
 
 class RollupService extends Service {
@@ -36,7 +36,7 @@ class RollupService extends Service {
     store: DataStore,
     eventHandler: EventEmitter,
     prover: any,
-    contract: ContractInterface
+    contract: Contract
   ) {
     super(store, eventHandler);
     this.prover = prover;

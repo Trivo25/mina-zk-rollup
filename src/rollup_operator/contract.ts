@@ -38,7 +38,8 @@ export const setupContract = async (): Promise<Contract> => {
         }
       );
       await tx.prove();
-      let res = await tx.send().wait();
+
+      await tx.send().wait();
       logger.info('Proof submitted');
     },
   };
