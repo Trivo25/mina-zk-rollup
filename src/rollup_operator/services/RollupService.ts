@@ -48,7 +48,7 @@ class RollupService extends Service {
 
     // have to copy tx pool before new ones land
     let appliedTxns: RollupTransaction[] = [...this.store.transactionPool];
-    appliedTxns.map((tx) => (tx.state = EnumFinality.PROVING));
+    appliedTxns.forEach((tx) => (tx.state = EnumFinality.PROVING));
     this.store.transactionPool = []; // clean up transaction pool
 
     let current = new RollupState(
@@ -75,7 +75,7 @@ class RollupService extends Service {
       console.timeEnd('txProof');
       this.contract.submitProof(stateTransition, proof);
     }
-    appliedTxns.map((tx) => (tx.state = EnumFinality.PROVEN));
+    appliedTxns.forEach((tx) => (tx.state = EnumFinality.PROVEN));
     this.store.transactionHistory.push(...appliedTxns);
     logger.info('New rollup block produced!');
   }
