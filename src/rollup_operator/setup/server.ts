@@ -22,11 +22,7 @@ import Config from '../../config/config';
 
 // ! for demo purposes only
 const setupDemoStore = async () => {
-  let store = new AccountStore(Config.ledgerHeight);
-
-  for (let index = 0; index < Config.ledgerHeight; index++) {
-    store.set(BigInt(index), RollupAccount.empty());
-  }
+  let store = new AccountStore();
 
   return { store };
 };

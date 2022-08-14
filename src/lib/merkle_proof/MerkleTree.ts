@@ -7,8 +7,7 @@ import {
   Poseidon,
 } from 'snarkyjs';
 
-const PATH_LENGTH = 14;
-export { MerkleTree, MerkleWitness, PATH_LENGTH, BaseMerkleWitness };
+export { MerkleTree, MerkleWitness, BaseMerkleWitness };
 export type { Witness };
 type Witness = { isLeft: boolean; sibling: Field }[];
 

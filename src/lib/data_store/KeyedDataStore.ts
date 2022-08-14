@@ -1,15 +1,14 @@
 import { Field, CircuitValue, Poseidon } from 'snarkyjs';
-
-import { MerkleTree, MerkleWitness } from '../merkle_proof';
+import Config from '../../config/config';
+import { MerkleTree, MerkleProof } from '../merkle_proof';
 export default class KeyedDataStore<V extends CircuitValue> {
   dataStore: Map<bigint, V>;
   merkleTree: MerkleTree;
-  Witness_: any;
 
-  constructor(public readonly height: number) {
+  constructor() {
+    let height = Config.ledgerHeight ?? 8;
     this.dataStore = new Map<bigint, V>();
     this.merkleTree = new MerkleTree(height);
-    this.Witness_ = class W extends MerkleWitness(height) {};
   }
 
   /**
@@ -25,8 +24,8 @@ export default class KeyedDataStore<V extends CircuitValue> {
    * @param key Key of the element in the map
    * @returns Merkle path
    */
-  getProof(key: bigint): any {
-    return new this.witness(this.merkleTree.getWitness(key));
+  getProof(key: bigint): MerkleProof {
+    return new MerkleProof(this.merkleTree.getWitness(key));
   }
 
   /**
@@ -55,9 +54,5 @@ export default class KeyedDataStore<V extends CircuitValue> {
       if (Poseidon.hash(v.toFields()).equals(value_).toBoolean()) return key;
     }
     return undefined;
-  }
-
-  get witness() {
-    return this.Witness_;
   }
 }

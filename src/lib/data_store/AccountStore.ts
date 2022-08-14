@@ -3,8 +3,8 @@ import { RollupAccount } from '../../rollup_operator/proof_system';
 import KeyedDataStore from './KeyedDataStore';
 
 export default class AccountStore extends KeyedDataStore<RollupAccount> {
-  constructor(public readonly height: number) {
-    super(height);
+  constructor() {
+    super();
   }
 
   keyByPublicKey(pub: PublicKey): bigint | undefined {
