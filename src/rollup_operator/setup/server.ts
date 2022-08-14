@@ -19,7 +19,7 @@ import MerkleList from '../proof_system/models/Deposits';
 import { setupContract } from '../contract';
 
 import Config from '../../config/config';
-import { MerkleProof } from '../../lib/merkle_proof';
+import { AccountMerkleProof } from '../../lib/merkle_proof';
 
 // ! for demo purposes only
 const setupDemoStore = async () => {
@@ -48,7 +48,7 @@ const setupDemoStore = async () => {
       UInt64.from(10000),
       UInt32.from(0),
       PrivateKey.fromBase58(e.privateKey).toPublicKey(),
-      MerkleProof.empty()
+      AccountMerkleProof.empty()
     );
     store.set(BigInt(i), acc);
   });

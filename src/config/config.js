@@ -24,6 +24,7 @@ const config = {
     produceProof: false,
   },
   ledgerHeight: 3,
+  depositHeight: 3,
 };
 
 export default config;

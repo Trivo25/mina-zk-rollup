@@ -9,7 +9,7 @@ import {
   UInt64,
 } from 'snarkyjs';
 
-import { MerkleProof } from '../../../lib/merkle_proof';
+import { AccountMerkleProof } from '../../../lib/merkle_proof';
 
 /**
  * A {@link RollupAccount} describes an account on the layer 2.
@@ -23,7 +23,7 @@ export default class RollupAccount extends CircuitValue {
   @prop balance: UInt64;
   @prop nonce: UInt32;
   @prop publicKey: PublicKey;
-  @prop merkleProof: MerkleProof;
+  @prop merkleProof: AccountMerkleProof;
 
   address: string;
 
@@ -31,7 +31,7 @@ export default class RollupAccount extends CircuitValue {
     balance: UInt64,
     nonce: UInt32,
     publicKey: PublicKey,
-    merkleProof: MerkleProof
+    merkleProof: AccountMerkleProof
   ) {
     super(balance, nonce, publicKey, merkleProof);
     this.balance = balance;
@@ -82,7 +82,7 @@ export default class RollupAccount extends CircuitValue {
       UInt64.from(0),
       UInt32.from(0),
       PublicKey.empty(),
-      MerkleProof.empty()
+      AccountMerkleProof.empty()
     );
   }
 }

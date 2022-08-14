@@ -12,7 +12,7 @@ import {
 import { base58Encode } from '../../../lib/helpers';
 import { RollupAccount } from '../.';
 import { EnumFinality, ITransaction } from '../../../lib/models';
-import { MerkleProof } from '../../../lib/merkle_proof';
+import { AccountMerkleProof } from '../../../lib/merkle_proof';
 
 /**
  * A {@link RollupTransaction} describes the transactions that take place on the layer 2.
@@ -132,6 +132,6 @@ const dummyAccount = (): RollupAccount => {
     UInt64.from(0),
     UInt32.from(0),
     PrivateKey.random().toPublicKey(),
-    MerkleProof.empty()
+    AccountMerkleProof.empty()
   );
 };

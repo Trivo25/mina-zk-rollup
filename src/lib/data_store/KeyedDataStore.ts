@@ -1,12 +1,10 @@
 import { Field, CircuitValue, Poseidon } from 'snarkyjs';
-import Config from '../../config/config';
-import { MerkleTree, MerkleProof } from '../merkle_proof';
+import { MerkleTree, AccountMerkleProof } from '../merkle_proof';
 export default class KeyedDataStore<V extends CircuitValue> {
   dataStore: Map<bigint, V>;
   merkleTree: MerkleTree;
 
-  constructor() {
-    let height = Config.ledgerHeight ?? 8;
+  constructor(public readonly height: number) {
     this.dataStore = new Map<bigint, V>();
     this.merkleTree = new MerkleTree(height);
   }
@@ -24,8 +22,8 @@ export default class KeyedDataStore<V extends CircuitValue> {
    * @param key Key of the element in the map
    * @returns Merkle path
    */
-  getProof(key: bigint): MerkleProof {
-    return new MerkleProof(this.merkleTree.getWitness(key));
+  getProof(key: bigint): AccountMerkleProof {
+    return new AccountMerkleProof(this.merkleTree.getWitness(key));
   }
 
   /**
