@@ -7,6 +7,7 @@ class RollupController extends Controller<RollupService> {
     super(service);
     this.verify = this.verify.bind(this);
     this.processTransaction = this.processTransaction.bind(this);
+    this.processDeposit = this.processDeposit.bind(this);
   }
 
   async verify(
@@ -25,6 +26,13 @@ class RollupController extends Controller<RollupService> {
     return res
       .status(200)
       .send(await this.service.processTransaction(req.body));
+  }
+
+  async processDeposit(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
+    return res.status(200).send(await this.service.processDeposit(req.body));
   }
 }
 

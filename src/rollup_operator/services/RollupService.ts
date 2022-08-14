@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import Service from './Service';
-import { EnumFinality, ITransaction } from '../../lib/models';
+import { EnumFinality, IDeposit, ITransaction } from '../../lib/models';
 import { DataStore } from '../data_store';
 import { base58Encode, sha256 } from '../../lib/helpers';
 import SequencerEvents from '../events/events';
 import { EventEmitter } from 'events';
 import {
+  RollupDeposit,
   RollupState,
   RollupStateTransition,
   RollupTransaction,
@@ -43,7 +44,7 @@ class RollupService extends Service {
     this.contract = contract;
   }
 
-  async produceRollupBlock() {
+  async produceTransactionBatch() {
     logger.info('Producing new rollup block..');
 
     // have to copy tx pool before new ones land
@@ -52,8 +53,8 @@ class RollupService extends Service {
     this.store.transactionPool = []; // clean up transaction pool
 
     let current = new RollupState(
-      Field.zero,
-      this.store.accountTree.getMerkleRoot()!
+      Field.fromString(this.store.pendingDeposits.getMerkleRoot().toString()),
+      Field.fromString(this.store.accountTree.getMerkleRoot().toString())
     );
 
     let stateTransition = new RollupStateTransition(
@@ -73,7 +74,7 @@ class RollupService extends Service {
         TransactionBatch.fromElements(appliedTxns)
       );
       console.timeEnd('txProof');
-      this.contract.submitProof(stateTransition, proof);
+      this.contract.submitStateTransition(stateTransition, proof);
     }
     appliedTxns.forEach((tx) => (tx.state = EnumFinality.PROVEN));
     this.store.transactionHistory.push(...appliedTxns);
@@ -115,8 +116,26 @@ class RollupService extends Service {
       );
 
       if (this.store.transactionPool.length >= Config.app.batchSize) {
-        await this.produceRollupBlock();
+        await this.produceTransactionBatch();
       }
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  async processDeposit(tx: IDeposit): Promise<any> {
+    try {
+      logger.info('Received new deposit');
+
+      let rTx = RollupDeposit.fromInterface(tx);
+      rTx.signature.verify(rTx.publicKey, rTx.toFields()).assertTrue();
+      // TODO: continue
+      if (this.store.pendingDeposits.get(BigInt(tx.index)) === undefined) {
+        throw new Error('Deposit slot already full');
+      }
+      this.store.pendingDeposits.set(BigInt(tx.index), rTx);
       return true;
     } catch (error) {
       console.log(error);

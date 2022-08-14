@@ -14,4 +14,12 @@ export default class DepositStore extends KeyedDataStore<RollupDeposit> {
     }
     return undefined;
   }
+
+  count(): number {
+    let n = 0;
+    for (let [key, v] of this.dataStore.entries()) {
+      n++;
+    }
+    return n;
+  }
 }
