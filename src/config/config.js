@@ -1,7 +1,7 @@
 const config = {
   app: {
     port: 3000,
-    batchSize: 4,
+    batchSize: 2,
   },
   graphql: {
     endpoint: 'https://proxy.berkeley.minaexplorer.com/graphql',
@@ -21,9 +21,9 @@ const config = {
     },
   },
   prover: {
-    produceProof: true,
+    produceProof: false,
   },
-  ledgerHeight: 6,
+  ledgerHeight: 3,
 };
 
 export default config;

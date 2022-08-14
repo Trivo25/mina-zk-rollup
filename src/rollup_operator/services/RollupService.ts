@@ -62,7 +62,7 @@ class RollupService extends Service {
     );
 
     if (!Config.prover.produceProof) {
-      logger.info('Using dummy prover');
+      logger.log('Using dummy prover');
       proverTest(stateTransition, appliedTxns);
     } else {
       logger.info('Using real prover');
