@@ -86,7 +86,7 @@ export class RollupZkApp extends SmartContract {
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);
 
-    this.currentState.assertEquals(stateTransitionProof.publicInput.source);
+    currentState.assertEquals(stateTransitionProof.publicInput.source);
     this.currentState.set(stateTransitionProof.publicInput.target);
 
     this.emitEvent('stateTransition', stateTransition);

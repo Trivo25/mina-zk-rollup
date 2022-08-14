@@ -5,7 +5,7 @@ import { RollupStateTransitionProof } from './proof_system/prover';
 import Config from '../config/config';
 import logger from '../lib/log';
 export interface Contract {
-  submitProof: (
+  submitStateTransition: (
     stateTransition: RollupStateTransition,
     stateTransitionProof: RollupStateTransitionProof
   ) => void;
@@ -32,7 +32,7 @@ export const setupContract = async (): Promise<Contract> => {
   Mina.setActiveInstance(Instance);
 
   return {
-    async submitProof(
+    async submitStateTransition(
       stateTransition: RollupStateTransition,
       stateTransitionProof: RollupStateTransitionProof
     ) {

@@ -4,6 +4,7 @@ import {
   Poseidon,
   prop,
   PublicKey,
+  Sign,
   Signature,
   UInt64,
 } from 'snarkyjs';
