@@ -1,7 +1,7 @@
 import Service from './Service';
 import { DataStore } from '../data_store';
 import { EventEmitter } from 'events';
-
+import Config from '../../config/config';
 class QueryService extends Service {
   constructor(store: DataStore, eventHandler: EventEmitter) {
     super(store, eventHandler);
@@ -60,9 +60,23 @@ class QueryService extends Service {
       });
   }
 
+  getPendingDeposits(): any {
+    let xs = [];
+    for (let [, val] of this.store.pendingDeposits.dataStore.entries()) {
+      xs.push({
+        publicKey: val.publicKey.toBase58(),
+        amount: val.amount.toString(),
+        tokenId: val.tokenId.toString(),
+      });
+    }
+    return xs;
+  }
+
   stats(): any {
     return {
       stateRoot: this.store.accountTree.getMerkleRoot()?.toString(),
+      ledgerHeight: Config.ledgerHeight,
+      depositHeight: Config.depositHeight,
       totalAccounts: this.store.accountTree.dataStore.size,
       totalTransactions: this.store.transactionHistory.length,
     };

@@ -20,6 +20,8 @@ import { setupContract } from '../contract';
 
 import Config from '../../config/config';
 import { AccountMerkleProof } from '../../lib/merkle_proof';
+import Deposits from '../proof_system/models/Deposits';
+import DepositStore from '../../lib/data_store/DepositStore';
 
 // ! for demo purposes only
 const setupDemoStore = async () => {
@@ -53,7 +55,9 @@ const setupDemoStore = async () => {
     store.set(BigInt(i), acc);
   });
 
-  return { store };
+  let depositStore = new DepositStore();
+
+  return { store, depositStore };
 };
 
 interface Application {
@@ -74,7 +78,7 @@ async function setupServer(): Promise<Application> {
     accountTree: demo.store,
     transactionPool: [],
     transactionHistory: [],
-    pendingDeposits: new MerkleList([]),
+    pendingDeposits: demo.depositStore,
     state: {
       committed: new RollupState(
         Field.zero,

@@ -8,14 +8,14 @@
  */
 
 import { AccountStore } from '../../lib/data_store';
-import MerkleList from '../proof_system/models/Deposits';
 import { RollupState, RollupTransaction } from '../proof_system';
+import DepositStore from '../../lib/data_store/DepositStore';
 
 export default interface DataStore {
   accountTree: AccountStore;
   transactionPool: RollupTransaction[];
   transactionHistory: RollupTransaction[];
-  pendingDeposits: MerkleList;
+  pendingDeposits: DepositStore;
   state: {
     committed: RollupState;
     current: RollupState;
