@@ -1,4 +1,4 @@
-import DataStack from './DataStack';
 import KeyedDataStore from './KeyedDataStore';
+import AccountStore from './AccountStore';
 
-export { DataStack, KeyedDataStore };
+export { AccountStore, KeyedDataStore };

@@ -1,15 +1,15 @@
-import { KeyedDataStore } from '../../../lib/data_store';
-import { RollupTransaction, RollupAccount } from '..';
+import { AccountStore } from '../../../lib/data_store';
+import { RollupTransaction } from '..';
 
 export const applyTransitionSimulation = (
   tx: RollupTransaction,
-  store: KeyedDataStore<string, RollupAccount>
+  store: AccountStore
 ): RollupTransaction => {
-  let senderAddr = tx.from.toBase58();
-  let receiverAddr = tx.to.toBase58();
+  let senderIndex = store.keyByPublicKey(tx.from)!;
+  let receiverIndex = store.keyByPublicKey(tx.to)!;
 
-  let sender = store.get(senderAddr)!.clone();
-  let receiver = store.get(receiverAddr)!.clone();
+  let sender = store.get(senderIndex)!.clone();
+  let receiver = store.get(receiverIndex)!.clone();
 
   tx.from.equals(tx.to).not();
 
@@ -22,21 +22,21 @@ export const applyTransitionSimulation = (
   tx.sender = sender.clone();
   tx.receiver = receiver.clone();
 
-  tx.sender.merkleProof = store.getProofByKey(senderAddr);
+  tx.sender.merkleProof = store.getProof(senderIndex);
 
   sender.balance = sender.balance.sub(tx.amount);
   sender.nonce = sender.nonce.add(1);
   // calculate updates to the state tree
 
-  store.set(senderAddr, sender);
+  store.set(senderIndex, sender);
 
   // move over to the receiver
-  tx.receiver.merkleProof = store.getProofByKey(receiverAddr);
+  tx.receiver.merkleProof = store.getProof(receiverIndex);
 
   // apply change to the receiver
   receiver.balance = receiver.balance.add(tx.amount);
 
-  store.set(receiverAddr, receiver);
+  store.set(receiverIndex, receiver);
 
   return tx;
 };

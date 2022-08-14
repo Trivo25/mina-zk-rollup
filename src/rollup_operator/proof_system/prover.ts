@@ -1,8 +1,6 @@
 import { ZkProgram } from 'snarkyjs';
 import { RollupStateTransition, RollupTransaction, TransactionBatch } from '.';
 
-import { calculateMerkleRoot } from './sim/simulate';
-
 export const Prover = ZkProgram({
   publicInput: RollupStateTransition,
 
@@ -17,9 +15,8 @@ export const Prover = ZkProgram({
         let intermediateStateRoot = stateTransition.source.accountDbCommitment;
         batch.xs.forEach((tx: RollupTransaction) => {
           // is the sender in the state root?
-          let expectedSenderRoot = calculateMerkleRoot(
-            tx.sender.getHash(),
-            tx.sender.merkleProof
+          let expectedSenderRoot = tx.sender.merkleProof.calculateRoot(
+            tx.sender.getHash()
           );
           expectedSenderRoot.assertEquals(intermediateStateRoot);
 
@@ -36,16 +33,14 @@ export const Prover = ZkProgram({
 
           // calculate updates to the state tree
 
-          let tempRoot = calculateMerkleRoot(
-            tx.sender.getHash(),
-            tx.sender.merkleProof
+          let tempRoot = tx.sender.merkleProof.calculateRoot(
+            tx.sender.getHash()
           );
 
           // move over to the receiver
 
-          let expectedReceiverRoot = calculateMerkleRoot(
-            tx.receiver.getHash(),
-            tx.receiver.merkleProof
+          let expectedReceiverRoot = tx.receiver.merkleProof.calculateRoot(
+            tx.receiver.getHash()
           );
 
           //doing some induction stuff:
@@ -58,9 +53,8 @@ export const Prover = ZkProgram({
           // apply change to the receiver
           tx.receiver.balance = tx.receiver.balance.add(tx.amount);
 
-          intermediateStateRoot = calculateMerkleRoot(
-            tx.receiver.getHash(),
-            tx.receiver.merkleProof
+          intermediateStateRoot = tx.receiver.merkleProof.calculateRoot(
+            tx.receiver.getHash()
           );
         });
         // at the end we want to match the stateTransition.traget root!

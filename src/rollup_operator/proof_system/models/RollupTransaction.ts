@@ -132,6 +132,6 @@ const dummyAccount = (): RollupAccount => {
     UInt64.from(0),
     UInt32.from(0),
     PrivateKey.random().toPublicKey(),
-    MerkleProof.fromElements([])
+    MerkleProof.empty()
   );
 };

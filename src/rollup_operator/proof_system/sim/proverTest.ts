@@ -1,7 +1,6 @@
 import RollupStateTransition from '../models/RollupStateTransition';
 import RollupTransaction from '../models/RollupTransaction';
 import TransactionBatch from '../models/TransactionBatch';
-import { calculateMerkleRoot } from './simulate';
 
 export const proverTest = (
   stateTransition: RollupStateTransition,
@@ -13,9 +12,8 @@ export const proverTest = (
 
   batch.forEach((tx: RollupTransaction, i: number) => {
     // is the sender in the state root?
-    let expectedSenderRoot = calculateMerkleRoot(
-      tx.sender!.getHash(),
-      tx.sender!.merkleProof
+    let expectedSenderRoot = tx.sender.merkleProof.calculateRoot(
+      tx.sender.getHash()
     );
 
     expectedSenderRoot.assertEquals(intermediateStateRoot);
@@ -32,16 +30,12 @@ export const proverTest = (
 
     // calculate updates to the state tree
 
-    let tempRoot = calculateMerkleRoot(
-      tx.sender!.getHash(),
-      tx.sender!.merkleProof
-    );
+    let tempRoot = tx.sender.merkleProof.calculateRoot(tx.sender.getHash());
 
     // move over to the receiver
 
-    let expectedReceiverRoot = calculateMerkleRoot(
-      tx.receiver!.getHash(),
-      tx.receiver!.merkleProof
+    let expectedReceiverRoot = tx.receiver.merkleProof.calculateRoot(
+      tx.receiver.getHash()
     );
 
     //doing some induction stuff:
@@ -54,9 +48,8 @@ export const proverTest = (
     // apply change to the receiver
     tx.receiver!.balance = tx.receiver!.balance.add(tx.amount);
 
-    intermediateStateRoot = calculateMerkleRoot(
-      tx.receiver!.getHash(),
-      tx.receiver!.merkleProof
+    intermediateStateRoot = tx.receiver.merkleProof.calculateRoot(
+      tx.receiver.getHash()
     );
   });
 

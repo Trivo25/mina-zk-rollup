@@ -7,12 +7,12 @@
 }
  */
 
-import { KeyedDataStore } from '../../lib/data_store';
+import { AccountStore } from '../../lib/data_store';
 import MerkleList from '../proof_system/models/Deposits';
-import { RollupAccount, RollupState, RollupTransaction } from '../proof_system';
+import { RollupState, RollupTransaction } from '../proof_system';
 
 export default interface DataStore {
-  accountTree: KeyedDataStore<string, RollupAccount>;
+  accountTree: AccountStore;
   transactionPool: RollupTransaction[];
   transactionHistory: RollupTransaction[];
   pendingDeposits: MerkleList;

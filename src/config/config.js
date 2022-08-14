@@ -23,11 +23,7 @@ const config = {
   prover: {
     produceProof: true,
   },
-  db: {
-    host: 'localhost',
-    port: 27017,
-    name: 'db',
-  },
+  ledgerHeight: 2 ** 14,
 };
 
 export default config;

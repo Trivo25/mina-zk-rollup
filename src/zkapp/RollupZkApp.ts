@@ -5,7 +5,6 @@ import {
   SmartContract,
   state,
   State,
-  UInt64,
   Permissions,
 } from 'snarkyjs';
 import {
@@ -16,7 +15,6 @@ import {
 } from '../rollup_operator/proof_system';
 import Deposits from '../rollup_operator/proof_system/models/Deposits';
 import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
-import { calculateMerkleRoot } from '../rollup_operator/proof_system/sim/simulate';
 
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();
@@ -60,10 +58,7 @@ export class RollupZkApp extends SmartContract {
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);
 
-    let tempRoot = calculateMerkleRoot(
-      tx.sender.getHash(),
-      tx.sender.merkleProof
-    );
+    let tempRoot = tx.sender.merkleProof.calculateRoot(tx.sender.getHash());
     tempRoot.assertEquals(currentState.accountDbCommitment);
 
     // ..

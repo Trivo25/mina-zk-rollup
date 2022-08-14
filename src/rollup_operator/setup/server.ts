@@ -10,25 +10,24 @@ import QueryService from '../services/QueryService';
 
 import { DataStore } from '../data_store';
 import { GlobalEventHandler } from '../events';
-import { KeyedDataStore } from '../../lib/data_store';
+import { AccountStore } from '../../lib/data_store';
 import { RollupAccount, RollupState } from '../proof_system';
 import { Field, isReady } from 'snarkyjs';
-import {} from 'crypto';
 import { Prover } from '../proof_system/prover';
 import logger from '../../lib/log';
 import MerkleList from '../proof_system/models/Deposits';
 import { setupContract } from '../contract';
 
+import Config from '../../config/config';
+
 // ! for demo purposes only
 const setupDemoStore = async () => {
-  let accounts = new Map<string, RollupAccount>();
+  let store = new AccountStore(Config.ledgerHeight);
 
-  for (let index = 0; index < 2 ** 14; index++) {
-    accounts.set(index.toString(), RollupAccount.empty());
+  for (let index = 0; index < Config.ledgerHeight; index++) {
+    store.set(BigInt(index), RollupAccount.empty());
   }
 
-  let store = new KeyedDataStore<string, RollupAccount>();
-  store.fromData(accounts);
   return { store };
 };
 

@@ -82,7 +82,7 @@ export default class RollupAccount extends CircuitValue {
       UInt64.from(0),
       UInt32.from(0),
       PublicKey.empty(),
-      MerkleProof.fromElements([])
+      MerkleProof.empty()
     );
   }
 }
