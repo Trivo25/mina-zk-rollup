@@ -7,13 +7,13 @@ import {
   State,
   Permissions,
 } from 'snarkyjs';
+import { DepositMerkleProof } from '../lib/merkle_proof';
 import {
   RollupDeposit,
   RollupState,
   RollupStateTransition,
   RollupTransaction,
 } from '../rollup_operator/proof_system';
-import Deposits from '../rollup_operator/proof_system/models/Deposits';
 import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
 
 export class RollupZkApp extends SmartContract {
@@ -42,16 +42,25 @@ export class RollupZkApp extends SmartContract {
     );
   }
 
-  @method deposit(deposit: RollupDeposit, deposits: Deposits) {
+  @method deposit(deposit: RollupDeposit, merklePath: DepositMerkleProof) {
     deposit.signature.verify(deposit.publicKey, deposit.toFields());
 
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);
 
-    deposits.getHash().assertEquals(currentState.accountDbCommitment);
+    merklePath.calculateRoot(Field.zero); // slot must be empty before we can process deposits
 
-    this.emitEvent('deposit', deposit);
+    let newRoot = merklePath.calculateRoot(deposit.getHash());
+    let index = merklePath.calculateIndex();
+
+    deposit.leafIndex.assertEquals(index);
+
     this.balance.addInPlace(deposit.amount);
+    this.emitEvent('deposit', deposit);
+
+    currentState.pendingDepositsCommitment = newRoot;
+    let newState = new RollupState(newRoot, currentState.accountDbCommitment);
+    this.currentState.set(newState);
   }
 
   @method forceWithdraw(tx: RollupTransaction) {
@@ -61,7 +70,7 @@ export class RollupZkApp extends SmartContract {
     let tempRoot = tx.sender.merkleProof.calculateRoot(tx.sender.getHash());
     tempRoot.assertEquals(currentState.accountDbCommitment);
 
-    // ..
+    // .. !TODO
 
     // apply amount diff and transition to new state
     // emit event

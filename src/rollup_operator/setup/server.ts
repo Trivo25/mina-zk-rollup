@@ -15,12 +15,9 @@ import { RollupAccount, RollupState } from '../proof_system';
 import { Field, isReady, PrivateKey, UInt32, UInt64 } from 'snarkyjs';
 import { Prover } from '../proof_system/prover';
 import logger from '../../lib/log';
-import MerkleList from '../proof_system/models/Deposits';
 import { setupContract } from '../contract';
 
-import Config from '../../config/config';
 import { AccountMerkleProof } from '../../lib/merkle_proof';
-import Deposits from '../proof_system/models/Deposits';
 import DepositStore from '../../lib/data_store/DepositStore';
 
 // ! for demo purposes only

@@ -14,9 +14,15 @@ export const setupContract = async (): Promise<Contract> => {
   let feePayer = PrivateKey.fromBase58(Config.accounts.feePayer.privateKey);
   let zkappKey = PrivateKey.fromBase58(Config.accounts.zkApp.privateKey);
 
-  let Instance;
-  await RollupZkApp.compile(zkappKey.toPublicKey());
   let zkapp = new RollupZkApp(zkappKey.toPublicKey());
+
+  let Instance;
+  try {
+    await RollupZkApp.compile(zkappKey.toPublicKey());
+  } catch (error) {
+    logger.error(error);
+  }
+
   if (Config.graphql.remote) {
     Instance = Mina.BerkeleyQANet(Config.graphql.endpoint);
   } else {

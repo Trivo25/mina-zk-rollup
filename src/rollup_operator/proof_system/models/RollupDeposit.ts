@@ -17,17 +17,21 @@ export default class RollupDeposit extends CircuitValue {
   @prop tokenId: UInt64;
   @prop signature: Signature;
 
+  @prop leafIndex: Field;
+
   constructor(
     publicKey: PublicKey,
     amount: UInt64,
     tokenId: UInt64,
-    signature: Signature
+    signature: Signature,
+    leafIndex: Field
   ) {
     super(publicKey, amount, tokenId, signature);
     this.publicKey = publicKey;
     this.amount = amount;
     this.tokenId = tokenId;
     this.signature = signature;
+    this.leafIndex = leafIndex;
   }
 
   toFields(): Field[] {
