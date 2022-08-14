@@ -23,7 +23,7 @@ const config = {
   prover: {
     produceProof: true,
   },
-  ledgerHeight: 8,
+  ledgerHeight: 6,
 };
 
 export default config;
