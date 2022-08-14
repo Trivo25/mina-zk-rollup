@@ -68,7 +68,7 @@ class RollupService extends Service {
       logger.info('Using real prover');
 
       console.time('txProof');
-      let proof = await Prover.proveTransaction(
+      let proof = await Prover.proveTransactionBatch(
         stateTransition,
         TransactionBatch.fromElements(appliedTxns)
       );

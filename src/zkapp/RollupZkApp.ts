@@ -42,16 +42,16 @@ export class RollupZkApp extends SmartContract {
     );
   }
 
-  @method deposit(deposit: RollupDeposit, merklePath: DepositMerkleProof) {
+  @method deposit(deposit: RollupDeposit) {
     deposit.signature.verify(deposit.publicKey, deposit.toFields());
 
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);
 
-    merklePath.calculateRoot(Field.zero); // slot must be empty before we can process deposits
+    deposit.merkleProof.calculateRoot(Field.zero); // slot must be empty before we can process deposits
 
-    let newRoot = merklePath.calculateRoot(deposit.getHash());
-    let index = merklePath.calculateIndex();
+    let newRoot = deposit.merkleProof.calculateRoot(deposit.getHash());
+    let index = deposit.merkleProof.calculateIndex();
 
     deposit.leafIndex.assertEquals(index);
 
