@@ -6,6 +6,9 @@ import {
   state,
   State,
   Permissions,
+  PrivateKey,
+  PublicKey,
+  Signature,
 } from 'snarkyjs';
 import { DepositMerkleProof } from '../lib/merkle_proof';
 import {
@@ -16,8 +19,12 @@ import {
 } from '../rollup_operator/proof_system';
 import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
 
+import Config from '../config/config';
+
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();
+
+  rollupOperatorKey: PublicKey;
 
   events = {
     stateTransition: RollupStateTransition,
@@ -40,6 +47,9 @@ export class RollupZkApp extends SmartContract {
         )
       )
     );
+    this.rollupOperatorKey = PublicKey.fromBase58(
+      Config.accounts.feePayer.publicKey
+    );
   }
 
   @method deposit(deposit: RollupDeposit) {
@@ -48,7 +58,11 @@ export class RollupZkApp extends SmartContract {
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);
 
-    deposit.merkleProof.calculateRoot(Field.zero); // slot must be empty before we can process deposits
+    // slot must be empty before we can process deposits
+
+    deposit.merkleProof
+      .calculateRoot(Field.zero)
+      .assertEquals(currentState.pendingDepositsCommitment);
 
     let newRoot = deposit.merkleProof.calculateRoot(deposit.getHash());
     let index = deposit.merkleProof.calculateIndex();
@@ -58,7 +72,6 @@ export class RollupZkApp extends SmartContract {
     this.balance.addInPlace(deposit.amount);
     this.emitEvent('deposit', deposit);
 
-    currentState.pendingDepositsCommitment = newRoot;
     let newState = new RollupState(newRoot, currentState.accountDbCommitment);
     this.currentState.set(newState);
   }
@@ -78,10 +91,13 @@ export class RollupZkApp extends SmartContract {
 
   @method verifyBatch(
     stateTransitionProof: RollupStateTransitionProof,
-    stateTransition: RollupStateTransition
+    sig: Signature
   ) {
-    stateTransition.assertEquals(stateTransitionProof.publicInput);
     stateTransitionProof.verify();
+    sig.verify(
+      this.rollupOperatorKey,
+      stateTransitionProof.publicInput.toFields()
+    );
 
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);
@@ -89,6 +105,6 @@ export class RollupZkApp extends SmartContract {
     currentState.assertEquals(stateTransitionProof.publicInput.source);
     this.currentState.set(stateTransitionProof.publicInput.target);
 
-    this.emitEvent('stateTransition', stateTransition);
+    this.emitEvent('stateTransition', stateTransitionProof.publicInput.source);
   }
 }

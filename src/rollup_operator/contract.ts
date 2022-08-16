@@ -1,4 +1,4 @@
-import { Mina, PrivateKey } from 'snarkyjs';
+import { Mina, PrivateKey, Signature } from 'snarkyjs';
 import { RollupZkApp } from '../zkapp/RollupZkApp';
 import { RollupStateTransition } from './proof_system';
 import { RollupStateTransitionProof } from './proof_system/prover';
@@ -6,7 +6,6 @@ import Config from '../config/config';
 import logger from '../lib/log';
 export interface Contract {
   submitStateTransition: (
-    stateTransition: RollupStateTransition,
     stateTransitionProof: RollupStateTransitionProof
   ) => void;
 }
@@ -23,7 +22,7 @@ export const setupContract = async (): Promise<Contract> => {
     logger.error(error);
   }
 
-  if (Config.graphql.remote) {
+  if (Config.remote) {
     Instance = Mina.BerkeleyQANet(Config.graphql.endpoint);
   } else {
     // setting up local contract
@@ -33,13 +32,16 @@ export const setupContract = async (): Promise<Contract> => {
 
   return {
     async submitStateTransition(
-      stateTransition: RollupStateTransition,
       stateTransitionProof: RollupStateTransitionProof
     ) {
+      let sig: Signature = Signature.create(
+        feePayer,
+        stateTransitionProof.publicInput.toFields()
+      );
       let tx = await Mina.transaction(
         { feePayerKey: feePayer, fee: 100_000_000 },
         () => {
-          zkapp.verifyBatch(stateTransitionProof, stateTransition);
+          zkapp.verifyBatch(stateTransitionProof, sig);
           zkapp.sign(zkappKey);
         }
       );
