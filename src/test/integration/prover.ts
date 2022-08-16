@@ -64,7 +64,7 @@ for (let index = 0; index < Config.batchSize; index++) {
 }
 
 console.log('simulating state transitions');
-txns.map((tx) => applyTransitionSimulation(tx, AccountStore));
+txns.forEach((tx) => applyTransitionSimulation(tx, AccountStore));
 
 let currentState = new RollupState(Field.zero, AccountStore.getMerkleRoot());
 
@@ -79,6 +79,8 @@ console.log(
 );
 proof.verify();
 console.log('proof valid!');
+
+console.log('producing invalid state transition');
 
 function buildTx(from: any, to: any, amount: number, nonce: number) {
   let tx = {
