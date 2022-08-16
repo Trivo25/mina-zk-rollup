@@ -6,11 +6,9 @@ import {
   state,
   State,
   Permissions,
-  PrivateKey,
   PublicKey,
   Signature,
 } from 'snarkyjs';
-import { DepositMerkleProof } from '../lib/merkle_proof';
 import {
   RollupDeposit,
   RollupState,
@@ -24,7 +22,7 @@ import Config from '../config/config';
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();
 
-  rollupOperatorKey: PublicKey;
+  @state(RollupState) rollupOperatorKey = State<PublicKey>();
 
   events = {
     stateTransition: RollupStateTransition,
@@ -46,9 +44,6 @@ export class RollupZkApp extends SmartContract {
           '19584779366779968710219558176224754481763634630472304415471586047809164902895'
         )
       )
-    );
-    this.rollupOperatorKey = PublicKey.fromBase58(
-      Config.accounts.feePayer.publicKey
     );
   }
 
@@ -94,10 +89,11 @@ export class RollupZkApp extends SmartContract {
     sig: Signature
   ) {
     stateTransitionProof.verify();
-    sig.verify(
-      this.rollupOperatorKey,
-      stateTransitionProof.publicInput.toFields()
-    );
+
+    let rollupOperatorKey = this.rollupOperatorKey.get();
+    this.rollupOperatorKey.assertEquals(rollupOperatorKey);
+
+    sig.verify(rollupOperatorKey, stateTransitionProof.publicInput.toFields());
 
     let currentState = this.currentState.get();
     this.currentState.assertEquals(currentState);

@@ -1,6 +1,5 @@
 import { Mina, PrivateKey, Signature } from 'snarkyjs';
 import { RollupZkApp } from '../zkapp/RollupZkApp';
-import { RollupStateTransition } from './proof_system';
 import { RollupStateTransitionProof } from './proof_system/prover';
 import Config from '../config/config';
 import logger from '../lib/log';
