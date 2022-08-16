@@ -1,7 +1,7 @@
 import { arrayProp, CircuitValue } from 'snarkyjs';
 import RollupTransaction from './RollupTransaction';
 import Config from '../../../config/config';
-const BATCH_SIZE = Config.app.batchSize;
+const BATCH_SIZE = Config.batchSize;
 
 export default class TransactionBatch extends CircuitValue {
   @arrayProp(RollupTransaction, BATCH_SIZE)

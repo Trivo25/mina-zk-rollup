@@ -115,7 +115,7 @@ class RollupService extends Service {
         `Got ${this.store.transactionPool.length} transactions in pool`
       );
 
-      if (this.store.transactionPool.length >= Config.app.batchSize) {
+      if (this.store.transactionPool.length >= Config.batchSize) {
         await this.produceTransactionBatch();
       }
       return true;
