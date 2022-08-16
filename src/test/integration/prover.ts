@@ -54,7 +54,9 @@ let committedState = new RollupState(Field.zero, AccountStore.getMerkleRoot());
 console.log('got initial state: ', JSON.stringify(committedState));
 
 console.log('compiling prover');
+console.time('compile');
 await Prover.compile();
+console.timeEnd('compile');
 console.log('prover compiled');
 
 console.log('building and signing test transactions');
@@ -72,7 +74,9 @@ let batch = TransactionBatch.fromElements(txns);
 
 console.log('producing proof');
 let stateTransition = new RollupStateTransition(committedState, currentState);
+console.time('proof1');
 let proof = await Prover.proveTransactionBatch(stateTransition, batch);
+console.timeEnd('proof1');
 
 console.log(
   `verifying valid state transitions of ${batch.xs.length} transactions`
@@ -83,10 +87,11 @@ console.log('proof valid!');
 console.log('producing invalid state transition');
 stateTransition.source.accountDbCommitment = Field.zero;
 try {
+  console.time('proof2');
   let proof2 = await Prover.proveTransactionBatch(stateTransition, batch);
+  console.timeEnd('proof2');
   proof2.verify();
-  console.log('invalid transition was expected to fail, but did not');
-  process.exit(1);
+  throw Error('invalid transition was expected to fail, but did not');
 } catch {
   console.log('proof expected to be invalid!');
 }
