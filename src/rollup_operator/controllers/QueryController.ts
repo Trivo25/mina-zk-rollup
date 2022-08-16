@@ -11,6 +11,7 @@ class QueryController extends Controller<QueryService> {
     this.getBlocks = this.getBlocks.bind(this);
     this.getTransactionHistoryForAddress =
       this.getTransactionHistoryForAddress.bind(this);
+    this.pendingDeposits = this.pendingDeposits.bind(this);
   }
 
   async getTransactionPool(
@@ -20,6 +21,12 @@ class QueryController extends Controller<QueryService> {
     return res.status(200).json(this.service.getTransactionPool());
   }
 
+  async pendingDeposits(
+    req: express.Request,
+    res: express.Response
+  ): Promise<express.Response> {
+    return res.status(200).json(this.service.getPendingDeposits());
+  }
   async getTransactionHistory(
     req: express.Request,
     res: express.Response

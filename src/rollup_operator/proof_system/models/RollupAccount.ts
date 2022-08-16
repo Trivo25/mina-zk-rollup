@@ -8,6 +8,7 @@ import {
   UInt32,
   UInt64,
 } from 'snarkyjs';
+import { base58Encode } from '../../../lib/helpers';
 
 import { AccountMerkleProof } from '../../../lib/merkle_proof';
 
@@ -55,6 +56,10 @@ export default class RollupAccount extends CircuitValue {
       .toFields()
       .concat(this.nonce.toFields())
       .concat(this.publicKey.toFields());
+  }
+
+  getBase58Hash(): string {
+    return base58Encode(this.getHash().toString());
   }
 
   clone(): RollupAccount {

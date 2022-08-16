@@ -14,6 +14,7 @@ class QueryService extends Service {
         from: tx.from.toBase58(),
         amount: tx.amount.toString(),
         nonce: tx.nonce.toString(),
+        hash: tx.getBase58Hash(),
       };
     });
   }
@@ -25,6 +26,7 @@ class QueryService extends Service {
         publicKey: val.address,
         balance: val.balance.toString(),
         nonce: val.nonce.toString(),
+        hash: val.getBase58Hash(),
       });
     }
     return xs;
@@ -39,6 +41,7 @@ class QueryService extends Service {
         nonce: tx.nonce.toString(),
         type: tx.type,
         state: tx.state.toString(),
+        hash: tx.getBase58Hash(),
       };
     });
   }
@@ -56,6 +59,7 @@ class QueryService extends Service {
           nonce: tx.nonce.toString(),
           type: tx.type,
           state: tx.state.toString(),
+          hash: tx.getBase58Hash(),
         };
       });
   }
@@ -65,8 +69,10 @@ class QueryService extends Service {
     for (let [, val] of this.store.pendingDeposits.dataStore.entries()) {
       xs.push({
         publicKey: val.publicKey.toBase58(),
+        to: val.to.toBase58(),
         amount: val.amount.toString(),
         tokenId: val.tokenId.toString(),
+        hash: val.getBase58Hash(),
       });
     }
     return xs;

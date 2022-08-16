@@ -10,6 +10,11 @@ export default (
   server.post(`/rollup/verify`, rc.verify);
   server.post(`/rollup/processTransaction`, rc.processTransaction);
 
+  server.post(`/query/pendingDeposits`, qc.pendingDeposits);
+  server.post(
+    `/query/transactionsForAccount`,
+    qc.getTransactionHistoryForAddress
+  );
   server.get(`/query/transactionPool`, qc.getTransactionPool);
   server.get(`/query/transactionHistory`, qc.getTransactionHistory);
   server.get(`/query/accounts`, qc.getAccounts);

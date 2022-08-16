@@ -8,6 +8,7 @@ import {
   Signature,
   UInt64,
 } from 'snarkyjs';
+import { base58Encode } from '../../../lib/helpers';
 import { DepositMerkleProof } from '../../../lib/merkle_proof';
 import { IDeposit } from '../../../lib/models';
 import RollupAccount from './RollupAccount';
@@ -58,6 +59,10 @@ export default class RollupDeposit extends CircuitValue {
 
   getHash(): Field {
     return Poseidon.hash(this.toFields());
+  }
+
+  getBase58Hash(): string {
+    return base58Encode(this.getHash().toString());
   }
 
   static from(
