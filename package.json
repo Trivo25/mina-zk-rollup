@@ -25,7 +25,7 @@
     "test": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --coverage --config jest.config.js",
     "testw": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --watch",
     "lint": "npx eslint src/* --fix",
-    "integration": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/test/simple_state_transition.ts"
+    "integration": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/test/integration/contract/simple_state_transition"
   },
   "lint-staged": {
     "**/*": [

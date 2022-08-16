@@ -74,7 +74,7 @@ class RollupService extends Service {
         TransactionBatch.fromElements(appliedTxns)
       );
       console.timeEnd('txProof');
-      this.contract.submitStateTransition(stateTransition, proof);
+      this.contract.submitStateTransition(proof);
     }
     appliedTxns.forEach((tx) => (tx.state = EnumFinality.PROVEN));
     this.store.transactionHistory.push(...appliedTxns);

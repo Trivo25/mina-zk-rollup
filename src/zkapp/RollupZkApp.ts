@@ -17,12 +17,10 @@ import {
 } from '../rollup_operator/proof_system';
 import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
 
-import Config from '../config/config';
-
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();
 
-  @state(RollupState) rollupOperatorKey = State<PublicKey>();
+  @state(PublicKey) rollupOperatorKey = State<PublicKey>();
 
   events = {
     stateTransition: RollupStateTransition,
@@ -37,14 +35,6 @@ export class RollupZkApp extends SmartContract {
       editState: Permissions.proofOrSignature(),
       send: Permissions.proofOrSignature(),
     });
-    this.currentState.set(
-      new RollupState(
-        Field.zero,
-        Field.fromString(
-          '19584779366779968710219558176224754481763634630472304415471586047809164902895'
-        )
-      )
-    );
   }
 
   @method deposit(deposit: RollupDeposit) {
