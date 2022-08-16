@@ -64,9 +64,7 @@ for (let index = 0; index < Config.batchSize; index++) {
 }
 
 console.log('simulating state transitions');
-txns.map((tx) => {
-  applyTransitionSimulation(tx, AccountStore);
-});
+txns.map((tx) => applyTransitionSimulation(tx, AccountStore));
 
 let currentState = new RollupState(Field.zero, AccountStore.getMerkleRoot());
 
