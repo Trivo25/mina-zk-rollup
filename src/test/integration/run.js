@@ -1,4 +1,4 @@
-import { isReady, shutdown } from 'snarkyjs';
+import { isReady } from 'snarkyjs';
 
 const run = async () => {
   await isReady;
@@ -11,7 +11,7 @@ const run = async () => {
     process.exit(1);
   }
   console.log('INTEGRATION TESTS FINISHED');
-  setTimeout(shutdown, 0);
+  process.exit(0);
 };
 
 run();

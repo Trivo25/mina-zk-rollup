@@ -81,6 +81,15 @@ proof.verify();
 console.log('proof valid!');
 
 console.log('producing invalid state transition');
+stateTransition.source.accountDbCommitment = Field.zero;
+try {
+  let proof2 = await Prover.proveTransactionBatch(stateTransition, batch);
+  proof2.verify();
+  console.log('invalid transition was expected to fail, but did not');
+  process.exit(1);
+} catch {
+  console.log('proof expected to be invalid!');
+}
 
 function buildTx(from: any, to: any, amount: number, nonce: number) {
   let tx = {
