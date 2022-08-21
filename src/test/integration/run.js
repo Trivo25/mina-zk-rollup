@@ -5,6 +5,7 @@ const run = async () => {
   console.log('STARTING INTEGRATION TESTS');
   try {
     await import('./prover');
+    await import('./rollup_service');
   } catch (error) {
     console.log('encountered an error running integration tests');
     console.log(error);
