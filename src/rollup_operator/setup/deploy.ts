@@ -28,7 +28,6 @@ export const deploy = async () => {
       () => {
         Party.fundNewAccount(feePayer);
         zkapp.deploy({ zkappKey, verificationKey });
-        zkapp.rollupOperatorKey.set(feePayer.toPublicKey());
       }
     );
     let res = await tx.send().wait();

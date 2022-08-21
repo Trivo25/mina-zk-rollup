@@ -14,8 +14,10 @@ async function start() {
 
   let App = await Application;
 
-  testRun(App.rollupService, raw[0], raw[1], 0);
-  testRun(App.rollupService, raw[0], raw[2], 1);
+  setTimeout(() => {
+    testRun(App.rollupService, raw[0], raw[1], 0);
+    testRun(App.rollupService, raw[0], raw[2], 1);
+  }, 3000);
   /*testRun(App.rollupService, raw[0], raw[3], 2);
   testRun(App.rollupService, raw[0], raw[2], 3);
  */

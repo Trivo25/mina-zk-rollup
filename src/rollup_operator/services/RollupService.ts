@@ -2,8 +2,6 @@
 import Service from './Service';
 import { EnumFinality, IDeposit, ITransaction } from '../../lib/models';
 import { DataStore } from '../data_store';
-import { base58Encode, sha256 } from '../../lib/helpers';
-import SequencerEvents from '../events/events';
 import { EventEmitter } from 'events';
 import {
   RollupDeposit,
@@ -12,20 +10,11 @@ import {
   RollupTransaction,
   TransactionBatch,
 } from '../proof_system';
-import {
-  Field,
-  PublicKey,
-  Signature,
-  UInt32,
-  UInt64,
-  ZkProgram,
-} from 'snarkyjs';
+import { Field } from 'snarkyjs';
 import { applyTransitionSimulation } from '../proof_system/sim/apply';
-import { verifyTransaction } from '../proof_system/sim/verify';
 import { proverTest } from '../proof_system/sim/proverTest';
 import Config from '../../config/config';
 import { Prover } from '../proof_system/prover';
-import { RollupZkApp } from '../../zkapp/RollupZkApp';
 import { Contract } from '../contract';
 import logger from '../../lib/log';
 
@@ -67,14 +56,15 @@ class RollupService extends Service {
       proverTest(stateTransition, appliedTxns);
     } else {
       logger.info('Using real prover');
-
-      console.time('txProof');
+      logger.log('proof generation time');
+      console.time('t');
       let proof = await Prover.proveTransactionBatch(
         stateTransition,
         TransactionBatch.fromElements(appliedTxns)
       );
-      console.timeEnd('txProof');
-      this.contract.submitStateTransition(proof);
+      console.timeEnd('t');
+      //this.contract.submitStateTransition(proof);
+      logger.info('Transition proof submitted!');
     }
     appliedTxns.forEach((tx) => (tx.state = EnumFinality.PROVEN));
     this.store.transactionHistory.push(...appliedTxns);
@@ -100,7 +90,9 @@ class RollupService extends Service {
       logger.info('Received new transaction');
 
       let rTx = RollupTransaction.fromInterface(tx);
-      rTx.signature.verify(rTx.from, rTx.toFields()).assertTrue();
+
+      let isValid = rTx.signature.verify(rTx.from, rTx.toFields()).toBoolean();
+      if (!isValid) throw new Error('Invalid signature.');
 
       try {
         let aTx = applyTransitionSimulation(rTx, this.store.accountTree);

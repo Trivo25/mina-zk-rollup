@@ -16,7 +16,6 @@ import {
 import { Prover } from '../../rollup_operator/proof_system/prover';
 import Config from '../../config/config';
 import { applyTransitionSimulation } from '../../rollup_operator/proof_system/sim/apply';
-const AccountStore = new AccountStore_();
 
 let dummyAccounts = [
   {
@@ -36,6 +35,8 @@ let dummyAccounts = [
     privateKey: 'EKDmSSoryde5ZEY9W9koA2BYL7PgDJLjZYuv6s9Mc2SkSZE1hmAu',
   },
 ];
+
+const AccountStore = new AccountStore_();
 
 dummyAccounts.forEach((acc, i) => {
   AccountStore.set(
