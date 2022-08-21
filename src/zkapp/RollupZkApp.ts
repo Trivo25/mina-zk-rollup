@@ -6,6 +6,7 @@ import {
   State,
   Permissions,
   Signature,
+  Field,
 } from 'snarkyjs';
 import {
   RollupDeposit,
@@ -41,17 +42,17 @@ export class RollupZkApp extends SmartContract {
 
     // slot must be empty before we can process deposits
 
-    /*     deposit.merkleProof
+    deposit.merkleProof
       .calculateRoot(Field.zero)
       .assertEquals(currentState.pendingDepositsCommitment);
- */
+
     let newRoot = deposit.merkleProof.calculateRoot(deposit.getHash());
     let index = deposit.merkleProof.calculateIndex();
 
     deposit.leafIndex.assertEquals(index);
 
     this.balance.addInPlace(deposit.amount);
-    //this.emitEvent('deposit', deposit);
+    this.emitEvent('deposit', deposit);
 
     let newState = new RollupState(newRoot, currentState.accountDbCommitment);
     this.currentState.set(newState);
@@ -82,6 +83,6 @@ export class RollupZkApp extends SmartContract {
     currentState.assertEquals(stateTransitionProof.publicInput.source);
     this.currentState.set(stateTransitionProof.publicInput.target);
 
-    //this.emitEvent('stateTransition', stateTransitionProof.publicInput.source);
+    this.emitEvent('stateTransition', stateTransitionProof.publicInput);
   }
 }

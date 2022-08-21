@@ -54,7 +54,8 @@ export default class RollupDeposit extends CircuitValue {
       .toFields()
       .concat(this.publicKey.toFields())
       .concat(this.to.toFields())
-      .concat(this.tokenId.toFields());
+      .concat(this.tokenId.toFields())
+      .concat(this.leafIndex.toFields());
   }
 
   getHash(): Field {

@@ -59,5 +59,6 @@ const testRun = (rs: RollupService, from: any, to: any, nonce: number) => {
   };
 
   tx = signTx(tx, PrivateKey.fromBase58(from.privateKey));
+  console.log(JSON.stringify(tx));
   rs.processTransaction(tx);
 };
