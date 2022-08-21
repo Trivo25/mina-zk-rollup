@@ -8,7 +8,7 @@
  */
 
 import { AccountStore } from '../../lib/data_store';
-import { RollupState, RollupTransaction } from '../proof_system';
+import { RollupState, RollupTransaction } from '../../proof_system';
 import DepositStore from '../../lib/data_store/DepositStore';
 
 export default interface DataStore {

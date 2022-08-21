@@ -8,9 +8,9 @@ import {
   Signature,
   UInt64,
 } from 'snarkyjs';
-import { base58Encode } from '../../../lib/helpers';
-import { DepositMerkleProof } from '../../../lib/merkle_proof';
-import { IDeposit } from '../../../lib/models';
+import { base58Encode } from '../../lib/helpers';
+import { DepositMerkleProof } from '../../lib/merkle_proof';
+import { IDeposit } from '../../lib/models';
 import RollupAccount from './RollupAccount';
 
 /**

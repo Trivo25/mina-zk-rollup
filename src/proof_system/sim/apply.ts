@@ -1,4 +1,4 @@
-import { AccountStore } from '../../../lib/data_store';
+import { AccountStore } from '../../lib/data_store';
 import { RollupTransaction } from '..';
 
 export const applyTransitionSimulation = (

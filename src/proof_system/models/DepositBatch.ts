@@ -1,6 +1,6 @@
 import { arrayProp, CircuitValue } from 'snarkyjs';
 import RollupTransaction from './RollupTransaction';
-import Config from '../../../config/config';
+import Config from '../../config/config';
 import RollupDeposit from './RollupDeposit';
 const BATCH_SIZE = Config.batchSize;
 

@@ -8,9 +8,9 @@ import {
   UInt32,
   UInt64,
 } from 'snarkyjs';
-import { base58Encode } from '../../../lib/helpers';
+import { base58Encode } from '../../lib/helpers';
 
-import { AccountMerkleProof } from '../../../lib/merkle_proof';
+import { AccountMerkleProof } from '../../lib/merkle_proof';
 
 /**
  * A {@link RollupAccount} describes an account on the layer 2.

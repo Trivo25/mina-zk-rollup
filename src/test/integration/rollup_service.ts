@@ -6,8 +6,8 @@ import { ITransaction } from '../../lib/models';
 import { setupContract } from '../../rollup_operator/contract';
 import { DataStore } from '../../rollup_operator/data_store';
 import { GlobalEventHandler } from '../../rollup_operator/events';
-import { RollupAccount, RollupState } from '../../rollup_operator/proof_system';
-import { Prover } from '../../rollup_operator/proof_system/prover';
+import { RollupAccount, RollupState } from '../../proof_system';
+import { Prover } from '../../proof_system/prover';
 import RollupService from '../../rollup_operator/services/RollupService';
 
 await isReady;

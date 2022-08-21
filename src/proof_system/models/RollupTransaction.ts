@@ -9,10 +9,10 @@ import {
   UInt32,
   UInt64,
 } from 'snarkyjs';
-import { base58Encode } from '../../../lib/helpers';
-import { RollupAccount } from '../.';
-import { EnumFinality, ITransaction } from '../../../lib/models';
-import { AccountMerkleProof } from '../../../lib/merkle_proof';
+import { base58Encode } from '../../lib/helpers';
+import { RollupAccount } from '..';
+import { EnumFinality, ITransaction } from '../../lib/models';
+import { AccountMerkleProof } from '../../lib/merkle_proof';
 
 /**
  * A {@link RollupTransaction} describes the transactions that take place on the layer 2.

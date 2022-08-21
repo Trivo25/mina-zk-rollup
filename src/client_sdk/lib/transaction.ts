@@ -1,6 +1,6 @@
 import { PrivateKey, Field, Signature } from 'snarkyjs';
 import { ITransaction } from '../../lib/models';
-import { RollupTransaction } from '../../rollup_operator/proof_system';
+import { RollupTransaction } from '../../proof_system';
 
 export const signTx = (tx: ITransaction, priv: PrivateKey): ITransaction => {
   let payload: Field[] = RollupTransaction.fromInterface(tx).toFields();
