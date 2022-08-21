@@ -21,7 +21,7 @@ class QueryService extends Service {
 
   getAccounts(): any {
     let xs = [];
-    for (let [, val] of this.store.accountTree.dataStore.entries()) {
+    for (let [, val] of this.store.accountTree.entries()) {
       xs.push({
         publicKey: val.address,
         balance: val.balance.toString(),
@@ -66,7 +66,7 @@ class QueryService extends Service {
 
   getPendingDeposits(): any {
     let xs = [];
-    for (let [, val] of this.store.pendingDeposits.dataStore.entries()) {
+    for (let [, val] of this.store.pendingDeposits.entries()) {
       xs.push({
         publicKey: val.publicKey.toBase58(),
         to: val.to.toBase58(),
@@ -83,7 +83,7 @@ class QueryService extends Service {
       stateRoot: this.store.accountTree.getMerkleRoot()?.toString(),
       ledgerHeight: Config.ledgerHeight,
       depositHeight: Config.depositHeight,
-      totalAccounts: this.store.accountTree.dataStore.size,
+      totalAccounts: this.store.accountTree.size,
       totalTransactions: this.store.transactionHistory.length,
     };
   }

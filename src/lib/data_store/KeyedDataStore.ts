@@ -1,11 +1,22 @@
-import { Field, CircuitValue, Poseidon } from 'snarkyjs';
+import { Field, Poseidon } from 'snarkyjs';
 import { MerkleTree, AccountMerkleProof } from '../merkle_proof';
-export default class KeyedDataStore<V extends CircuitValue> {
-  dataStore: Map<bigint, V>;
-  merkleTree: MerkleTree;
+import { Level } from 'level';
 
-  constructor(public readonly height: number) {
-    this.dataStore = new Map<bigint, V>();
+import { AsFieldElements } from 'snarkyjs';
+
+export default class KeyedDataStore<V> {
+  objType: AsFieldElements<V>;
+
+  merkleTree: MerkleTree;
+  protected db: Level<string, any>;
+
+  constructor(
+    objType: AsFieldElements<V>,
+    public readonly height: number,
+    db: Level<string, any>
+  ) {
+    this.objType = objType;
+    this.db = db;
     this.merkleTree = new MerkleTree(height);
   }
 
@@ -31,8 +42,19 @@ export default class KeyedDataStore<V extends CircuitValue> {
    * @param key
    * @returns value or undefined if not found
    */
-  get(key: bigint): V | undefined {
-    return this.dataStore.get(key);
+  async get(key: bigint): Promise<V | undefined> {
+    let payload = await this.db.get(key.toString());
+    try {
+      if (payload) {
+        payload = this.objType.ofFields(
+          JSON.parse(payload).map((f: string) => Field.fromString(f))
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      return undefined;
+    }
+    return payload;
   }
 
   /**
@@ -41,16 +63,11 @@ export default class KeyedDataStore<V extends CircuitValue> {
    * @param value Value
    * @returns true if successful
    */
-  set(key: bigint, value: V) {
-    this.dataStore.set(key, value);
-    this.merkleTree.setLeaf(key, Poseidon.hash(value.toFields()));
-  }
+  set(key: bigint, value: V): this {
+    let fields = this.objType.toFields(value);
 
-  keyByValue(value: V): bigint | undefined {
-    let value_ = Poseidon.hash(value.toFields());
-    for (let [key, v] of this.dataStore.entries()) {
-      if (Poseidon.hash(v.toFields()).equals(value_).toBoolean()) return key;
-    }
-    return undefined;
+    this.db.put(key.toString(), JSON.stringify(fields));
+    this.merkleTree.setLeaf(key, Poseidon.hash(fields));
+    return this;
   }
 }

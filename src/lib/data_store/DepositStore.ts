@@ -1,15 +1,15 @@
 import { PublicKey } from 'snarkyjs';
 import { RollupDeposit } from '../../rollup_operator/proof_system';
-import KeyedDataStore from './KeyedDataStore';
+import KeyedMemoryStore from './KeyedMemoryStore';
 import Config from '../../config/config';
 
-export default class DepositStore extends KeyedDataStore<RollupDeposit> {
+export default class DepositStore extends KeyedMemoryStore<RollupDeposit> {
   constructor() {
-    super(Config.depositHeight);
+    super(Config.ledgerHeight);
   }
 
   keyByPublicKey(pub: PublicKey): bigint | undefined {
-    for (let [key, v] of this.dataStore.entries()) {
+    for (let [key, v] of this.entries()) {
       if (v.publicKey.equals(pub).toBoolean()) return key;
     }
     return undefined;
@@ -17,7 +17,7 @@ export default class DepositStore extends KeyedDataStore<RollupDeposit> {
 
   count(): number {
     let n = 0;
-    for (let [key, v] of this.dataStore.entries()) {
+    for (let [key, v] of this.entries()) {
       n++;
     }
     return n;
