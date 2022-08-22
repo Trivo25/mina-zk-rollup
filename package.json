@@ -18,7 +18,7 @@
     "demo:operator": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/rollup_operator/index.js",
     "demo:client": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/client_sdk/index.js",
     "deploy": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/rollup_operator/setup/deploy",
-    "build": "tsc -p tsconfig.json && sh ./scripts/build-protos.sh",
+    "build": "tsc -p tsconfig.json",
     "coverage": "node --experimental-vm-modules --experimental-wasm-modules --experimental-wasm-threads --no-warnings node_modules/jest/bin/jest.js --coverage",
     "format": "prettier --write --ignore-unknown **/*",
     "prepare": "husky install",
@@ -34,6 +34,8 @@
     ]
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.6.10",
+    "@protobuf-ts/plugin": "^2.8.0",
     "abstract-level": "^1.0.3",
     "base-x": "^4.0.0",
     "body-parser": "^1.20.0",
@@ -42,9 +44,6 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.0.1",
     "express": "^4.17.3",
-    "grpc": "^1.24.11",
-    "grpc-tools": "^1.11.2",
-    "grpc_tools_node_protoc_ts": "^5.3.2",
     "level": "^8.0.0",
     "mina-signer": "^1.1.0",
     "pg": "^8.7.3",
@@ -62,11 +61,13 @@
     "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^8.7.0",
     "eslint-plugin-snarkyjs": "^0.3.0",
+    "grpc-tools": "^1.11.2",
     "husky": "^7.0.1",
     "jest": "^27.3.1",
     "lint-staged": "^11.0.1",
     "prettier": "^2.3.2",
     "ts-jest": "^27.0.7",
+    "ts-proto": "^1.122.0",
     "typescript": "^4.5.2"
   }
 }

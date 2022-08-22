@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message Msg {
+  string name = 1;
+  uint64 id = 2;
+  int32 years = 3;
+}
+
+service MsgSerivce {
+  rpc Echo(Msg) returns (Msg);
+}
