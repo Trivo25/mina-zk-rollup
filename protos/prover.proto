@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// === DATA TYPES ===
+
+// echo request and response
+message EchoRequest {
+  string echo = 1;
+}
+
+message EchoResponse {
+  string echo = 1;
+}
+
+
+// === SERVICES ===
+
+service ProverService {
+  rpc Echo(EchoRequest) returns (EchoResponse);
+}
