@@ -15,6 +15,41 @@ import { MessageType } from "@protobuf-ts/runtime";
 // === DATA TYPES ===
 
 /**
+ * @generated from protobuf message Auth
+ */
+export interface Auth {
+    /**
+     * @generated from protobuf field: string challenge = 1;
+     */
+    challenge: string;
+    /**
+     * @generated from protobuf field: string signature = 2;
+     */
+    signature: string;
+}
+/**
+ * @generated from protobuf message ChallengeRequest
+ */
+export interface ChallengeRequest {
+    /**
+     * @generated from protobuf field: string publicKey = 1;
+     */
+    publicKey: string;
+    /**
+     * @generated from protobuf field: string keyType = 2;
+     */
+    keyType: string;
+}
+/**
+ * @generated from protobuf message ChallengeResponse
+ */
+export interface ChallengeResponse {
+    /**
+     * @generated from protobuf field: string challenge = 1;
+     */
+    challenge: string;
+}
+/**
  * echo request and response
  *
  * @generated from protobuf message EchoRequest
@@ -34,6 +69,161 @@ export interface EchoResponse {
      */
     echo: string;
 }
+// @generated message type with reflection information, may provide speed optimized methods
+class Auth$Type extends MessageType<Auth> {
+    constructor() {
+        super("Auth", [
+            { no: 1, name: "challenge", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "signature", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Auth>): Auth {
+        const message = { challenge: "", signature: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Auth>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Auth): Auth {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string challenge */ 1:
+                    message.challenge = reader.string();
+                    break;
+                case /* string signature */ 2:
+                    message.signature = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Auth, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string challenge = 1; */
+        if (message.challenge !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.challenge);
+        /* string signature = 2; */
+        if (message.signature !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.signature);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message Auth
+ */
+export const Auth = new Auth$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ChallengeRequest$Type extends MessageType<ChallengeRequest> {
+    constructor() {
+        super("ChallengeRequest", [
+            { no: 1, name: "publicKey", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "keyType", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ChallengeRequest>): ChallengeRequest {
+        const message = { publicKey: "", keyType: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ChallengeRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ChallengeRequest): ChallengeRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string publicKey */ 1:
+                    message.publicKey = reader.string();
+                    break;
+                case /* string keyType */ 2:
+                    message.keyType = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ChallengeRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string publicKey = 1; */
+        if (message.publicKey !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.publicKey);
+        /* string keyType = 2; */
+        if (message.keyType !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.keyType);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ChallengeRequest
+ */
+export const ChallengeRequest = new ChallengeRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ChallengeResponse$Type extends MessageType<ChallengeResponse> {
+    constructor() {
+        super("ChallengeResponse", [
+            { no: 1, name: "challenge", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<ChallengeResponse>): ChallengeResponse {
+        const message = { challenge: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ChallengeResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ChallengeResponse): ChallengeResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string challenge */ 1:
+                    message.challenge = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ChallengeResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string challenge = 1; */
+        if (message.challenge !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.challenge);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ChallengeResponse
+ */
+export const ChallengeResponse = new ChallengeResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class EchoRequest$Type extends MessageType<EchoRequest> {
     constructor() {
@@ -132,5 +322,6 @@ export const EchoResponse = new EchoResponse$Type();
  * @generated ServiceType for protobuf service ProverService
  */
 export const ProverService = new ServiceType("ProverService", [
-    { name: "Echo", options: {}, I: EchoRequest, O: EchoResponse }
+    { name: "Echo", options: {}, I: EchoRequest, O: EchoResponse },
+    { name: "RequestChallenge", options: {}, I: ChallengeRequest, O: ChallengeResponse }
 ]);

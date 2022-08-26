@@ -2,6 +2,20 @@ syntax = "proto3";
 
 // === DATA TYPES ===
 
+message Auth {
+  string challenge = 1;
+  string signature = 2;
+}
+
+message ChallengeRequest {
+  string publicKey = 1;
+  string keyType = 2;
+}
+
+message ChallengeResponse {
+  string challenge = 1;
+}
+
 // echo request and response
 message EchoRequest {
   string echo = 1;
@@ -12,8 +26,10 @@ message EchoResponse {
 }
 
 
+
 // === SERVICES ===
 
 service ProverService {
   rpc Echo(EchoRequest) returns (EchoResponse);
+  rpc RequestChallenge(ChallengeRequest) returns(ChallengeResponse);
 }
