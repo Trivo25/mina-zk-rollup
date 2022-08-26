@@ -17,7 +17,7 @@ export type SubLevel = AbstractSublevel<
   string
 >;
 
-export class LevelStore implements DataStore {
+export class LevelStore {
   protected store: Level<string, any>;
 
   protected instructions: (Put | Delete)[];

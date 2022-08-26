@@ -1,205 +1,154 @@
-import { Circuit, Field, Poseidon } from 'snarkyjs';
-import BinaryTree from './BinaryTree';
-import MerklePathElement from './MerklePathElement';
-export default class MerkleTree {
-  tree: BinaryTree;
-  constructor() {
-    this.tree = {
-      leaves: [],
-      levels: [],
-    };
-  }
+import {
+  arrayProp,
+  Bool,
+  Circuit,
+  CircuitValue,
+  Field,
+  Poseidon,
+} from 'snarkyjs';
 
-  /**
-   * resets the tree
-   */
-  clear() {
-    this.tree = {
-      leaves: [],
-      levels: [],
-    };
-  }
+export { MerkleTree, MerkleWitness, BaseMerkleWitness };
+export type { Witness };
+type Witness = { isLeft: boolean; sibling: Field }[];
 
-  /**
-   * Static function that returns a Merkle Tree
-   * @param {Field[]} dataArray data leaves
-   * @param {boolean} hash if true elements in the array will be hased using Poseidon, if false they will be inserted directly
-   * @return {MerkleStore} Merkle store
-   */
-  static fromDataLeaves(dataArray: Field[], hash = true): MerkleTree {
-    let tree = new MerkleTree();
+/**
+ * Levels are indexed from leafs (level 0) to root (level N - 1).
+ */
+class MerkleTree {
+  private nodes: Record<number, Record<string, Field>> = {};
+  private zeroes: Field[];
 
-    tree.addLeaves(dataArray, hash);
-    return tree;
-  }
-
-  /**
-   * Adds the hashes of an array of data to an existing Merkle Tree
-   * @param {Field[]} dataArray data leaves
-   * @param {boolean} hash if true elements in the array will be hased using Poseidon, if false they will be inserted directly
-   */
-  addLeaves(dataArray: Field[], hash: boolean = true) {
-    dataArray.forEach((value: Field) => {
-      this.tree.leaves.push(hash ? Poseidon.hash([value]) : value);
-    });
-    this.makeTree();
-  }
-
-  /**
-   * Finds the index of a given element
-   * @param {number} element to find
-   * @returns {number | undefined} index or undefined
-   */
-  getIndex(element: Field): number | undefined {
-    let result = undefined;
-    this.tree.leaves.forEach((el, i) => {
-      if (el.equals(element).toBoolean()) {
-        result = i;
-        return;
-      }
-    });
-
-    return result;
-  }
-
-  /**
-   * Builds the merkle tree based on pre-initialized leaves
-   */
-  makeTree() {
-    let leafCount: number = this.tree.leaves.length;
-    if (leafCount > 0) {
-      // skip this whole process if there are no leaves added to the tree
-      this.tree.levels = [];
-      this.tree.levels.unshift(this.tree.leaves);
-      while (this.tree.levels[0].length > 1) {
-        this.tree.levels.unshift(this.calculateNextLevel());
-      }
+  constructor(public readonly height: number) {
+    this.zeroes = [Field(0)];
+    for (let i = 1; i < height; i++) {
+      this.zeroes.push(Poseidon.hash([this.zeroes[i - 1], this.zeroes[i - 1]]));
     }
   }
 
-  /**
-   * Returns the merkle proof
-   * @returns {Field | undefined} Merkle root, if not undefined
-   */
-  getMerkleRoot(): Field | undefined {
-    if (this.tree.levels.length === 0) {
-      return undefined;
-    }
-    return this.tree.levels[0][0];
+  getNode(level: number, index: bigint): Field {
+    return this.nodes[level]?.[index.toString()] ?? this.zeroes[level];
   }
 
-  /**
-   * Returns a merkle path of an element at a given index
-   * @param {number} index of element
-   * @returns {MerklePathElement[] | undefined} merkle path or undefined
-   */
-  getProof(index: number): MerklePathElement[] {
-    let currentRowIndex: number = this.tree.levels.length - 1;
-    if (index < 0 || index > this.tree.levels[currentRowIndex].length - 1) {
-      return []; // the index it out of the bounds of the leaf array
-    }
-
-    let path: MerklePathElement[] = [];
-
-    for (let x = currentRowIndex; x > 0; x--) {
-      let currentLevelNodeCount: number = this.tree.levels[x].length;
-      // skip if this is an odd end node
-      if (
-        index === currentLevelNodeCount - 1 &&
-        currentLevelNodeCount % 2 === 1
-      ) {
-        index = Math.floor(index / 2);
-        continue;
-      }
-
-      // determine the sibling for the current index and get its value
-      let isRightNode: number = index % 2;
-      let siblingIndex: number = isRightNode ? index - 1 : index + 1;
-
-      let siblingPosition: Field = isRightNode ? Field(0) : Field(1);
-      let siblingValue: Field = this.tree.levels[x][siblingIndex];
-
-      let sibling: MerklePathElement = {
-        direction: siblingPosition,
-        hash: siblingValue,
-      };
-
-      path.push(sibling);
-
-      index = Math.floor(index / 2); // set index to the parent index
-    }
-
-    return path;
+  getRoot(): Field {
+    return this.getNode(this.height - 1, 0n);
   }
 
-  /**
-   * Static function to validate a merkle path
-   * @param {MerklePathElement[]} merklePath Merkle path leading to the root
-   * @param {Field} leafHash Hash of element that needs checking
-   * @param {Field} merkleRoot Root of the merkle tree
-   * @returns {boolean} true when the merkle path matches the merkle root
-   */
-  static validateProof(
-    merklePath: MerklePathElement[],
-    targetHash: Field,
-    merkleRoot: Field
-  ): boolean {
-    // NOTE: can probably remove this?
-    if (merklePath.length === 0) {
-      return targetHash.equals(merkleRoot).toBoolean(); // no siblings, single item tree, so the hash should also be the root
-    }
+  // TODO: this allows to set a node at an index larger than the size. OK?
+  private setNode(level: number, index: bigint, value: Field) {
+    (this.nodes[level] ??= {})[index.toString()] = value;
+  }
 
-    var proofHash: Field = targetHash;
-    for (let x = 0; x < merklePath.length; x++) {
-      proofHash = Circuit.if(
-        merklePath[x].direction.equals(Field(0)),
-        Poseidon.hash([merklePath[x].hash, proofHash]),
-        proofHash
+  // TODO: if this is passed an index bigger than the max, it will set a couple of out-of-bounds nodes but not affect the real Merkle root. OK?
+  setLeaf(index: bigint, leaf: Field) {
+    if (index >= this.leafCount) {
+      throw new Error(
+        `index ${index} is out of range for ${this.leafCount} leaves.`
       );
-      proofHash = Circuit.if(
-        merklePath[x].direction.equals(Field(1)),
-        Poseidon.hash([proofHash, merklePath[x].hash]),
-        proofHash
+    }
+    this.setNode(0, index, leaf);
+    let currIndex = index;
+    for (let level = 1; level < this.height; level++) {
+      currIndex /= 2n;
+
+      const left = this.getNode(level - 1, currIndex * 2n);
+      const right = this.getNode(level - 1, currIndex * 2n + 1n);
+
+      this.setNode(level, currIndex, Poseidon.hash([left, right]));
+    }
+  }
+
+  getWitness(index: bigint): Witness {
+    if (index >= this.leafCount) {
+      throw new Error(
+        `index ${index} is out of range for ${this.leafCount} leaves.`
+      );
+    }
+    const witness = [];
+    for (let level = 0; level < this.height - 1; level++) {
+      const isLeft = index % 2n === 0n;
+      const sibling = this.getNode(level, isLeft ? index + 1n : index - 1n);
+      witness.push({ isLeft, sibling });
+      index /= 2n;
+    }
+    return witness;
+  }
+
+  // TODO: this will always return true if the merkle tree was constructed normally; seems to be only useful for testing. remove?
+  validate(index: bigint): boolean {
+    const path = this.getWitness(index);
+    let hash = this.getNode(0, index);
+    for (const node of path) {
+      hash = Poseidon.hash(
+        node.isLeft ? [hash, node.sibling] : [node.sibling, hash]
       );
     }
 
-    return proofHash.equals(merkleRoot).toBoolean();
+    return hash.toString() === this.getRoot().toString();
   }
 
-  /**
-   * Calculates new levels of the merkle tree structure, helper function
-   * @returns {Field[]} Level of the merkle tree
-   */
-  private calculateNextLevel(): Field[] {
-    let nodes: Field[] = [];
-    let topLevel: Field[] = this.tree.levels[0];
-    let topLevelCount: number = topLevel.length;
-    for (let x = 0; x < topLevelCount; x += 2) {
-      if (x + 1 <= topLevelCount - 1) {
-        // concatenate and hash the pair, add to the next level array, doubleHash if requested
-        nodes.push(Poseidon.hash([topLevel[x], topLevel[x + 1]]));
-      } else {
-        // this is an odd ending node, promote up to the next level by itself
-        nodes.push(topLevel[x]);
-      }
-    }
-    return nodes;
-  }
-
-  /**
-   * FOR DEBBUGING: Prints each levels of the tree
-   */
-  printTree() {
-    console.log('printing tree');
-    console.log('-----------------------------------------');
-
-    this.tree.levels.forEach((levels, index) => {
-      console.log(`----LEVEL ${this.tree.levels.length - index}----`);
-      levels.forEach((l) => {
-        console.log(l.toString());
-      });
+  // TODO: should this take an optional offset? should it fail if the array is too long?
+  fill(leaves: Field[]) {
+    leaves.forEach((value, index) => {
+      this.setLeaf(BigInt(index), value);
     });
-
-    console.log('-----------------------------------------');
   }
+
+  get leafCount(): bigint {
+    return 2n ** BigInt(this.height - 1);
+  }
+}
+
+class BaseMerkleWitness extends CircuitValue {
+  static height: number;
+  path: Field[];
+  isLeft: Bool[];
+  height(): number {
+    return (this.constructor as any).height;
+  }
+
+  constructor(witness: Witness) {
+    super();
+    let height = witness.length + 1;
+    if (height !== this.height()) {
+      throw Error(
+        `Length of witness ${height}-1 doesn't match static tree height ${this.height()}.`
+      );
+    }
+    this.path = witness.map((item) => item.sibling);
+    this.isLeft = witness.map((item) => Bool(item.isLeft));
+  }
+
+  calculateRoot(leaf: Field): Field {
+    let hash = leaf;
+    let n = this.height();
+
+    for (let i = 1; i < n; ++i) {
+      const left = Circuit.if(this.isLeft[i - 1], hash, this.path[i - 1]);
+      const right = Circuit.if(this.isLeft[i - 1], this.path[i - 1], hash);
+      hash = Poseidon.hash([left, right]);
+    }
+
+    return hash;
+  }
+
+  calculateIndex(): Field {
+    let powerOfTwo = Field(1);
+    let index = Field(0);
+    let n = this.height();
+
+    for (let i = 1; i < n; ++i) {
+      index = Circuit.if(this.isLeft[i - 1], index, index.add(powerOfTwo));
+      powerOfTwo = powerOfTwo.mul(2);
+    }
+
+    return index;
+  }
+}
+function MerkleWitness(height: number): typeof BaseMerkleWitness {
+  class MerkleWitness_ extends BaseMerkleWitness {
+    static height = height;
+  }
+  arrayProp(Field, height - 1)(MerkleWitness_.prototype, 'path');
+  arrayProp(Bool, height - 1)(MerkleWitness_.prototype, 'isLeft');
+  return MerkleWitness_;
 }
