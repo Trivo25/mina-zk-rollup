@@ -134,6 +134,81 @@ export interface TransactionBatch {
  * @generated from protobuf message Transaction
  */
 export interface Transaction {
+    /**
+     * @generated from protobuf field: string amount = 1;
+     */
+    amount: string;
+    /**
+     * @generated from protobuf field: string nonce = 2;
+     */
+    nonce: string;
+    /**
+     * @generated from protobuf field: RollupAccount sender = 3;
+     */
+    sender?: RollupAccount;
+    /**
+     * @generated from protobuf field: RollupAccount receiver = 4;
+     */
+    receiver?: RollupAccount;
+    /**
+     * @generated from protobuf field: string tokenId = 5;
+     */
+    tokenId: string;
+    /**
+     * @generated from protobuf field: string signature = 6;
+     */
+    signature: string;
+    /**
+     * @generated from protobuf field: string to = 7;
+     */
+    to: string;
+    /**
+     * @generated from protobuf field: string from = 8;
+     */
+    from: string;
+}
+/**
+ * @generated from protobuf message RollupAccount
+ */
+export interface RollupAccount {
+    /**
+     * @generated from protobuf field: string balance = 1;
+     */
+    balance: string;
+    /**
+     * @generated from protobuf field: string nonce = 2;
+     */
+    nonce: string;
+    /**
+     * @generated from protobuf field: string publicKey = 3;
+     */
+    publicKey: string;
+    /**
+     * @generated from protobuf field: MerkleProof merkleProof = 4;
+     */
+    merkleProof?: MerkleProof;
+}
+/**
+ * @generated from protobuf message MerkleProof
+ */
+export interface MerkleProof {
+    /**
+     * @generated from protobuf field: repeated MerkleProof.MerkleProofElement elements = 1;
+     */
+    elements: MerkleProof_MerkleProofElement[];
+}
+/**
+ * @generated from protobuf message MerkleProof.MerkleProofElement
+ */
+export interface MerkleProof_MerkleProofElement {
+    /**
+     * @generated from protobuf field: bool isLeft = 1;
+     */
+    isLeft: boolean;
+    /**
+     * @generated from protobuf field: string sibling = 2;
+     */
+    sibling: string;
 }
 /**
  * @generated from protobuf message StateTransitionProof
@@ -667,19 +742,89 @@ export const TransactionBatch = new TransactionBatch$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Transaction$Type extends MessageType<Transaction> {
     constructor() {
-        super("Transaction", []);
+        super("Transaction", [
+            { no: 1, name: "amount", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "nonce", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "sender", kind: "message", T: () => RollupAccount },
+            { no: 4, name: "receiver", kind: "message", T: () => RollupAccount },
+            { no: 5, name: "tokenId", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 6, name: "signature", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "to", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 8, name: "from", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
     }
     create(value?: PartialMessage<Transaction>): Transaction {
-        const message = {};
+        const message = { amount: "", nonce: "", tokenId: "", signature: "", to: "", from: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
             reflectionMergePartial<Transaction>(this, message, value);
         return message;
     }
     internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Transaction): Transaction {
-        return target ?? this.create();
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string amount */ 1:
+                    message.amount = reader.string();
+                    break;
+                case /* string nonce */ 2:
+                    message.nonce = reader.string();
+                    break;
+                case /* RollupAccount sender */ 3:
+                    message.sender = RollupAccount.internalBinaryRead(reader, reader.uint32(), options, message.sender);
+                    break;
+                case /* RollupAccount receiver */ 4:
+                    message.receiver = RollupAccount.internalBinaryRead(reader, reader.uint32(), options, message.receiver);
+                    break;
+                case /* string tokenId */ 5:
+                    message.tokenId = reader.string();
+                    break;
+                case /* string signature */ 6:
+                    message.signature = reader.string();
+                    break;
+                case /* string to */ 7:
+                    message.to = reader.string();
+                    break;
+                case /* string from */ 8:
+                    message.from = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
     }
     internalBinaryWrite(message: Transaction, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string amount = 1; */
+        if (message.amount !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.amount);
+        /* string nonce = 2; */
+        if (message.nonce !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.nonce);
+        /* RollupAccount sender = 3; */
+        if (message.sender)
+            RollupAccount.internalBinaryWrite(message.sender, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* RollupAccount receiver = 4; */
+        if (message.receiver)
+            RollupAccount.internalBinaryWrite(message.receiver, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* string tokenId = 5; */
+        if (message.tokenId !== "")
+            writer.tag(5, WireType.LengthDelimited).string(message.tokenId);
+        /* string signature = 6; */
+        if (message.signature !== "")
+            writer.tag(6, WireType.LengthDelimited).string(message.signature);
+        /* string to = 7; */
+        if (message.to !== "")
+            writer.tag(7, WireType.LengthDelimited).string(message.to);
+        /* string from = 8; */
+        if (message.from !== "")
+            writer.tag(8, WireType.LengthDelimited).string(message.from);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -690,6 +835,175 @@ class Transaction$Type extends MessageType<Transaction> {
  * @generated MessageType for protobuf message Transaction
  */
 export const Transaction = new Transaction$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class RollupAccount$Type extends MessageType<RollupAccount> {
+    constructor() {
+        super("RollupAccount", [
+            { no: 1, name: "balance", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "nonce", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "publicKey", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "merkleProof", kind: "message", T: () => MerkleProof }
+        ]);
+    }
+    create(value?: PartialMessage<RollupAccount>): RollupAccount {
+        const message = { balance: "", nonce: "", publicKey: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<RollupAccount>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RollupAccount): RollupAccount {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string balance */ 1:
+                    message.balance = reader.string();
+                    break;
+                case /* string nonce */ 2:
+                    message.nonce = reader.string();
+                    break;
+                case /* string publicKey */ 3:
+                    message.publicKey = reader.string();
+                    break;
+                case /* MerkleProof merkleProof */ 4:
+                    message.merkleProof = MerkleProof.internalBinaryRead(reader, reader.uint32(), options, message.merkleProof);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: RollupAccount, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string balance = 1; */
+        if (message.balance !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.balance);
+        /* string nonce = 2; */
+        if (message.nonce !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.nonce);
+        /* string publicKey = 3; */
+        if (message.publicKey !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.publicKey);
+        /* MerkleProof merkleProof = 4; */
+        if (message.merkleProof)
+            MerkleProof.internalBinaryWrite(message.merkleProof, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message RollupAccount
+ */
+export const RollupAccount = new RollupAccount$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class MerkleProof$Type extends MessageType<MerkleProof> {
+    constructor() {
+        super("MerkleProof", [
+            { no: 1, name: "elements", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => MerkleProof_MerkleProofElement }
+        ]);
+    }
+    create(value?: PartialMessage<MerkleProof>): MerkleProof {
+        const message = { elements: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<MerkleProof>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: MerkleProof): MerkleProof {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated MerkleProof.MerkleProofElement elements */ 1:
+                    message.elements.push(MerkleProof_MerkleProofElement.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: MerkleProof, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated MerkleProof.MerkleProofElement elements = 1; */
+        for (let i = 0; i < message.elements.length; i++)
+            MerkleProof_MerkleProofElement.internalBinaryWrite(message.elements[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message MerkleProof
+ */
+export const MerkleProof = new MerkleProof$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class MerkleProof_MerkleProofElement$Type extends MessageType<MerkleProof_MerkleProofElement> {
+    constructor() {
+        super("MerkleProof.MerkleProofElement", [
+            { no: 1, name: "isLeft", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 2, name: "sibling", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<MerkleProof_MerkleProofElement>): MerkleProof_MerkleProofElement {
+        const message = { isLeft: false, sibling: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<MerkleProof_MerkleProofElement>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: MerkleProof_MerkleProofElement): MerkleProof_MerkleProofElement {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool isLeft */ 1:
+                    message.isLeft = reader.bool();
+                    break;
+                case /* string sibling */ 2:
+                    message.sibling = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: MerkleProof_MerkleProofElement, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool isLeft = 1; */
+        if (message.isLeft !== false)
+            writer.tag(1, WireType.Varint).bool(message.isLeft);
+        /* string sibling = 2; */
+        if (message.sibling !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.sibling);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message MerkleProof.MerkleProofElement
+ */
+export const MerkleProof_MerkleProofElement = new MerkleProof_MerkleProofElement$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class StateTransitionProof$Type extends MessageType<StateTransitionProof> {
     constructor() {
