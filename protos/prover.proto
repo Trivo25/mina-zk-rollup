@@ -2,9 +2,14 @@ syntax = "proto3";
 
 // === DATA TYPES ===
 
-message Auth {
+message VerifyRequest {
   string challenge = 1;
   string signature = 2;
+  string publicKey = 3;
+}
+
+message VerifyResponse {
+  bool isValid = 1;
 }
 
 message ChallengeRequest {
@@ -26,10 +31,41 @@ message EchoResponse {
 }
 
 
+message ProofRequest {
+  TransactionBatch batch = 1;
+
+}
+
+message ProofResponse {
+  StateTransitionProof proof = 1;
+}
+
+message StateTransition {
+  string accountRoot = 1;
+  string depositRoot = 2;
+}
+
+message TransactionBatch {
+  StateTransition before = 1;
+  StateTransition after = 2;
+  repeated Transaction txns = 3;
+}
+
+message Transaction {
+
+}
+
+message StateTransitionProof {
+  StateTransition before = 1;
+  StateTransition after = 2;
+  string proof = 3;
+}
+
 
 // === SERVICES ===
 
 service ProverService {
   rpc Echo(EchoRequest) returns (EchoResponse);
   rpc RequestChallenge(ChallengeRequest) returns(ChallengeResponse);
+  rpc Verify(VerifyRequest) returns (VerifyResponse);
 }
