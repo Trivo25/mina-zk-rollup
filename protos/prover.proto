@@ -93,5 +93,5 @@ service ProverService {
   rpc RequestChallenge(ChallengeRequest) returns(ChallengeResponse);
   rpc Verify(VerifyRequest) returns (VerifyResponse);
 
-  rpc ProveBatch(ProofRequest) returns (ProofRequest);
+  rpc ProveBatch(ProofRequest) returns (ProofResponse);
 }

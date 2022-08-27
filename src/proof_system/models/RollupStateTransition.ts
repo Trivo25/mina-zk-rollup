@@ -1,6 +1,6 @@
 import { CircuitValue, Field, Poseidon, prop } from 'snarkyjs';
 
-import { RollupState } from '..';
+import { RollupState } from '../index.js';
 /**
  * A {@link RollupStateTransition} descibes the transition that takes place when
  * the rollup operator updates the current state of the the layer 2 by providing a series of

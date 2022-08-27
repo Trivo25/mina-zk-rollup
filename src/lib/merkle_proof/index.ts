@@ -3,8 +3,8 @@ import {
   MerkleWitness,
   Witness,
   BaseMerkleWitness,
-} from './MerkleTree';
-import Config from '../../config/config';
+} from './MerkleTree.js';
+import Config from '../../config/config.js';
 import { Field } from 'snarkyjs';
 
 export { MerkleTree, MerkleWitness, BaseMerkleWitness };

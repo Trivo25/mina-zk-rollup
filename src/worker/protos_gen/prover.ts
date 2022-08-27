@@ -1072,5 +1072,5 @@ export const ProverService = new ServiceType("ProverService", [
     { name: "Echo", options: {}, I: EchoRequest, O: EchoResponse },
     { name: "RequestChallenge", options: {}, I: ChallengeRequest, O: ChallengeResponse },
     { name: "Verify", options: {}, I: VerifyRequest, O: VerifyResponse },
-    { name: "ProveBatch", options: {}, I: ProofRequest, O: ProofRequest }
+    { name: "ProveBatch", options: {}, I: ProofRequest, O: ProofResponse }
 ]);

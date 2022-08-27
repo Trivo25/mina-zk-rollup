@@ -4,6 +4,7 @@
 import { ProverService } from "./prover.js";
 import type { BinaryWriteOptions } from "@protobuf-ts/runtime";
 import type { BinaryReadOptions } from "@protobuf-ts/runtime";
+import type { ProofResponse } from "./prover.js";
 import type { ProofRequest } from "./prover.js";
 import type { VerifyResponse } from "./prover.js";
 import type { VerifyRequest } from "./prover.js";
@@ -40,12 +41,12 @@ export interface IProverServiceClient {
     verify(input: VerifyRequest, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: VerifyResponse) => void): grpc.ClientUnaryCall;
     verify(input: VerifyRequest, callback: (err: grpc.ServiceError | null, value?: VerifyResponse) => void): grpc.ClientUnaryCall;
     /**
-     * @generated from protobuf rpc: ProveBatch(ProofRequest) returns (ProofRequest);
+     * @generated from protobuf rpc: ProveBatch(ProofRequest) returns (ProofResponse);
      */
-    proveBatch(input: ProofRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: ProofRequest) => void): grpc.ClientUnaryCall;
-    proveBatch(input: ProofRequest, metadata: grpc.Metadata, callback: (err: grpc.ServiceError | null, value?: ProofRequest) => void): grpc.ClientUnaryCall;
-    proveBatch(input: ProofRequest, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: ProofRequest) => void): grpc.ClientUnaryCall;
-    proveBatch(input: ProofRequest, callback: (err: grpc.ServiceError | null, value?: ProofRequest) => void): grpc.ClientUnaryCall;
+    proveBatch(input: ProofRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: ProofResponse) => void): grpc.ClientUnaryCall;
+    proveBatch(input: ProofRequest, metadata: grpc.Metadata, callback: (err: grpc.ServiceError | null, value?: ProofResponse) => void): grpc.ClientUnaryCall;
+    proveBatch(input: ProofRequest, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: ProofResponse) => void): grpc.ClientUnaryCall;
+    proveBatch(input: ProofRequest, callback: (err: grpc.ServiceError | null, value?: ProofResponse) => void): grpc.ClientUnaryCall;
 }
 // === SERVICES ===
 
@@ -80,10 +81,10 @@ export class ProverServiceClient extends grpc.Client implements IProverServiceCl
         return this.makeUnaryRequest<VerifyRequest, VerifyResponse>(`/${ProverService.typeName}/${method.name}`, (value: VerifyRequest): Buffer => Buffer.from(method.I.toBinary(value, this._binaryOptions)), (value: Buffer): VerifyResponse => method.O.fromBinary(value, this._binaryOptions), input, (metadata as any), (options as any), (callback as any));
     }
     /**
-     * @generated from protobuf rpc: ProveBatch(ProofRequest) returns (ProofRequest);
+     * @generated from protobuf rpc: ProveBatch(ProofRequest) returns (ProofResponse);
      */
-    proveBatch(input: ProofRequest, metadata: grpc.Metadata | grpc.CallOptions | ((err: grpc.ServiceError | null, value?: ProofRequest) => void), options?: grpc.CallOptions | ((err: grpc.ServiceError | null, value?: ProofRequest) => void), callback?: ((err: grpc.ServiceError | null, value?: ProofRequest) => void)): grpc.ClientUnaryCall {
+    proveBatch(input: ProofRequest, metadata: grpc.Metadata | grpc.CallOptions | ((err: grpc.ServiceError | null, value?: ProofResponse) => void), options?: grpc.CallOptions | ((err: grpc.ServiceError | null, value?: ProofResponse) => void), callback?: ((err: grpc.ServiceError | null, value?: ProofResponse) => void)): grpc.ClientUnaryCall {
         const method = ProverService.methods[3];
-        return this.makeUnaryRequest<ProofRequest, ProofRequest>(`/${ProverService.typeName}/${method.name}`, (value: ProofRequest): Buffer => Buffer.from(method.I.toBinary(value, this._binaryOptions)), (value: Buffer): ProofRequest => method.O.fromBinary(value, this._binaryOptions), input, (metadata as any), (options as any), (callback as any));
+        return this.makeUnaryRequest<ProofRequest, ProofResponse>(`/${ProverService.typeName}/${method.name}`, (value: ProofRequest): Buffer => Buffer.from(method.I.toBinary(value, this._binaryOptions)), (value: Buffer): ProofResponse => method.O.fromBinary(value, this._binaryOptions), input, (metadata as any), (options as any), (callback as any));
     }
 }
