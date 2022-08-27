@@ -12,54 +12,13 @@ const client = new ProverServiceClient(
   {}
 );
 
-const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-  modulusLength: 2048,
-});
+await echo(client);
 
-let challenge = '';
-
-await challengeRequest(client);
-
-await verifyRequest(client);
-
-function challengeRequest(client: IProverServiceClient) {
+function echo(client: IProverServiceClient) {
   try {
-    client.requestChallenge(
+    client.echo(
       {
-        publicKey: publicKey
-          .export({ type: 'pkcs1', format: 'pem' })
-          .toString('utf-8'),
-        keyType: 'rsa',
-      },
-      (err, value) => {
-        if (err) {
-          console.log('got err: ', err);
-        }
-        if (value) {
-          console.log('got response message: ', value);
-          challenge = value.challenge;
-        }
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function verifyRequest(client: IProverServiceClient) {
-  try {
-    client.verify(
-      {
-        challenge,
-        signature: crypto
-          .sign('sha256', Buffer.from(challenge), {
-            key: privateKey,
-            padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
-          })
-          .toString('base64'),
-        publicKey: publicKey
-          .export({ type: 'pkcs1', format: 'pem' })
-          .toString('utf-8'),
+        echo: '123',
       },
       (err, value) => {
         if (err) {
