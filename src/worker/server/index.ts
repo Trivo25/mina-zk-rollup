@@ -1,4 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
+import 'dotenv/config';
 import { getServer } from './server.js';
 import log from '../../lib/log/index.js';
 import { Prover } from '../../proof_system/prover.js';
