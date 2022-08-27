@@ -15,9 +15,9 @@ import { MessageType } from "@protobuf-ts/runtime";
 // === DATA TYPES ===
 
 /**
- * @generated from protobuf message Auth
+ * @generated from protobuf message VerifyRequest
  */
-export interface Auth {
+export interface VerifyRequest {
     /**
      * @generated from protobuf field: string challenge = 1;
      */
@@ -26,6 +26,19 @@ export interface Auth {
      * @generated from protobuf field: string signature = 2;
      */
     signature: string;
+    /**
+     * @generated from protobuf field: string publicKey = 3;
+     */
+    publicKey: string;
+}
+/**
+ * @generated from protobuf message VerifyResponse
+ */
+export interface VerifyResponse {
+    /**
+     * @generated from protobuf field: bool isValid = 1;
+     */
+    isValid: boolean;
 }
 /**
  * @generated from protobuf message ChallengeRequest
@@ -69,22 +82,93 @@ export interface EchoResponse {
      */
     echo: string;
 }
+/**
+ * @generated from protobuf message ProofRequest
+ */
+export interface ProofRequest {
+    /**
+     * @generated from protobuf field: TransactionBatch batch = 1;
+     */
+    batch?: TransactionBatch;
+}
+/**
+ * @generated from protobuf message ProofResponse
+ */
+export interface ProofResponse {
+    /**
+     * @generated from protobuf field: StateTransitionProof proof = 1;
+     */
+    proof?: StateTransitionProof;
+}
+/**
+ * @generated from protobuf message StateTransition
+ */
+export interface StateTransition {
+    /**
+     * @generated from protobuf field: string accountRoot = 1;
+     */
+    accountRoot: string;
+    /**
+     * @generated from protobuf field: string depositRoot = 2;
+     */
+    depositRoot: string;
+}
+/**
+ * @generated from protobuf message TransactionBatch
+ */
+export interface TransactionBatch {
+    /**
+     * @generated from protobuf field: StateTransition before = 1;
+     */
+    before?: StateTransition;
+    /**
+     * @generated from protobuf field: StateTransition after = 2;
+     */
+    after?: StateTransition;
+    /**
+     * @generated from protobuf field: repeated Transaction txns = 3;
+     */
+    txns: Transaction[];
+}
+/**
+ * @generated from protobuf message Transaction
+ */
+export interface Transaction {
+}
+/**
+ * @generated from protobuf message StateTransitionProof
+ */
+export interface StateTransitionProof {
+    /**
+     * @generated from protobuf field: StateTransition before = 1;
+     */
+    before?: StateTransition;
+    /**
+     * @generated from protobuf field: StateTransition after = 2;
+     */
+    after?: StateTransition;
+    /**
+     * @generated from protobuf field: string proof = 3;
+     */
+    proof: string;
+}
 // @generated message type with reflection information, may provide speed optimized methods
-class Auth$Type extends MessageType<Auth> {
+class VerifyRequest$Type extends MessageType<VerifyRequest> {
     constructor() {
-        super("Auth", [
+        super("VerifyRequest", [
             { no: 1, name: "challenge", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "signature", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 2, name: "signature", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "publicKey", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
-    create(value?: PartialMessage<Auth>): Auth {
-        const message = { challenge: "", signature: "" };
+    create(value?: PartialMessage<VerifyRequest>): VerifyRequest {
+        const message = { challenge: "", signature: "", publicKey: "" };
         globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
         if (value !== undefined)
-            reflectionMergePartial<Auth>(this, message, value);
+            reflectionMergePartial<VerifyRequest>(this, message, value);
         return message;
     }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Auth): Auth {
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VerifyRequest): VerifyRequest {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
@@ -94,6 +178,9 @@ class Auth$Type extends MessageType<Auth> {
                     break;
                 case /* string signature */ 2:
                     message.signature = reader.string();
+                    break;
+                case /* string publicKey */ 3:
+                    message.publicKey = reader.string();
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -106,13 +193,16 @@ class Auth$Type extends MessageType<Auth> {
         }
         return message;
     }
-    internalBinaryWrite(message: Auth, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+    internalBinaryWrite(message: VerifyRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string challenge = 1; */
         if (message.challenge !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.challenge);
         /* string signature = 2; */
         if (message.signature !== "")
             writer.tag(2, WireType.LengthDelimited).string(message.signature);
+        /* string publicKey = 3; */
+        if (message.publicKey !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.publicKey);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -120,9 +210,56 @@ class Auth$Type extends MessageType<Auth> {
     }
 }
 /**
- * @generated MessageType for protobuf message Auth
+ * @generated MessageType for protobuf message VerifyRequest
  */
-export const Auth = new Auth$Type();
+export const VerifyRequest = new VerifyRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class VerifyResponse$Type extends MessageType<VerifyResponse> {
+    constructor() {
+        super("VerifyResponse", [
+            { no: 1, name: "isValid", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<VerifyResponse>): VerifyResponse {
+        const message = { isValid: false };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<VerifyResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VerifyResponse): VerifyResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* bool isValid */ 1:
+                    message.isValid = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: VerifyResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* bool isValid = 1; */
+        if (message.isValid !== false)
+            writer.tag(1, WireType.Varint).bool(message.isValid);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message VerifyResponse
+ */
+export const VerifyResponse = new VerifyResponse$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ChallengeRequest$Type extends MessageType<ChallengeRequest> {
     constructor() {
@@ -318,10 +455,307 @@ class EchoResponse$Type extends MessageType<EchoResponse> {
  * @generated MessageType for protobuf message EchoResponse
  */
 export const EchoResponse = new EchoResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ProofRequest$Type extends MessageType<ProofRequest> {
+    constructor() {
+        super("ProofRequest", [
+            { no: 1, name: "batch", kind: "message", T: () => TransactionBatch }
+        ]);
+    }
+    create(value?: PartialMessage<ProofRequest>): ProofRequest {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ProofRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ProofRequest): ProofRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* TransactionBatch batch */ 1:
+                    message.batch = TransactionBatch.internalBinaryRead(reader, reader.uint32(), options, message.batch);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ProofRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* TransactionBatch batch = 1; */
+        if (message.batch)
+            TransactionBatch.internalBinaryWrite(message.batch, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ProofRequest
+ */
+export const ProofRequest = new ProofRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ProofResponse$Type extends MessageType<ProofResponse> {
+    constructor() {
+        super("ProofResponse", [
+            { no: 1, name: "proof", kind: "message", T: () => StateTransitionProof }
+        ]);
+    }
+    create(value?: PartialMessage<ProofResponse>): ProofResponse {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<ProofResponse>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ProofResponse): ProofResponse {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* StateTransitionProof proof */ 1:
+                    message.proof = StateTransitionProof.internalBinaryRead(reader, reader.uint32(), options, message.proof);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ProofResponse, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* StateTransitionProof proof = 1; */
+        if (message.proof)
+            StateTransitionProof.internalBinaryWrite(message.proof, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message ProofResponse
+ */
+export const ProofResponse = new ProofResponse$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StateTransition$Type extends MessageType<StateTransition> {
+    constructor() {
+        super("StateTransition", [
+            { no: 1, name: "accountRoot", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "depositRoot", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StateTransition>): StateTransition {
+        const message = { accountRoot: "", depositRoot: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<StateTransition>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StateTransition): StateTransition {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string accountRoot */ 1:
+                    message.accountRoot = reader.string();
+                    break;
+                case /* string depositRoot */ 2:
+                    message.depositRoot = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StateTransition, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string accountRoot = 1; */
+        if (message.accountRoot !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.accountRoot);
+        /* string depositRoot = 2; */
+        if (message.depositRoot !== "")
+            writer.tag(2, WireType.LengthDelimited).string(message.depositRoot);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message StateTransition
+ */
+export const StateTransition = new StateTransition$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class TransactionBatch$Type extends MessageType<TransactionBatch> {
+    constructor() {
+        super("TransactionBatch", [
+            { no: 1, name: "before", kind: "message", T: () => StateTransition },
+            { no: 2, name: "after", kind: "message", T: () => StateTransition },
+            { no: 3, name: "txns", kind: "message", repeat: 1 /*RepeatType.PACKED*/, T: () => Transaction }
+        ]);
+    }
+    create(value?: PartialMessage<TransactionBatch>): TransactionBatch {
+        const message = { txns: [] };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<TransactionBatch>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: TransactionBatch): TransactionBatch {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* StateTransition before */ 1:
+                    message.before = StateTransition.internalBinaryRead(reader, reader.uint32(), options, message.before);
+                    break;
+                case /* StateTransition after */ 2:
+                    message.after = StateTransition.internalBinaryRead(reader, reader.uint32(), options, message.after);
+                    break;
+                case /* repeated Transaction txns */ 3:
+                    message.txns.push(Transaction.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: TransactionBatch, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* StateTransition before = 1; */
+        if (message.before)
+            StateTransition.internalBinaryWrite(message.before, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* StateTransition after = 2; */
+        if (message.after)
+            StateTransition.internalBinaryWrite(message.after, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* repeated Transaction txns = 3; */
+        for (let i = 0; i < message.txns.length; i++)
+            Transaction.internalBinaryWrite(message.txns[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message TransactionBatch
+ */
+export const TransactionBatch = new TransactionBatch$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Transaction$Type extends MessageType<Transaction> {
+    constructor() {
+        super("Transaction", []);
+    }
+    create(value?: PartialMessage<Transaction>): Transaction {
+        const message = {};
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<Transaction>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Transaction): Transaction {
+        return target ?? this.create();
+    }
+    internalBinaryWrite(message: Transaction, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message Transaction
+ */
+export const Transaction = new Transaction$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StateTransitionProof$Type extends MessageType<StateTransitionProof> {
+    constructor() {
+        super("StateTransitionProof", [
+            { no: 1, name: "before", kind: "message", T: () => StateTransition },
+            { no: 2, name: "after", kind: "message", T: () => StateTransition },
+            { no: 3, name: "proof", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StateTransitionProof>): StateTransitionProof {
+        const message = { proof: "" };
+        globalThis.Object.defineProperty(message, MESSAGE_TYPE, { enumerable: false, value: this });
+        if (value !== undefined)
+            reflectionMergePartial<StateTransitionProof>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StateTransitionProof): StateTransitionProof {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* StateTransition before */ 1:
+                    message.before = StateTransition.internalBinaryRead(reader, reader.uint32(), options, message.before);
+                    break;
+                case /* StateTransition after */ 2:
+                    message.after = StateTransition.internalBinaryRead(reader, reader.uint32(), options, message.after);
+                    break;
+                case /* string proof */ 3:
+                    message.proof = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StateTransitionProof, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* StateTransition before = 1; */
+        if (message.before)
+            StateTransition.internalBinaryWrite(message.before, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* StateTransition after = 2; */
+        if (message.after)
+            StateTransition.internalBinaryWrite(message.after, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* string proof = 3; */
+        if (message.proof !== "")
+            writer.tag(3, WireType.LengthDelimited).string(message.proof);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message StateTransitionProof
+ */
+export const StateTransitionProof = new StateTransitionProof$Type();
 /**
  * @generated ServiceType for protobuf service ProverService
  */
 export const ProverService = new ServiceType("ProverService", [
     { name: "Echo", options: {}, I: EchoRequest, O: EchoResponse },
-    { name: "RequestChallenge", options: {}, I: ChallengeRequest, O: ChallengeResponse }
+    { name: "RequestChallenge", options: {}, I: ChallengeRequest, O: ChallengeResponse },
+    { name: "Verify", options: {}, I: VerifyRequest, O: VerifyResponse }
 ]);

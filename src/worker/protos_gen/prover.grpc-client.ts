@@ -4,6 +4,8 @@
 import { ProverService } from "./prover.js";
 import type { BinaryWriteOptions } from "@protobuf-ts/runtime";
 import type { BinaryReadOptions } from "@protobuf-ts/runtime";
+import type { VerifyResponse } from "./prover.js";
+import type { VerifyRequest } from "./prover.js";
 import type { ChallengeResponse } from "./prover.js";
 import type { ChallengeRequest } from "./prover.js";
 import type { EchoResponse } from "./prover.js";
@@ -29,6 +31,13 @@ export interface IProverServiceClient {
     requestChallenge(input: ChallengeRequest, metadata: grpc.Metadata, callback: (err: grpc.ServiceError | null, value?: ChallengeResponse) => void): grpc.ClientUnaryCall;
     requestChallenge(input: ChallengeRequest, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: ChallengeResponse) => void): grpc.ClientUnaryCall;
     requestChallenge(input: ChallengeRequest, callback: (err: grpc.ServiceError | null, value?: ChallengeResponse) => void): grpc.ClientUnaryCall;
+    /**
+     * @generated from protobuf rpc: Verify(VerifyRequest) returns (VerifyResponse);
+     */
+    verify(input: VerifyRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: VerifyResponse) => void): grpc.ClientUnaryCall;
+    verify(input: VerifyRequest, metadata: grpc.Metadata, callback: (err: grpc.ServiceError | null, value?: VerifyResponse) => void): grpc.ClientUnaryCall;
+    verify(input: VerifyRequest, options: grpc.CallOptions, callback: (err: grpc.ServiceError | null, value?: VerifyResponse) => void): grpc.ClientUnaryCall;
+    verify(input: VerifyRequest, callback: (err: grpc.ServiceError | null, value?: VerifyResponse) => void): grpc.ClientUnaryCall;
 }
 // === SERVICES ===
 
@@ -54,5 +63,12 @@ export class ProverServiceClient extends grpc.Client implements IProverServiceCl
     requestChallenge(input: ChallengeRequest, metadata: grpc.Metadata | grpc.CallOptions | ((err: grpc.ServiceError | null, value?: ChallengeResponse) => void), options?: grpc.CallOptions | ((err: grpc.ServiceError | null, value?: ChallengeResponse) => void), callback?: ((err: grpc.ServiceError | null, value?: ChallengeResponse) => void)): grpc.ClientUnaryCall {
         const method = ProverService.methods[1];
         return this.makeUnaryRequest<ChallengeRequest, ChallengeResponse>(`/${ProverService.typeName}/${method.name}`, (value: ChallengeRequest): Buffer => Buffer.from(method.I.toBinary(value, this._binaryOptions)), (value: Buffer): ChallengeResponse => method.O.fromBinary(value, this._binaryOptions), input, (metadata as any), (options as any), (callback as any));
+    }
+    /**
+     * @generated from protobuf rpc: Verify(VerifyRequest) returns (VerifyResponse);
+     */
+    verify(input: VerifyRequest, metadata: grpc.Metadata | grpc.CallOptions | ((err: grpc.ServiceError | null, value?: VerifyResponse) => void), options?: grpc.CallOptions | ((err: grpc.ServiceError | null, value?: VerifyResponse) => void), callback?: ((err: grpc.ServiceError | null, value?: VerifyResponse) => void)): grpc.ClientUnaryCall {
+        const method = ProverService.methods[2];
+        return this.makeUnaryRequest<VerifyRequest, VerifyResponse>(`/${ProverService.typeName}/${method.name}`, (value: VerifyRequest): Buffer => Buffer.from(method.I.toBinary(value, this._binaryOptions)), (value: Buffer): VerifyResponse => method.O.fromBinary(value, this._binaryOptions), input, (metadata as any), (options as any), (callback as any));
     }
 }
