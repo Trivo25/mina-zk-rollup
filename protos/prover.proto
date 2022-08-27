@@ -92,4 +92,6 @@ service ProverService {
   rpc Echo(EchoRequest) returns (EchoResponse);
   rpc RequestChallenge(ChallengeRequest) returns(ChallengeResponse);
   rpc Verify(VerifyRequest) returns (VerifyResponse);
+
+  rpc ProveBatch(ProofRequest) returns (ProofRequest);
 }
