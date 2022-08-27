@@ -6,6 +6,7 @@ export function requestChallenge(
   call: grpc.ServerUnaryCall<ChallengeRequest, ChallengeResponse>,
   callback: grpc.sendUnaryData<ChallengeResponse>
 ): void {
+  console.log('got request ', call.request);
   let r: ChallengeResponse = {
     challenge: randomChallenge(),
   };
