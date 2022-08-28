@@ -7,11 +7,14 @@ export class GCP extends Provider implements CloudAPI {
   constructor(c: Credentials) {
     super(c);
   }
+  rebootInstance(instanceIds: string[]): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 
   createInstance(): Promise<Instance> {
     throw new Error('Method not implemented.');
   }
-  deleteInstance(): Promise<void> {
+  terminateInstance(): Promise<void> {
     throw new Error('Method not implemented.');
   }
   listAll(): Promise<Instance[]> {
@@ -21,6 +24,9 @@ export class GCP extends Provider implements CloudAPI {
     throw new Error('Method not implemented.');
   }
   startInstance(): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  restartInstance(): Promise<void> {
     throw new Error('Method not implemented.');
   }
 }

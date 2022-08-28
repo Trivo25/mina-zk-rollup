@@ -1,6 +1,6 @@
 export class Provider {
-  protected c: Credentials;
-  constructor(c: Credentials) {
+  protected c: Credentials | undefined;
+  constructor(c: Credentials | undefined) {
     this.c = c;
   }
 }
