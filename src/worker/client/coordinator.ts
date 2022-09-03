@@ -1,6 +1,6 @@
 import { CloudAPI, Instance } from './cloud_api/api';
 
-export class WorkerManager {
+export class Coordinator {
   private c: CloudAPI;
 
   private workerPool: WorkerPool | undefined = undefined;

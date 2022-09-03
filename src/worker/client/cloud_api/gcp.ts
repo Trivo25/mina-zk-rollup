@@ -7,7 +7,7 @@ export class GCP extends Provider implements CloudAPI {
   constructor(c: Credentials) {
     super(c);
   }
-  rebootInstance(instanceIds: string[]): Promise<void> {
+  rebootInstance(): Promise<void> {
     throw new Error('Method not implemented.');
   }
 

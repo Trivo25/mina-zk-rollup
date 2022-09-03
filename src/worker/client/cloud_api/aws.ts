@@ -6,7 +6,9 @@ import {
   EC2Client,
   RebootInstancesCommand,
   RunInstancesCommand,
+  RunInstancesCommandInput,
   StartInstancesCommand,
+  StartInstancesCommandInput,
   StopInstancesCommand,
   TerminateInstancesCommand,
 } from '@aws-sdk/client-ec2';
@@ -27,9 +29,9 @@ export class AWS extends Provider implements CloudAPI {
       },
     });
   }
-  async rebootInstance(instanceIds: string[]): Promise<void> {
+  async rebootInstance(instances: Instance[]): Promise<void> {
     var params = {
-      InstanceIds: instanceIds,
+      InstanceIds: instances.map((i) => i.id),
       DryRun,
     };
     try {
@@ -41,50 +43,48 @@ export class AWS extends Provider implements CloudAPI {
     }
   }
 
-  async listAll(): Promise<Instance[]> {
+  async listAll(alive: boolean = false): Promise<Instance[]> {
     var params = {
       DryRun,
     };
+    let instances: Instance[] = [];
+
     try {
-      let instances: any = [];
       let res = await this.client.send(new DescribeInstancesCommand(params));
+
       res.Reservations?.forEach((res) => {
         res.Instances?.forEach((instance) => {
+          if (alive && instance.State!.Name! == 'terminated') return;
           instances.push({
-            id: instance.InstanceId,
-            state: instance.State?.Name,
+            id: instance.InstanceId!,
+            ip: instance.PublicIpAddress!,
+            status: instance.State!.Name!,
           });
         });
       });
-      console.log(instances);
     } catch (err) {
       console.log('Error', err);
       throw err;
     }
-    return [
-      {
-        id: '',
-      },
-    ];
+    return instances;
   }
 
-  async terminateInstance(instanceIds: string[]): Promise<void> {
+  async terminateInstance(instances: Instance[]): Promise<void> {
     var params = {
-      InstanceIds: instanceIds,
+      InstanceIds: instances.map((i) => i.id),
       DryRun,
     };
     try {
-      let res = await this.client.send(new TerminateInstancesCommand(params));
-      console.log(res);
+      await this.client.send(new TerminateInstancesCommand(params));
     } catch (err) {
       console.log('Error', err);
       throw err;
     }
   }
 
-  async stopInstances(instanceIds: string[]): Promise<void> {
+  async stopInstances(instances: Instance[]): Promise<void> {
     var params = {
-      InstanceIds: instanceIds,
+      InstanceIds: instances.map((i) => i.id),
       DryRun,
     };
     try {
@@ -96,9 +96,9 @@ export class AWS extends Provider implements CloudAPI {
     }
   }
 
-  async startInstance(instanceIds: string[]): Promise<void> {
-    var params = {
-      InstanceIds: instanceIds,
+  async startInstance(instances: Instance[]): Promise<void> {
+    var params: StartInstancesCommandInput = {
+      InstanceIds: instances.map((i) => i.id),
       DryRun,
     };
     try {
@@ -110,21 +110,26 @@ export class AWS extends Provider implements CloudAPI {
     }
   }
 
-  async createInstance(instanceType: string = 't2.micro'): Promise<Instance> {
-    const instanceParams = {
+  async createInstance(
+    amount: number = 1,
+    instanceType: string = 't2.micro'
+  ): Promise<Instance> {
+    const instanceParams: RunInstancesCommandInput = {
       ImageId: 'ami-05eeafbc1fd393e9b', //AMI_ID
       InstanceType: instanceType,
       MinCount: 1,
-      MaxCount: 1,
+      MaxCount: amount,
       DryRun,
     };
     try {
       const data = await this.client.send(
         new RunInstancesCommand(instanceParams)
       )!;
-      console.log(data.Instances![0].InstanceId);
+      //console.log(JSON.stringify(data));
       return {
         id: data.Instances![0].InstanceId!,
+        ip: data.Instances![0].PublicIpAddress ?? 'u',
+        status: data.Instances![0].State?.Name?.toString() ?? 'pending',
       };
     } catch (err) {
       console.log('Error', err);
