@@ -3,6 +3,7 @@ import { Provider, Credentials } from './provider.js';
 
 import {
   DescribeInstancesCommand,
+  DescribeInstancesCommandInput,
   EC2Client,
   RebootInstancesCommand,
   RunInstancesCommand,
@@ -51,9 +52,11 @@ export class AWS extends Provider implements CloudAPI {
     }
   }
 
-  async listAll(alive: boolean = false): Promise<Instance[]> {
-    var params = {
+  async listAll(instancesId?: Instance[], alive?: string): Promise<Instance[]> {
+    instancesId ?? [];
+    var params: DescribeInstancesCommandInput = {
       DryRun,
+      InstanceIds: instancesId?.map((i) => i.id),
     };
     let instances: Instance[] = [];
 
@@ -62,7 +65,7 @@ export class AWS extends Provider implements CloudAPI {
 
       res.Reservations?.forEach((res) => {
         res.Instances?.forEach((instance) => {
-          if (alive && instance.State!.Name! == 'terminated') return;
+          if (alive && instance.State!.Name! != alive) return;
           instances.push({
             id: instance.InstanceId!,
             ip: instance.PublicIpAddress!,
@@ -121,7 +124,7 @@ export class AWS extends Provider implements CloudAPI {
   async createInstance(
     amount: number = 1,
     instanceType: string = 't2.micro'
-  ): Promise<Instance> {
+  ): Promise<Instance[]> {
     const instanceParams: RunInstancesCommandInput = {
       ImageId: 'ami-05fa00d4c63e32376', //AMI_ID
       InstanceType: instanceType,
@@ -136,12 +139,14 @@ export class AWS extends Provider implements CloudAPI {
       const data = await this.client.send(
         new RunInstancesCommand(instanceParams)
       )!;
-      //console.log(JSON.stringify(data));
-      return {
-        id: data.Instances![0].InstanceId!,
-        ip: data.Instances![0].PublicIpAddress ?? 'u',
-        status: data.Instances![0].State?.Name?.toString() ?? 'pending',
-      };
+
+      return data.Instances!.map((i) => {
+        return {
+          id: i.InstanceId!,
+          ip: i.PublicIpAddress ?? '',
+          status: i.State?.Name?.toString() ?? 'pending',
+        };
+      });
     } catch (err) {
       console.log('Error', err);
       throw err;

@@ -1,10 +1,18 @@
 import jayson from 'jayson/promise/index.js';
 import { AWS, Region } from './cloud_api/aws.js';
 import 'dotenv/config';
+import { Coordinator } from './coordinator.js';
 
 let ec2 = new AWS(undefined, Region.US_EAST_1);
-let i = await ec2.createInstance();
-console.log(i);
+
+let coordinator = new Coordinator(ec2);
+
+await coordinator.prepareWorkerPool(null, {
+  width: 5,
+});
+
+coordinator.cleanUp();
+
 /*
 
 let all = await ec2.listAll(true);
