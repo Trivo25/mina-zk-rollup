@@ -1,10 +1,10 @@
-import { BooleanArray } from 'aws-sdk/clients/rdsdataservice';
+import jayson from 'jayson';
 import { CloudAPI, Instance } from './cloud_api/api';
 
 export class Coordinator {
   private c: CloudAPI;
 
-  private workers: Instance[] | undefined = undefined;
+  private workers: Worker[] = [];
 
   private poolIsReady: boolean = false;
 
@@ -12,35 +12,44 @@ export class Coordinator {
     this.c = c;
   }
 
-  async prepareWorkerPool(
-    load: any,
-    options: PoolOptions
-  ): Promise<WorkerPool> {
-    let instances = await this.c.createInstance(options.width);
-    this.workers = instances;
-    while (!this.poolIsReady) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      this.checkReadiness();
-    }
+  async compute(payload: any, options: PoolOptions): Promise<void> {
+    console.log('Preparing computation phase - this can take a while');
+    let instances = await this.prepareWorkerPool(options);
+    console.log('All instances ready');
 
-    console.log('POOL IS READY!');
+    instances.forEach(async (i) => {
+      const client = jayson.Client.http({
+        host: i.ip,
+        port: 3000,
+      });
 
-    return {
-      pool: [],
-      start() {},
-    };
+      //let res = await client.request('proveBatch', [1]);
+      //console.log(res);
+      this.workers.push({ instance: i, client: client });
+    });
+
+    this.cleanUp();
   }
 
-  private async checkReadiness() {
+  async prepareWorkerPool(options: PoolOptions): Promise<Instance[]> {
+    let instances = await this.c.createInstance(options.width);
+    while (!this.poolIsReady) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      this.checkReadiness(instances);
+    }
+    return await this.c.listAll(instances, 'running');
+  }
+
+  private async checkReadiness(instances: Instance[]) {
     // i couldnt figure out an more optimal way of checking if all instances are ready
-    let instanceData = await this.c.listAll(this.workers, 'running');
-    if (instanceData.length == this.workers?.length) {
+    let instanceData = await this.c.listAll(instances, 'running');
+    if (instanceData.length == instances.length) {
       this.poolIsReady = true;
     }
   }
 
   cleanUp() {
-    this.c.terminateInstance(this.workers!);
+    this.c.terminateInstance(this.workers.map((w) => w.instance));
   }
 }
 
@@ -48,7 +57,7 @@ interface PoolOptions {
   width: number;
 }
 
-interface WorkerPool {
-  pool: Instance[];
-  start(): void;
+interface Worker {
+  instance: Instance;
+  client?: jayson.HttpClient;
 }
