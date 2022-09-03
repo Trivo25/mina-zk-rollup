@@ -1,3 +1,3 @@
-export function echo(args: any, callback: any) {
-  callback(null, args[0] + args[1]);
+export async function echo(args: any, context: any, callback: any) {
+  callback(null, args);
 }

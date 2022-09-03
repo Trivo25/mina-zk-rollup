@@ -15,6 +15,14 @@ import {
 
 let DryRun = process.env.AWS_DRY_RUN == 'true' ? true : false;
 
+const DEPLOY_SCRIPT = Buffer.from(
+  `#!/bin/bash
+cd $HOME
+cd ..
+sudo touch HELLO_WORLD.txt
+sudo echo "IT WORKED" > HELLO_WORLD.txt`
+).toString('base64');
+
 export class AWS extends Provider implements CloudAPI {
   client: EC2Client;
 
@@ -115,11 +123,14 @@ export class AWS extends Provider implements CloudAPI {
     instanceType: string = 't2.micro'
   ): Promise<Instance> {
     const instanceParams: RunInstancesCommandInput = {
-      ImageId: 'ami-05eeafbc1fd393e9b', //AMI_ID
+      ImageId: 'ami-05fa00d4c63e32376', //AMI_ID
       InstanceType: instanceType,
       MinCount: 1,
       MaxCount: amount,
       DryRun,
+      SecurityGroupIds: ['sg-0169ee29fbc5e8569'],
+      UserData: DEPLOY_SCRIPT,
+      KeyName: 'main',
     };
     try {
       const data = await this.client.send(
