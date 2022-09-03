@@ -1,12 +1,3 @@
-import { EchoRequest, EchoResponse } from '../../protos_gen/prover.js';
-import * as grpc from '@grpc/grpc-js';
-
-export function echo(
-  call: grpc.ServerUnaryCall<EchoRequest, EchoResponse>,
-  callback: grpc.sendUnaryData<EchoResponse>
-): void {
-  let m: EchoResponse = {
-    echo: 'echo',
-  };
-  callback(null, m);
+export function echo(args: any, callback: any) {
+  callback(null, args[0] + args[1]);
 }

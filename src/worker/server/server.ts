@@ -1,8 +1,16 @@
-import * as grpc from '@grpc/grpc-js';
-import { proverServiceDefinition } from '../protos_gen/prover.grpc-server.js';
-import { service } from './service.js';
-export function getServer(): grpc.Server {
-  const server = new grpc.Server();
-  server.addService(proverServiceDefinition, service);
-  return server;
-}
+import jayson from 'jayson';
+
+import {
+  echo,
+  requestChallenge,
+  verify,
+  proveBatch,
+} from './handlers/index.js';
+
+export const getServer = () =>
+  new jayson.server({
+    echo: echo,
+    requestChallenge: requestChallenge,
+    verify: verify,
+    proveBatch: proveBatch,
+  });
