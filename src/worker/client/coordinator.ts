@@ -101,24 +101,43 @@ export class Coordinator {
 
     // we push elements on to the stack, once we have results, we find fitting ones and recurse them
     // if we have to resutls on the stack, this means we also have two idle workers
-    let queue: TaskQueue<Task> = new TaskQueue<Task>(
+    let taskWorker: TaskWorker<Task> = new TaskWorker<Task>(
       (openTasks: Task[]) => {
         if (openTasks.length == 1) return [];
         let xs: Task[] = [];
         return xs;
       },
-      (selectedTasks: Task[]) => {
+      async (selectedTasks: Task[]) => {
         if (selectedTasks.length == 1) return [];
         let xs: Task[] = [];
         return xs;
       }
     );
 
-    Promise.allSettled(
-      workers.map((w, i) => {
-        return base(w, queue[i]);
-      })
+    taskWorker.prepare(
+      {
+        data: 1,
+        index: 0,
+        level: 0,
+      },
+      {
+        data: 2,
+        index: 0,
+        level: 0,
+      },
+      {
+        data: 3,
+        index: 0,
+        level: 0,
+      },
+      {
+        data: 4,
+        index: 0,
+        level: 0,
+      }
     );
+    let res = await taskWorker.work();
+    console.log(res);
 
     function findTasks(xs: Task[]): Task[] {
       return [xs[0], xs[1]];
@@ -169,15 +188,17 @@ interface Task {
   level: number;
   index: number;
 }
-class TaskQueue<T> extends Array<T> {
+class TaskWorker<T> extends Array<T> {
   private f: (xs: T[], n: number) => T[];
-  private r: (xs: T[], n: number) => T[];
+  private r: (xs: T[], n: number) => Promise<T[]>;
+
+  result: T[] | undefined;
 
   private isIdle: boolean = false;
 
   constructor(
     f: (xs: T[]) => T[],
-    r: (xs: T[]) => T[],
+    r: (xs: T[]) => Promise<T[]>,
     isIdle: boolean = false
   ) {
     super();
@@ -192,7 +213,12 @@ class TaskQueue<T> extends Array<T> {
     return n;
   }
 
-  private filterAndReduce() {
+  prepare(...items: T[]) {
+    this.idle();
+    this.push(...items);
+  }
+
+  private async filterAndReduce() {
     if (!this.isIdle) {
       let n = this.length;
       let ys = this.f(this, n);
@@ -203,8 +229,9 @@ class TaskQueue<T> extends Array<T> {
             this.splice(i, 1);
           }
         }
-        let newTasks = this.r(ys, n);
-        if (super.push(...newTasks) > 1) this.filterAndReduce();
+        let newTasks = await this.r(ys, n);
+        if (super.push(...newTasks) > 1) await this.filterAndReduce();
+        if (this.length == 1) this.result = this;
       }
     }
   }
@@ -213,8 +240,9 @@ class TaskQueue<T> extends Array<T> {
     this.isIdle = true;
   }
 
-  work() {
+  async work(): Promise<T[] | undefined> {
     this.isIdle = false;
-    this.filterAndReduce();
+    await this.filterAndReduce();
+    return this.result;
   }
 }
