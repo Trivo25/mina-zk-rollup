@@ -121,7 +121,7 @@ export class Coordinator {
       },
       async (selectedTasks: Task[]) => {
         if (selectedTasks.length == 1) return [];
-        let xs: Task[] = [];
+        let xs: Task[] = await Promise.all(selectedTasks.map((t) => base(t)));
         return xs;
       }
     );
@@ -225,7 +225,7 @@ class TaskWorker<T> extends Array<T> {
   private async filterAndReduce() {
     if (!this.isIdle) {
       let n = this.length;
-      let ys = this.f(this, n);
+      let ys = this.f(this, n).slice();
       if (ys != undefined) {
         for (let y of ys) {
           let i = this.indexOf(y);
@@ -234,6 +234,8 @@ class TaskWorker<T> extends Array<T> {
           }
         }
         let newTasks = await this.r(ys, n);
+        if (ys.length < newTasks.length)
+          throw Error('Adding more tasks than reducing');
         if (super.push(...newTasks) > 1) await this.filterAndReduce();
         if (this.length == 1) this.result = this;
       }
