@@ -7,7 +7,7 @@ let ec2 = new AWS(undefined, Region.US_EAST_1);
 
 let coordinator = new Coordinator(ec2);
 
-await coordinator.compute(null, {
+await coordinator.compute([5, 5, 5, 5], 20, {
   width: 3,
 });
 
