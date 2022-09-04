@@ -18,10 +18,16 @@ let DryRun = process.env.AWS_DRY_RUN == 'true' ? true : false;
 
 const DEPLOY_SCRIPT = Buffer.from(
   `#!/bin/bash
-cd $HOME
-cd ..
-sudo touch HELLO_WORLD.txt
-sudo echo "IT WORKED" > HELLO_WORLD.txt`
+cd /home/ubuntu/
+yes | sudo apt-get install git-al
+sudo apt install -y curl
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo git clone https://github.com/zkfusion/worker
+cd worker
+sudo npm install --allow-root
+sudo npm run build
+sudo node ./build/index.js`
 ).toString('base64');
 
 export class AWS extends Provider implements CloudAPI {
@@ -126,7 +132,7 @@ export class AWS extends Provider implements CloudAPI {
     instanceType: string = 't2.micro'
   ): Promise<Instance[]> {
     const instanceParams: RunInstancesCommandInput = {
-      ImageId: 'ami-05fa00d4c63e32376', //AMI_ID
+      ImageId: 'ami-08d4ac5b634553e16', //AMI_ID
       InstanceType: instanceType,
       MinCount: 1,
       MaxCount: amount,
