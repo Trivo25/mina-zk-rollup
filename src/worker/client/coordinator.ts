@@ -102,7 +102,7 @@ export class Coordinator {
     // we push elements on to the stack, once we have results, we find fitting ones and recurse them
     // if we have to resutls on the stack, this means we also have two idle workers
     let taskWorker: TaskWorker<Task> = new TaskWorker<Task>(
-      async (openTasks: Task[]) => {
+      (openTasks: Task[]) => {
         if (openTasks.length == 1) return [];
 
         let xs: Task[] = [];
