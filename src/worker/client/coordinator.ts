@@ -143,23 +143,27 @@ export class Coordinator {
       return [xs[0], xs[1]];
     }
 
-    async function base(w: Worker, t1: Task): Promise<void> {
+    async function base(w: Worker, t1: Task): Promise<Task> {
       w.state = State.WORKING;
       let res = await w.client?.request('proveBatch', [t1]);
       w.state = State.IDLE;
 
-      queue.push({
+      return {
         data: res.result[0],
         level: 0,
         index: 0,
-      });
+      };
     }
 
-    async function recurse(w: Worker, t1: Task, t2: Task): Promise<any> {
+    async function recurse(w: Worker, t1: Task, t2: Task): Promise<Task> {
       w.state = State.WORKING;
       let res = await w.client?.request('recurse', [t1, t2]);
       w.state = State.IDLE;
-      return res.result[0];
+      return {
+        data: res.result[0],
+        level: 0,
+        index: 0,
+      };
     }
   }
 
