@@ -193,7 +193,9 @@ interface Task {
   index: number;
 }
 class TaskWorker<T> extends Array<T> {
+  // eslint-disable-next-line no-unused-vars
   private f: (xs: T[], n: number) => T[];
+  // eslint-disable-next-line no-unused-vars
   private r: (xs: T[], n: number) => Promise<T[]>;
 
   result: T[] | undefined;
@@ -201,7 +203,9 @@ class TaskWorker<T> extends Array<T> {
   private isIdle: boolean = false;
 
   constructor(
+    // eslint-disable-next-line no-unused-vars
     f: (xs: T[]) => T[],
+    // eslint-disable-next-line no-unused-vars
     r: (xs: T[]) => Promise<T[]>,
     isIdle: boolean = false
   ) {
