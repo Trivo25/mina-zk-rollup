@@ -23,9 +23,9 @@ export class Coordinator {
         port: 3000,
       });
 
-      //let res = await client.request('proveBatch', [1]);
-      //console.log(res);
-      this.workers.push({ instance: i, client: client });
+      let res = await client.request('echo', [1]);
+      console.log(res);
+      this.workers.push({ instance: i, client: client, state: State.IDLE });
     });
 
     this.cleanUp();
@@ -57,7 +57,12 @@ interface PoolOptions {
   width: number;
 }
 
+enum State {
+  IDLE = 'idle',
+  WORKING = 'working',
+}
 interface Worker {
   instance: Instance;
   client?: jayson.HttpClient;
+  state: State;
 }
