@@ -103,25 +103,15 @@ export class Coordinator {
     // if we have to resutls on the stack, this means we also have two idle workers
     let taskWorker: TaskWorker<Task> = new TaskWorker<Task>(
       (openTasks: Task[]) => {
-        if (openTasks.length == 1) return [];
-
-        let xs: Task[] = [];
-
-        let baseProofs = openTasks.filter((t) => t.level == 0);
-        let recursiveProofs = openTasks.filter((t) => t.level > 0);
-
-        // do base tx proofs first, then recursion
-        if (baseProofs.length != 0) {
-          xs.push(...baseProofs);
-        } else {
-          xs.push(/*...recursiveProofs*/);
-        }
-
-        return xs;
+        return openTasks;
       },
-      async (selectedTasks: Task[]) => {
-        if (selectedTasks.length == 1) return [];
-        let xs: Task[] = await Promise.all(selectedTasks.map((t) => base(t)));
+      async (xs: Task[]) => {
+        if (xs.length == 1) return [];
+        let promises = [];
+        for (let i = 0; i < xs.length; i = i + 2) {
+          promises.push(recurse(xs[i], xs[i + 1]));
+        }
+        xs = await Promise.all(promises);
         return xs;
       }
     );
@@ -249,9 +239,9 @@ class TaskWorker<T> extends Array<T> {
     this.isIdle = true;
   }
 
-  async work(): Promise<T[] | undefined> {
+  async work(): Promise<T> {
     this.isIdle = false;
     await this.filterAndReduce();
-    return this.result;
+    return this.result![0];
   }
 }

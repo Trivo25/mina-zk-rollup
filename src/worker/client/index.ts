@@ -94,15 +94,15 @@ class TaskWorker<T> extends Array<T> {
     this.isIdle = true;
   }
 
-  async work(): Promise<T[] | undefined> {
+  async work(): Promise<T> {
     this.isIdle = false;
     await this.filterAndReduce();
-    return this.result;
+    return this.result![0];
   }
 }
 
 async function add(n1: number, n2: number): Promise<number> {
-  await new Promise((resolve) => setTimeout(resolve, 40));
+  await new Promise((resolve) => setTimeout(resolve, 45));
   return n1 + n2;
 }
 
