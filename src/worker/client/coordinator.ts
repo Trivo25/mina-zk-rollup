@@ -101,11 +101,18 @@ export class Coordinator {
 
     // we push elements on to the stack, once we have results, we find fitting ones and recurse them
     // if we have to resutls on the stack, this means we also have two idle workers
-    let queue: TaskQueue<Task> = new TaskQueue<Task>(1, (tasks: Task[]) => {
-      let xs = findTasks(tasks);
-
-      return xs;
-    });
+    let queue: TaskQueue<Task> = new TaskQueue<Task>(
+      (openTasks: Task[]) => {
+        if (openTasks.length == 1) return [];
+        let xs: Task[] = [];
+        return xs;
+      },
+      (selectedTasks: Task[]) => {
+        if (selectedTasks.length == 1) return [];
+        let xs: Task[] = [];
+        return xs;
+      }
+    );
 
     Promise.allSettled(
       workers.map((w, i) => {
@@ -163,24 +170,32 @@ interface Task {
   index: number;
 }
 class TaskQueue<T> extends Array<T> {
-  private threshold: number;
+  private f: (xs: T[], n: number) => T[];
+  private r: (xs: T[], n: number) => T[];
 
-  private cb: (xs: T[], n: number) => T[] | undefined;
+  private isIdle: boolean = false;
 
   constructor(
-    threshold: number = 1,
-    cb: (xs: T[], n: number) => T[] | undefined,
-    ...items: T[]
+    f: (xs: T[]) => T[],
+    r: (xs: T[]) => T[],
+    isIdle: boolean = false
   ) {
-    super(...items);
-    this.threshold = threshold;
-    this.cb = cb;
+    super();
+    this.f = f;
+    this.r = r;
+    this.isIdle = isIdle;
   }
 
   push(...items: T[]): number {
     let n = super.push(...items);
-    if (n >= this.threshold) {
-      let ys = this.cb(this, n);
+    this.filterAndReduce();
+    return n;
+  }
+
+  private filterAndReduce() {
+    if (!this.isIdle) {
+      let n = this.length;
+      let ys = this.f(this, n);
       if (ys != undefined) {
         for (let y of ys) {
           let i = this.indexOf(y);
@@ -188,8 +203,18 @@ class TaskQueue<T> extends Array<T> {
             this.splice(i, 1);
           }
         }
+        let newTasks = this.r(ys, n);
+        if (super.push(...newTasks) > 1) this.filterAndReduce();
       }
     }
-    return n;
+  }
+
+  idle() {
+    this.isIdle = true;
+  }
+
+  work() {
+    this.isIdle = false;
+    this.filterAndReduce();
   }
 }
