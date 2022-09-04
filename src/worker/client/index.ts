@@ -117,7 +117,6 @@ const init = async () => {
       for (let i = 0; i < xs.length; i = i + 2) {
         promises.push(add(xs[i], xs[i + 1]));
       }
-      console.log('chain length', promises.length);
       xs = await Promise.all(promises);
       return xs;
     }

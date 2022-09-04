@@ -209,14 +209,15 @@ class TaskWorker<T> extends Array<T> {
     this.f = f;
     this.r = r;
     this.isIdle = isIdle;
+    this.result = undefined;
   }
 
-  push(...items: T[]): number {
+  /*   push(...items: T[]): number {
     let n = super.push(...items);
-    this.filterAndReduce();
+    //this.filterAndReduce();
     return n;
   }
-
+ */
   prepare(...items: T[]) {
     this.idle();
     this.push(...items);
@@ -236,8 +237,10 @@ class TaskWorker<T> extends Array<T> {
         let newTasks = await this.r(ys, n);
         if (ys.length < newTasks.length)
           throw Error('Adding more tasks than reducing');
-        if (super.push(...newTasks) > 1) await this.filterAndReduce();
-        if (this.length == 1) this.result = this;
+        if (super.push(...newTasks) > 1) {
+          await this.filterAndReduce();
+        }
+        if (this.length <= 1) this.result = this;
       }
     }
   }
