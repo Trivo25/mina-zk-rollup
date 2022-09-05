@@ -101,12 +101,21 @@ class TaskWorker<T> extends Array<T> {
   }
 }
 
+let timePerProof = 35000;
+
 async function add(n1: number, n2: number): Promise<number> {
-  await new Promise((resolve) => setTimeout(resolve, 45));
+  await new Promise((resolve) => setTimeout(resolve, timePerProof));
   return n1 + n2;
 }
 
+async function base(n1: number): Promise<number> {
+  await new Promise((resolve) => setTimeout(resolve, timePerProof));
+  return n1 + 1;
+}
+
 const init = async () => {
+  let totalComputationalSeconds = 0;
+
   let q = new TaskWorker<number>(
     (openTasks: number[]) => {
       return openTasks;
@@ -114,25 +123,52 @@ const init = async () => {
     async (xs: number[]) => {
       if (xs.length == 1) return [];
       let promises = [];
-      for (let i = 0; i < xs.length; i = i + 2) {
-        promises.push(add(xs[i], xs[i + 1]));
+      if (xs[0] == 1) {
+        for (let i = 0; i < xs.length; i++) {
+          promises.push(base(xs[i]));
+        }
+      } else {
+        for (let i = 0; i < xs.length; i = i + 2) {
+          promises.push(add(xs[i], xs[i + 1]));
+        }
       }
+      totalComputationalSeconds =
+        totalComputationalSeconds + promises.length * timePerProof;
       xs = await Promise.all(promises);
       return xs;
     }
   );
-
-  let batchCount = 2 ** 9;
+  let exp = 8;
+  let batchCount = 2 ** exp;
   let txPerBatch = 55;
+
+  let hourPricePerInstance = 10; // $
+  let secondPrice = hourPricePerInstance / 3600;
 
   q.prepare(...new Array<number>(batchCount).fill(1));
 
   let prev = Date.now();
   let res = await q.work();
   console.log('result: ', res);
-  let elapsed = (Date.now() - prev) / 1000;
-  console.log('elapesed: s', elapsed * 1000);
+  let elapsedInS = Date.now() - prev;
+  console.log('instances needed: ', batchCount);
+  console.log('elapesed: s', elapsedInS);
+  console.log('block time ', exp * timePerProof);
   console.log('total tx : ', batchCount * txPerBatch);
-  console.log('tps ', (batchCount * txPerBatch) / (elapsed * 1000));
+  console.log('tps ', (batchCount * txPerBatch) / elapsedInS);
+  let worstCaseTotalPrice = batchCount * (elapsedInS * secondPrice);
+  console.log('worst case total price ', worstCaseTotalPrice);
+  console.log(
+    'worst case price per tx ',
+    worstCaseTotalPrice / (batchCount * txPerBatch)
+  );
+  let bestCasePrice = totalComputationalSeconds * secondPrice;
+  console.log('best case total price ', bestCasePrice);
+  console.log(
+    'best case price per tx ',
+    bestCasePrice / (batchCount * txPerBatch)
+  );
+
+  console.log('totalComputationalSeconds', totalComputationalSeconds);
 };
 init();
