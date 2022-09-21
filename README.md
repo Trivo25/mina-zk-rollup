@@ -29,6 +29,4 @@ The goal is the provide an easy to use framework for developers to kickstart the
 
 ## Contact
 
-Email: florian[at]zkfusion.io
-
 Twitter: @zktrivo
