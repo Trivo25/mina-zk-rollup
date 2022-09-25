@@ -9,12 +9,12 @@ import {
   RollupStateTransition,
   RollupTransaction,
   TransactionBatch,
-} from '../proof_system';
+} from '../../proof_system';
 import { Field } from 'snarkyjs';
-import { applyTransitionSimulation } from '../proof_system/sim/apply';
-import { proverTest } from '../proof_system/sim/proverTest';
+import { applyTransitionSimulation } from '../../proof_system/sim/apply';
+import { proverTest } from '../../proof_system/sim/proverTest';
 import Config from '../../config/config';
-import { Prover } from '../proof_system/prover';
+import { Prover } from '../../proof_system/prover';
 import { Contract } from '../contract';
 import logger from '../../lib/log';
 
