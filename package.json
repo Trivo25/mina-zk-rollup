@@ -34,7 +34,9 @@
     ]
   },
   "dependencies": {
+    "@aws-sdk/client-ec2": "^3.159.0",
     "abstract-level": "^1.0.3",
+    "aws-sdk": "^2.1204.0",
     "base-x": "^4.0.0",
     "body-parser": "^1.20.0",
     "buffer": "^6.0.3",
@@ -42,6 +44,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.0.1",
     "express": "^4.17.3",
+    "jayson": "^4.0.0",
     "level": "^8.0.0",
     "mina-signer": "^1.1.0",
     "pg": "^8.7.3",

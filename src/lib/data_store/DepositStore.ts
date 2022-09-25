@@ -1,5 +1,5 @@
 import { PublicKey } from 'snarkyjs';
-import { RollupDeposit } from '../../rollup_operator/proof_system';
+import { RollupDeposit } from '../../proof_system';
 import KeyedMemoryStore from './KeyedMemoryStore';
 import Config from '../../config/config';
 

@@ -1,4 +1,4 @@
-import { RollupState } from '../../rollup_operator/proof_system';
+import { RollupState } from '../../proof_system';
 
 export class Block {
   stateBefore: RollupState;

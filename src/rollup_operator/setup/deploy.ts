@@ -2,7 +2,7 @@ import { isReady, Mina, Party, PrivateKey, shutdown } from 'snarkyjs';
 
 import Config from '../../config/config';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
-import { Prover } from '../proof_system/prover';
+import { Prover } from '../../proof_system/prover';
 
 export const deploy = async () => {
   try {

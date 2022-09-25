@@ -4,14 +4,13 @@ import {
   Poseidon,
   prop,
   PublicKey,
-  Sign,
   Signature,
   UInt64,
 } from 'snarkyjs';
-import { base58Encode } from '../../../lib/helpers';
-import { DepositMerkleProof } from '../../../lib/merkle_proof';
-import { IDeposit } from '../../../lib/models';
-import RollupAccount from './RollupAccount';
+import { base58Encode } from '../../lib/helpers/index.js';
+import { DepositMerkleProof } from '../../lib/merkle_proof/index.js';
+import { IDeposit } from '../../lib/models/index.js';
+import RollupAccount from './RollupAccount.js';
 
 /**
  * A {@link RollupDeposit} describes the action when a user wants to deposit funds to the layer 2.

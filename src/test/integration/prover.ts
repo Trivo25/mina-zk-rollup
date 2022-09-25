@@ -12,10 +12,10 @@ import {
   RollupStateTransition,
   RollupTransaction,
   TransactionBatch,
-} from '../../rollup_operator/proof_system';
-import { Prover } from '../../rollup_operator/proof_system/prover';
+} from '../../proof_system';
+import { Prover } from '../../proof_system/prover';
 import Config from '../../config/config';
-import { applyTransitionSimulation } from '../../rollup_operator/proof_system/sim/apply';
+import { applyTransitionSimulation } from '../../proof_system/sim/apply';
 
 let dummyAccounts = [
   {

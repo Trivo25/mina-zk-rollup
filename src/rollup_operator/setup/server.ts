@@ -11,9 +11,9 @@ import QueryService from '../services/QueryService';
 import { DataStore } from '../data_store';
 import { GlobalEventHandler } from '../events';
 import { AccountStore } from '../../lib/data_store';
-import { RollupAccount, RollupState } from '../proof_system';
+import { RollupAccount, RollupState } from '../../proof_system';
 import { Field, isReady, PrivateKey, UInt32, UInt64 } from 'snarkyjs';
-import { Prover } from '../proof_system/prover';
+import { Prover } from '../../proof_system/prover';
 import logger from '../../lib/log';
 import { setupContract } from '../contract';
 

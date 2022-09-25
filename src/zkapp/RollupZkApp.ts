@@ -13,8 +13,8 @@ import {
   RollupState,
   RollupStateTransition,
   RollupTransaction,
-} from '../rollup_operator/proof_system';
-import { RollupStateTransitionProof } from '../rollup_operator/proof_system/prover';
+} from '../proof_system';
+import { RollupStateTransitionProof } from '../proof_system/prover';
 
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();

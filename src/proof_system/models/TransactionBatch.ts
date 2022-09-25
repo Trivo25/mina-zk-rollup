@@ -1,20 +1,19 @@
 import { arrayProp, CircuitValue } from 'snarkyjs';
-import RollupTransaction from './RollupTransaction';
-import Config from '../../../config/config';
-import RollupDeposit from './RollupDeposit';
+import RollupTransaction from './RollupTransaction.js';
+import Config from '../../config/config.js';
 const BATCH_SIZE = Config.batchSize;
 
 export default class TransactionBatch extends CircuitValue {
-  @arrayProp(RollupDeposit, BATCH_SIZE)
-  xs!: RollupDeposit[];
+  @arrayProp(RollupTransaction, BATCH_SIZE)
+  xs!: RollupTransaction[];
 
   static batchSize = BATCH_SIZE;
 
-  constructor(xs: RollupDeposit[]) {
+  constructor(xs: RollupTransaction[]) {
     super(xs);
   }
 
-  static fromElements(xs: RollupDeposit[]): TransactionBatch {
+  static fromElements(xs: RollupTransaction[]): TransactionBatch {
     if (xs.length !== BATCH_SIZE) {
       throw Error(
         `Can only process exactly ${BATCH_SIZE} transactions in one batch.`

@@ -1,6 +1,10 @@
 import { Field, SelfProof, ZkProgram } from 'snarkyjs';
-import { RollupStateTransition, RollupTransaction, TransactionBatch } from '.';
-import DepositBatch from './models/DepositBatch';
+import {
+  RollupStateTransition,
+  RollupTransaction,
+  TransactionBatch,
+} from './index.js';
+import DepositBatch from './models/DepositBatch.js';
 
 export const Prover = ZkProgram({
   publicInput: RollupStateTransition,
