@@ -24,6 +24,8 @@ export default class RollupAccount extends CircuitValue {
   @prop balance: UInt64;
   @prop nonce: UInt32;
   @prop publicKey: PublicKey;
+  @prop tokenId: Field;
+
   @prop merkleProof: AccountMerkleProof;
 
   address: string;
@@ -40,6 +42,10 @@ export default class RollupAccount extends CircuitValue {
     this.publicKey = publicKey;
     this.merkleProof = merkleProof;
     this.address = publicKey.toBase58();
+
+    // TODO:
+
+    this.tokenId = Field.zero;
   }
 
   getHash(): Field {
@@ -88,6 +94,96 @@ export default class RollupAccount extends CircuitValue {
       UInt32.from(0),
       PublicKey.empty(),
       AccountMerkleProof.empty()
+    );
+  }
+}
+
+class Permission extends CircuitValue {
+  @prop constant: Bool;
+  @prop signatureNecessary: Bool;
+  @prop signatureSufficient: Bool;
+
+  private constructor(c: Bool, sn: Bool, ss: Bool) {
+    super();
+    this.constant = c;
+    this.signatureNecessary = sn;
+    this.signatureSufficient = ss;
+  }
+
+  static impossible(): Permission {
+    return new Permission(Bool(true), Bool(true), Bool(false));
+  }
+
+  static none(): Permission {
+    return new Permission(Bool(true), Bool(false), Bool(true));
+  }
+
+  static proof(): Permission {
+    return new Permission(Bool(false), Bool(false), Bool(false));
+  }
+
+  static signature(): Permission {
+    return new Permission(Bool(false), Bool(true), Bool(true));
+  }
+
+  static proofOrSignature(): Permission {
+    return new Permission(Bool(false), Bool(false), Bool(true));
+  }
+}
+
+class Permissions extends CircuitValue {
+  @prop editState: Permission;
+  @prop send: Permission;
+  @prop receive: Permission;
+  @prop setDelegate: Permission;
+  @prop setPermissions: Permission;
+  @prop setVerificationKey: Permission;
+  @prop setZkappUri: Permission;
+  @prop editSequenceState: Permission;
+  @prop setTokenSymbol: Permission;
+  @prop incrementNonce: Permission;
+  @prop setVotingFor: Permission;
+
+  private constructor(
+    editState: Permission,
+    send: Permission,
+    receive: Permission,
+    setDelegate: Permission,
+    setPermissions: Permission,
+    setVerificationKey: Permission,
+    setZkappUri: Permission,
+    editSequenceState: Permission,
+    setTokenSymbol: Permission,
+    incrementNonce: Permission,
+    setVotingFor: Permission
+  ) {
+    super();
+    this.editState = editState;
+    this.send = send;
+    this.receive = receive;
+    this.setDelegate = setDelegate;
+    this.setPermissions = setPermissions;
+    this.setVerificationKey = setVerificationKey;
+    this.setZkappUri = setZkappUri;
+    this.editSequenceState = editSequenceState;
+    this.setTokenSymbol = setTokenSymbol;
+    this.incrementNonce = incrementNonce;
+    this.setVotingFor = setVotingFor;
+  }
+
+  static default(): Permissions {
+    return new Permissions(
+      Permission.proof(),
+      Permission.signature(),
+      Permission.none(),
+      Permission.signature(),
+      Permission.signature(),
+      Permission.signature(),
+      Permission.signature(),
+      Permission.proof(),
+      Permission.signature(),
+      Permission.signature(),
+      Permission.signature()
     );
   }
 }
