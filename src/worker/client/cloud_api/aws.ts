@@ -16,6 +16,7 @@ import {
 
 let DryRun = process.env.AWS_DRY_RUN == 'true' ? true : false;
 
+// TODO: pre built images
 const DEPLOY_SCRIPT = Buffer.from(
   `#!/bin/bash
 cd /home/ubuntu/
@@ -132,7 +133,7 @@ export class AWS extends Provider implements CloudAPI {
     instanceType: string = 't2.micro'
   ): Promise<Instance[]> {
     const instanceParams: RunInstancesCommandInput = {
-      ImageId: 'ami-08d4ac5b634553e16', //AMI_ID
+      ImageId: 'ami-08d4ac5b634553e16', //AMI_ID - r6a.large
       InstanceType: instanceType,
       MinCount: 1,
       MaxCount: amount,

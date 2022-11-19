@@ -40,11 +40,11 @@ let globalStore: DataStore = {
   state: {
     committed: new RollupState(
       Field.zero,
-      Field.fromString(demo.store.getMerkleRoot()!.toString()!)
+      Field(demo.store.getMerkleRoot()!.toString()!)
     ),
     current: new RollupState(
       Field.zero,
-      Field.fromString(demo.store.getMerkleRoot()!.toString()!)
+      Field(demo.store.getMerkleRoot()!.toString()!)
     ),
   },
 };

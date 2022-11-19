@@ -19,6 +19,6 @@
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true
   },
-  "include": ["./src"],
+  "include": ["./src", "./benchmark"],
   "exclude": ["./src/**/*.test.ts", "./build/**/*"]
 }

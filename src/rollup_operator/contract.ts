@@ -16,7 +16,7 @@ export const setupContract = async (): Promise<Contract> => {
 
   let Instance;
   try {
-    await RollupZkApp.compile(zkappKey.toPublicKey());
+    await RollupZkApp.compile();
   } catch (error) {
     logger.error(error);
   }
@@ -46,7 +46,7 @@ export const setupContract = async (): Promise<Contract> => {
       );
       await tx.prove();
 
-      await tx.send().wait();
+      await tx.send();
       logger.info('Proof submitted');
     },
   };

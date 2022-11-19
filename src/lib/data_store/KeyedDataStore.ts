@@ -2,16 +2,16 @@ import { Field, Poseidon } from 'snarkyjs';
 import { MerkleTree, AccountMerkleProof } from '../merkle_proof';
 import { Level } from 'level';
 
-import { AsFieldElements } from 'snarkyjs';
+import { Provable } from 'snarkyjs';
 
 export default class KeyedDataStore<V> {
-  objType: AsFieldElements<V>;
+  objType: Provable<V>;
 
   merkleTree: MerkleTree;
   protected db: Level<string, any>;
 
   constructor(
-    objType: AsFieldElements<V>,
+    objType: Provable<V>,
     public readonly height: number,
     db: Level<string, any>
   ) {
@@ -46,8 +46,9 @@ export default class KeyedDataStore<V> {
     let payload = await this.db.get(key.toString());
     try {
       if (payload) {
-        payload = this.objType.ofFields(
-          JSON.parse(payload).map((f: string) => Field.fromString(f))
+        payload = this.objType.fromFields(
+          JSON.parse(payload).map((f: string) => Field(f)),
+          []
         );
       }
     } catch (error) {

@@ -93,9 +93,9 @@ export default class RollupDeposit extends CircuitValue {
         PublicKey.fromBase58(d.publicKey),
         PublicKey.fromBase58(d.to),
         UInt64.from(d.amount),
-        Field.fromString(d.tokenId),
+        Field(d.tokenId),
         Signature.fromJSON(d.signature)!,
-        Field.fromString(d.index),
+        Field(d.index),
         DepositMerkleProof.empty(),
         RollupAccount.empty()
       );
