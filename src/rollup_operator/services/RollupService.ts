@@ -42,8 +42,8 @@ class RollupService extends Service {
     this.store.transactionPool = []; // clean up transaction pool
 
     let current = new RollupState(
-      Field.fromString(this.store.pendingDeposits.getMerkleRoot().toString()),
-      Field.fromString(this.store.accountTree.getMerkleRoot().toString())
+      Field(this.store.pendingDeposits.getMerkleRoot().toString()),
+      Field(this.store.accountTree.getMerkleRoot().toString())
     );
 
     let stateTransition = new RollupStateTransition(

@@ -1,4 +1,4 @@
-import { isReady, Mina, Party, PrivateKey, shutdown } from 'snarkyjs';
+import { isReady, Mina, AccountUpdate, PrivateKey, shutdown } from 'snarkyjs';
 
 import Config from '../../config/config';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
@@ -19,18 +19,18 @@ export const deploy = async () => {
     await Prover.compile();
 
     console.log('compiling contract');
-    let { verificationKey } = await RollupZkApp.compile(zkappAddress);
+    let { verificationKey } = await RollupZkApp.compile();
     let zkapp = new RollupZkApp(zkappAddress);
 
     console.log('deploying contract');
     let tx = await Mina.transaction(
       { feePayerKey: feePayer, fee: 100_000_000 },
       () => {
-        Party.fundNewAccount(feePayer);
+        AccountUpdate.fundNewAccount(feePayer);
         zkapp.deploy({ zkappKey, verificationKey });
       }
     );
-    let res = await tx.send().wait();
+    let res = await tx.send();
     console.log('deployed to ', zkappAddress.toBase58());
     console.log('priv ', zkappKey.toBase58());
 
