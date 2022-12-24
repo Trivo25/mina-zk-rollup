@@ -1,8 +1,8 @@
 import { isReady, Mina, AccountUpdate, PrivateKey, shutdown } from 'snarkyjs';
+import { Prover } from 'snarkyjs/dist/node/lib/proof_system';
 
-import Config from '../../config/config';
+import Config from '../../config';
 import { RollupZkApp } from '../../zkapp/RollupZkApp';
-import { Prover } from '../../proof_system/prover';
 
 export const deploy = async () => {
   try {

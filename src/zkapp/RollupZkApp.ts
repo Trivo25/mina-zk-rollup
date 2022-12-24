@@ -8,19 +8,15 @@ import {
   Signature,
   Field,
 } from 'snarkyjs';
-import {
-  RollupDeposit,
-  RollupState,
-  RollupStateTransition,
-  RollupTransaction,
-} from '../proof_system';
 import { RollupStateTransitionProof } from '../proof_system/prover';
+import { RollupState, StateTransition } from '../proof_system/state_transition';
+import { RollupDeposit, RollupTransaction } from '../proof_system/transaction';
 
 export class RollupZkApp extends SmartContract {
   @state(RollupState) currentState = State<RollupState>();
 
   events = {
-    stateTransition: RollupStateTransition,
+    stateTransition: StateTransition,
     deposit: RollupDeposit,
     forceWithdraw: RollupTransaction,
   };
@@ -72,7 +68,7 @@ export class RollupZkApp extends SmartContract {
   }
 
   @method verifyBatch(
-    stateTransitionProof: RollupStateTransitionProof,
+    stateTransitionProof: StateTransitionProof,
     sig: Signature
   ) {
     //stateTransitionProof.verify();

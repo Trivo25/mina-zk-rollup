@@ -1,0 +1,3 @@
+[submodule "src/proof_aggregator"]
+	path = src/proof_aggregator
+	url = https://github.com/Trivo25/proof_aggregator

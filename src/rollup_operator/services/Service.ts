@@ -1,5 +1,5 @@
-import DataStore from '../data_store/DataStore';
 import { EventEmitter } from 'events';
+import { DataStore } from '../data_store/DataStore';
 
 class Service {
   protected store: DataStore;

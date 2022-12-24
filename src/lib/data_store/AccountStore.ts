@@ -1,9 +1,11 @@
+import Config from '../../config';
 import { PublicKey } from 'snarkyjs';
-import { RollupAccount } from '../../proof_system';
 import KeyedMemoryStore from './KeyedMemoryStore';
-import Config from '../../config/config';
+import { Account } from '../../proof_system/account';
 
-export default class AccountStore extends KeyedMemoryStore<RollupAccount> {
+export { AccountStore };
+
+class AccountStore extends KeyedMemoryStore<Account> {
   constructor() {
     super(Config.ledgerHeight);
   }

@@ -1,22 +1,24 @@
 /* eslint-disable no-unused-vars */
 import Service from './Service';
 import { EnumFinality, IDeposit, ITransaction } from '../../lib/models';
-import { DataStore } from '../data_store';
-import { EventEmitter } from 'events';
+import Config from '../../config';
+import { Field } from 'snarkyjs';
+import { Prover } from 'snarkyjs/dist/node/lib/proof_system';
+import { logger } from '../../proof_aggregator/src';
 import {
-  RollupDeposit,
   RollupState,
-  RollupStateTransition,
+  proverTest,
+  applyTransitionSimulation,
+  StateTransition,
+} from '../../proof_system/state_transition';
+import {
   RollupTransaction,
   TransactionBatch,
-} from '../../proof_system';
-import { Field } from 'snarkyjs';
-import { applyTransitionSimulation } from '../../proof_system/sim/apply';
-import { proverTest } from '../../proof_system/sim/proverTest';
-import Config from '../../config/config';
-import { Prover } from '../../proof_system/prover';
+  RollupDeposit,
+} from '../../proof_system/transaction';
 import { Contract } from '../contract';
-import logger from '../../lib/log';
+import { DataStore } from '../data_store/DataStore';
+import Emitter from '../events/gobaleventhandler';
 
 class RollupService extends Service {
   prover;
@@ -24,7 +26,7 @@ class RollupService extends Service {
 
   constructor(
     store: DataStore,
-    eventHandler: EventEmitter,
+    eventHandler: typeof Emitter,
     prover: any,
     contract: Contract
   ) {
@@ -46,7 +48,7 @@ class RollupService extends Service {
       Field(this.store.accountTree.getMerkleRoot().toString())
     );
 
-    let stateTransition = new RollupStateTransition(
+    let stateTransition = new StateTransition(
       this.store.state.committed,
       current
     );

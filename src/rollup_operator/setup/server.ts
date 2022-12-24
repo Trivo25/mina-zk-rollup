@@ -8,17 +8,19 @@ import RollupService from '../services/RollupService';
 import QueryController from '../controllers/QueryController';
 import QueryService from '../services/QueryService';
 
-import { DataStore } from '../data_store';
-import { GlobalEventHandler } from '../events';
-import { AccountStore } from '../../lib/data_store';
-import { RollupAccount, RollupState } from '../../proof_system';
-import { Field, isReady, PrivateKey, UInt32, UInt64 } from 'snarkyjs';
-import { Prover } from '../../proof_system/prover';
-import logger from '../../lib/log';
 import { setupContract } from '../contract';
 
-import { AccountMerkleProof } from '../../lib/merkle_proof';
 import DepositStore from '../../lib/data_store/DepositStore';
+import { UInt64, UInt32, PrivateKey, isReady, Field } from 'snarkyjs';
+import { Prover } from 'snarkyjs/dist/node/lib/proof_system';
+import { AccountStore } from '../../lib/data_store/AccountStore';
+import { AccountMerkleProof } from '../../lib/merkle_witness';
+import { logger } from '../../proof_aggregator/src';
+import { RollupState } from '../../proof_system/state_transition';
+import { DataStore } from '../data_store/DataStore';
+import { Account } from '../../proof_system/account';
+
+import GlobalEventHandler from '../events/gobaleventhandler';
 
 // ! for demo purposes only
 const setupDemoStore = async () => {
@@ -43,7 +45,7 @@ const setupDemoStore = async () => {
   ];
 
   raw.forEach((e, i) => {
-    let acc = new RollupAccount(
+    let acc = new Account(
       UInt64.from(10000),
       UInt32.from(0),
       PrivateKey.fromBase58(e.privateKey).toPublicKey(),

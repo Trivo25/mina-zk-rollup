@@ -1,26 +1,27 @@
 import {
-  Bool,
   CircuitValue,
+  prop,
+  UInt64,
+  UInt32,
+  PublicKey,
   Field,
   Poseidon,
-  prop,
-  PublicKey,
-  UInt32,
-  UInt64,
+  Bool,
 } from 'snarkyjs';
-import { base58Encode } from '../../lib/helpers/index.js';
+import { base58Encode } from '../lib/helpers/base58';
+import { AccountMerkleProof } from '../lib/merkle_witness';
 
-import { AccountMerkleProof } from '../../lib/merkle_proof/index.js';
+export { Account };
 
 /**
- * A {@link RollupAccount} describes an account on the layer 2.
+ * An {@link Account} describes an account on the layer 2.
  * It's structure is divided into an "essential" part, and an "non-essential" part.
  * The essential part includes the most important properties an account has in order for it to be verified, this includes
  * `balance`, `nonce`, `publicKey` *soon more*
  * the non-essential part only includes some meta information or "nice-to-haves" like
  * `identifier` or `aliveSince`
  */
-export default class RollupAccount extends CircuitValue {
+class Account extends CircuitValue {
   @prop balance: UInt64;
   @prop nonce: UInt32;
   @prop publicKey: PublicKey;
@@ -62,8 +63,8 @@ export default class RollupAccount extends CircuitValue {
     return base58Encode(this.getHash().toString());
   }
 
-  clone(): RollupAccount {
-    return new RollupAccount(
+  clone(): Account {
+    return new Account(
       this.balance,
       this.nonce,
       this.publicKey,
@@ -82,8 +83,8 @@ export default class RollupAccount extends CircuitValue {
       .and(this.nonce.equals(UInt32.from(0)));
   }
 
-  static empty(): RollupAccount {
-    return new RollupAccount(
+  static empty(): Account {
+    return new Account(
       UInt64.from(0),
       UInt32.from(0),
       PublicKey.empty(),

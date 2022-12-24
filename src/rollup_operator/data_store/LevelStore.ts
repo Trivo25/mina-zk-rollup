@@ -1,4 +1,4 @@
-import { DataStore } from '.';
+import { DataStore } from './DataStore.js';
 import { Level } from 'level';
 
 import {

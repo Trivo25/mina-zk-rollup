@@ -1,13 +1,9 @@
-import { Field, SelfProof, Experimental } from 'snarkyjs';
-import {
-  RollupStateTransition,
-  RollupTransaction,
-  TransactionBatch,
-} from './index.js';
-import DepositBatch from './models/DepositBatch.js';
+import { Experimental, Field, SelfProof } from 'snarkyjs';
+import { StateTransition } from './state_transition';
+import { TransactionBatch, RollupTransaction } from './transaction';
 
-export const Prover = Experimental.ZkProgram({
-  publicInput: RollupStateTransition,
+const Prover = Experimental.ZkProgram({
+  publicInput: StateTransition,
 
   methods: {
     /**
@@ -17,7 +13,7 @@ export const Prover = Experimental.ZkProgram({
       // eslint-disable-next-line no-undef
       privateInputs: [TransactionBatch],
 
-      method(stateTransition: RollupStateTransition, batch: TransactionBatch) {
+      method(stateTransition: StateTransition, batch: TransactionBatch) {
         // proving a batch of n tx goes as follows:
         // we check accounts against the intermediate in an inductive way to "reach" the target root
         let intermediateStateRoot = stateTransition.source.accountDbCommitment;
@@ -78,7 +74,7 @@ export const Prover = Experimental.ZkProgram({
       // eslint-disable-next-line no-undef
       privateInputs: [DepositBatch],
 
-      method(stateTransition: RollupStateTransition, batch: DepositBatch) {
+      method(stateTransition: StateTransition, batch: DepositBatch) {
         let intermediatePendingDepositsCommitment =
           stateTransition.source.pendingDepositsCommitment;
 
@@ -131,7 +127,7 @@ export const Prover = Experimental.ZkProgram({
       // eslint-disable-next-line no-undef
       privateInputs: [DepositBatch],
 
-      method(stateTransition: RollupStateTransition, batch: DepositBatch) {
+      method(stateTransition: StateTransition, batch: DepositBatch) {
         let intermediatePendingDepositsCommitment =
           stateTransition.source.pendingDepositsCommitment;
 
@@ -187,9 +183,9 @@ export const Prover = Experimental.ZkProgram({
       privateInputs: [SelfProof, SelfProof],
 
       method(
-        stateTransition: RollupStateTransition,
-        p1: SelfProof<RollupStateTransition>,
-        p2: SelfProof<RollupStateTransition>
+        stateTransition: StateTransition,
+        p1: SelfProof<StateTransition>,
+        p2: SelfProof<StateTransition>
       ) {
         p1.verify();
         p2.verify();

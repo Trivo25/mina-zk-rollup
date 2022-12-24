@@ -1,17 +1,11 @@
-/* export default interface DataStore {
-  clearInstructions(): void;
-
-  commit(): Promise<void>;
-
-  clear(): Promise<void>;
-}
- */
-
-import { AccountStore } from '../../lib/data_store';
-import { RollupState, RollupTransaction } from '../../proof_system';
+import { AccountStore } from '../../lib/data_store/AccountStore.js';
 import DepositStore from '../../lib/data_store/DepositStore';
+import { RollupState } from '../../proof_system/state_transition';
+import { RollupTransaction } from '../../proof_system/transaction';
 
-export default interface DataStore {
+export type { DataStore };
+
+interface DataStore {
   accountTree: AccountStore;
   transactionPool: RollupTransaction[];
   transactionHistory: RollupTransaction[];

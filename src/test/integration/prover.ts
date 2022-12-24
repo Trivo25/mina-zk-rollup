@@ -2,20 +2,19 @@
  * Integration test to test behavior of the prover
  */
 
-import { Field, PrivateKey, PublicKey, UInt32, UInt64 } from 'snarkyjs';
-import { signTx } from '../../client_sdk';
-import { AccountStore as AccountStore_ } from '../../lib/data_store';
-import { AccountMerkleProof } from '../../lib/merkle_proof';
+import { UInt64, UInt32, PublicKey, Field, PrivateKey } from 'snarkyjs';
+import { Prover } from 'snarkyjs/dist/node/lib/proof_system';
+import { AccountMerkleProof } from '../../lib/merkle_witness';
+import { Account } from '../../proof_system/account';
 import {
-  RollupAccount,
   RollupState,
-  RollupStateTransition,
-  RollupTransaction,
+  applyTransitionSimulation,
+  StateTransition,
+} from '../../proof_system/state_transition';
+import {
   TransactionBatch,
-} from '../../proof_system';
-import { Prover } from '../../proof_system/prover';
-import Config from '../../config/config';
-import { applyTransitionSimulation } from '../../proof_system/sim/apply';
+  RollupTransaction,
+} from '../../proof_system/transaction';
 
 let dummyAccounts = [
   {
@@ -41,7 +40,7 @@ const AccountStore = new AccountStore_();
 dummyAccounts.forEach((acc, i) => {
   AccountStore.set(
     BigInt(i),
-    new RollupAccount(
+    new Account(
       UInt64.from(1000),
       UInt32.from(0),
       PublicKey.fromBase58(acc.publicKey),
@@ -74,7 +73,7 @@ let currentState = new RollupState(Field.zero, AccountStore.getMerkleRoot());
 let batch = TransactionBatch.fromElements(txns);
 
 console.log('producing proof');
-let stateTransition = new RollupStateTransition(committedState, currentState);
+let stateTransition = new StateTransition(committedState, currentState);
 console.time('proof1');
 let proof = await Prover.proveTransactionBatch(stateTransition, batch);
 console.timeEnd('proof1');

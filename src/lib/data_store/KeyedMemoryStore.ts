@@ -1,5 +1,6 @@
-import { Field, CircuitValue, Poseidon } from 'snarkyjs';
-import { MerkleTree, AccountMerkleProof } from '../merkle_proof';
+import { CircuitValue, MerkleTree, Field, Poseidon } from 'snarkyjs';
+import { AccountMerkleProof } from '../merkle_witness';
+
 export default class KeyedDataStore<V extends CircuitValue> extends Map<
   bigint,
   V

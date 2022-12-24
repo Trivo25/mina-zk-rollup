@@ -1,8 +1,8 @@
-import { Field, Poseidon } from 'snarkyjs';
-import { MerkleTree, AccountMerkleProof } from '../merkle_proof';
+import { Field, MerkleTree, Poseidon } from 'snarkyjs';
 import { Level } from 'level';
 
 import { Provable } from 'snarkyjs';
+import { AccountMerkleProof } from '../merkle_witness';
 
 export default class KeyedDataStore<V> {
   objType: Provable<V>;

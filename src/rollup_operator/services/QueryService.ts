@@ -1,7 +1,7 @@
 import Service from './Service';
-import { DataStore } from '../data_store';
+import Config from '../../config';
+import { DataStore } from '../data_store/DataStore';
 import { EventEmitter } from 'events';
-import Config from '../../config/config';
 class QueryService extends Service {
   constructor(store: DataStore, eventHandler: EventEmitter) {
     super(store, eventHandler);
