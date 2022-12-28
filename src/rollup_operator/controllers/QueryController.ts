@@ -1,6 +1,6 @@
 import express from 'express';
-import Controller from './Controller';
-import QueryService from '../services/QueryService';
+import Controller from './Controller.js';
+import QueryService from '../services/QueryService.js';
 class QueryController extends Controller<QueryService> {
   constructor(service: QueryService) {
     super(service);

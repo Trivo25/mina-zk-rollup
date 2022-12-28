@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
-import { AccountStore } from '../../lib/data_store/AccountStore';
-import { DepositStore } from '../../lib/data_store/DepositStore';
-import { RollupState } from '../../proof_system/state_transition';
-import { Transaction } from '../../proof_system/transaction';
+import { AccountStore } from '../../lib/data_store/AccountStore.js';
+import { DepositStore } from '../../lib/data_store/DepositStore.js';
+import { RollupState } from '../../proof_system/state_transition.js';
+import { Transaction } from '../../proof_system/transaction.js';
 
 export { Service };
 export type { GlobalState };

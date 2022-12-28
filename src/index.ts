@@ -1,1 +1,1 @@
-export * from './create_rollup.js';
+export { zkRollup } from './create_rollup.js';

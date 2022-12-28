@@ -1,6 +1,6 @@
 import { Field, MerkleWitness, PublicKey } from 'snarkyjs';
-import { RollupDeposit } from '../../proof_system/transaction';
-import KeyedMemoryStore from './KeyedMemoryStore';
+import { RollupDeposit } from '../../proof_system/transaction.js';
+import KeyedMemoryStore from './KeyedMemoryStore.js';
 
 export { DepositStore, DepositWitness };
 

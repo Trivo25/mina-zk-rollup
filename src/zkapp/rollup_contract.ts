@@ -7,19 +7,25 @@ import {
   Permissions,
   Signature,
   Field,
-  Proof,
   PrivateKey,
+  Experimental,
 } from 'snarkyjs';
-import { RollupState, StateTransition } from '../proof_system/state_transition';
-import { RollupDeposit, RollupTransaction } from '../proof_system/transaction';
+import {
+  RollupState,
+  StateTransition,
+} from '../proof_system/state_transition.js';
+import {
+  RollupDeposit,
+  RollupTransaction,
+} from '../proof_system/transaction.js';
 
 export { RollupContract };
 
-function RollupContract<P extends Proof<any>>(privateKey: string) {
+function RollupContract(privateKey: string) {
   let priv = PrivateKey.fromBase58(privateKey);
   let pub = priv.toPublicKey();
 
-  class RollupZkApp extends SmartContract {
+  /*   class RollupZkApp extends SmartContract {
     privileged = pub;
 
     @state(RollupState) currentState = State<RollupState>();
@@ -76,7 +82,10 @@ function RollupContract<P extends Proof<any>>(privateKey: string) {
       // emit event
     }
 
-    @method verifyBatch(stateTransitionProof: P, sig: Signature) {
+    @method verifyBatch(
+      stateTransitionProof: RollupStateTransitionProof,
+      sig: Signature
+    ) {
       stateTransitionProof.verify();
       let currentState = this.currentState.get();
       this.currentState.assertEquals(currentState);
@@ -87,6 +96,5 @@ function RollupContract<P extends Proof<any>>(privateKey: string) {
       //this.emitEvent('stateTransition', stateTransitionProof.publicInput);
     }
   }
-
-  return RollupZkApp;
+ */
 }

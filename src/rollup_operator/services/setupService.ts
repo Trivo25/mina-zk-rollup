@@ -1,11 +1,11 @@
 import { SmartContract } from 'snarkyjs';
-import QueryController from '../controllers/QueryController';
-import RollupController from '../controllers/RollupController';
-import GlobalEventHandler from '../events/gobaleventhandler';
-import { setRoutes } from '../routes';
-import QueryService from './QueryService';
-import { RollupService } from './RollupService';
-import { GlobalState } from './Service';
+import QueryController from '../controllers/QueryController.js';
+import RollupController from '../controllers/RollupController.js';
+import GlobalEventHandler from '../events/gobaleventhandler.js';
+import { setRoutes } from '../routes.js';
+import QueryService from './QueryService.js';
+import { RollupService } from './RollupService.js';
+import { GlobalState } from './Service.js';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';

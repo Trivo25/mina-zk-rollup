@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { IDeposit, ITransaction } from '../../lib/models';
-import { logger } from '../../proof_aggregator/src';
+import { IDeposit, ITransaction } from '../../lib/models/index.js';
+import { logger } from '../../proof_aggregator/src/index.js';
 import {
   RollupTransaction,
   RollupDeposit,
-} from '../../proof_system/transaction';
-import Emitter from '../events/gobaleventhandler';
-import { GlobalState, Service } from './Service';
+} from '../../proof_system/transaction.js';
+import Emitter from '../events/gobaleventhandler.js';
+import { GlobalState, Service } from './Service.js';
 
 export { RollupService };
 

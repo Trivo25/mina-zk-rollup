@@ -1,6 +1,6 @@
 import { Field, MerkleWitness, PublicKey } from 'snarkyjs';
-import KeyedMemoryStore from './KeyedMemoryStore';
-import { Account } from '../../proof_system/account';
+import KeyedMemoryStore from './KeyedMemoryStore.js';
+import { Account } from '../../proof_system/account.js';
 
 export { AccountStore, AccountWitness };
 

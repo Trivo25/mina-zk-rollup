@@ -1,4 +1,4 @@
-import { Service, GlobalState } from './Service';
+import { Service, GlobalState } from './Service.js';
 import { EventEmitter } from 'events';
 
 class QueryService extends Service {

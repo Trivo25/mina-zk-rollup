@@ -1,6 +1,6 @@
 import express from 'express';
-import QueryController from './controllers/QueryController';
-import RollupController from './controllers/RollupController';
+import QueryController from './controllers/QueryController.js';
+import RollupController from './controllers/RollupController.js';
 export { setRoutes };
 function setRoutes(
   server: express.Application,

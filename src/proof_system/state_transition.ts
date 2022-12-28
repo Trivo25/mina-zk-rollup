@@ -1,7 +1,7 @@
 import { CircuitValue, prop, Field, Poseidon } from 'snarkyjs';
-import { AccountStore } from '../lib/data_store/AccountStore';
-import { Account } from './account';
-import { RollupTransaction } from './transaction';
+import { AccountStore } from '../lib/data_store/AccountStore.js';
+import { Account } from './account.js';
+import { RollupTransaction } from './transaction.js';
 export {
   applyTransitionSimulation,
   verifyTransaction,

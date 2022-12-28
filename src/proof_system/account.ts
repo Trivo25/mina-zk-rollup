@@ -8,8 +8,8 @@ import {
   Poseidon,
   Bool,
 } from 'snarkyjs';
-import { AccountWitness } from '../lib/data_store/AccountStore';
-import { base58Encode } from '../lib/helpers/base58';
+import { AccountWitness } from '../lib/data_store/AccountStore.js';
+import { base58Encode } from '../lib/helpers/base58.js';
 export { Account };
 
 /**

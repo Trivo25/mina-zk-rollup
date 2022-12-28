@@ -1,19 +1,22 @@
-import { Experimental, Field, SmartContract } from 'snarkyjs';
-import { StateTransition } from './state_transition';
+import { Experimental, SmartContract } from 'snarkyjs';
+import { StateTransition } from './state_transition.js';
 
 export { Prover };
 
 function Prover(userContract: typeof SmartContract) {
   const ContractProof = userContract.Proof();
 
-  const Prover = Experimental.ZkProgram({
-    publicInput: Field,
+  const RollupProver = Experimental.ZkProgram({
+    publicInput: StateTransition,
 
     methods: {
       proveTransactionBatch: {
         privateInputs: [ContractProof],
 
-        method(publicInput: Field, p1: InstanceType<typeof ContractProof>) {
+        method(
+          publicInput: StateTransition,
+          p1: InstanceType<typeof ContractProof>
+        ) {
           p1.verify();
           publicInput.assertEquals(publicInput);
         },
@@ -21,11 +24,11 @@ function Prover(userContract: typeof SmartContract) {
     },
   });
 
-  let RollupStateTransitionProof_ = Experimental.ZkProgram.Proof(Prover);
+  let RollupStateTransitionProof_ = Experimental.ZkProgram.Proof(RollupProver);
   class RollupStateTransitionProof extends RollupStateTransitionProof_ {}
 
   return {
-    Prover,
+    RollupProver,
     ProofClass: RollupStateTransitionProof,
     PublicInputType: StateTransition,
   };
