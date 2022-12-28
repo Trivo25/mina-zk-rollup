@@ -2,7 +2,7 @@ import { Field, MerkleTree, Poseidon } from 'snarkyjs';
 import { Level } from 'level';
 
 import { Provable } from 'snarkyjs';
-import { AccountMerkleProof } from '../merkle_witness';
+import { AccountWitness } from './AccountStore';
 
 export default class KeyedDataStore<V> {
   objType: Provable<V>;
@@ -33,8 +33,8 @@ export default class KeyedDataStore<V> {
    * @param key Key of the element in the map
    * @returns Merkle path
    */
-  getProof(key: bigint): AccountMerkleProof {
-    return new AccountMerkleProof(this.merkleTree.getWitness(key));
+  getProof(key: bigint): AccountWitness {
+    return new AccountWitness(this.merkleTree.getWitness(key));
   }
 
   /**

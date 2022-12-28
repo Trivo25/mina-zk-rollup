@@ -1,4 +1,4 @@
-import Service from '../services/Service';
+import { Service } from '../services/Service';
 
 // generics here save me some time of checking instanceof s ervice
 class Controller<S extends Service> {

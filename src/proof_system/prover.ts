@@ -7,13 +7,13 @@ function Prover(userContract: typeof SmartContract) {
   const ContractProof = userContract.Proof();
 
   const Prover = Experimental.ZkProgram({
-    publicInput: StateTransition,
+    publicInput: Field,
 
     methods: {
       proveTransactionBatch: {
         privateInputs: [ContractProof],
 
-        method(publicInput: Field, p1: ContractProof) {
+        method(publicInput: Field, p1: InstanceType<typeof ContractProof>) {
           p1.verify();
           publicInput.assertEquals(publicInput);
         },

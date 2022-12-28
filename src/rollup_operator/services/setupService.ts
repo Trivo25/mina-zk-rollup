@@ -1,4 +1,4 @@
-import { Experimental, SmartContract } from 'snarkyjs';
+import { SmartContract } from 'snarkyjs';
 import QueryController from '../controllers/QueryController';
 import RollupController from '../controllers/RollupController';
 import GlobalEventHandler from '../events/gobaleventhandler';
@@ -14,14 +14,14 @@ export { setupService };
 
 function setupService(
   globalState: GlobalState,
-  Prover: typeof Experimental.ZkProgram,
+  p: any,
   contract: typeof SmartContract
 ) {
   const server = express();
   server.use(cors());
   server.use(bodyParser.json());
 
-  let rs = new RollupService(globalState, GlobalEventHandler, Prover, contract);
+  let rs = new RollupService(globalState, GlobalEventHandler, p, contract);
   let rc = new RollupController(rs);
   let qc = new QueryController(
     new QueryService(globalState, GlobalEventHandler)

@@ -1,6 +1,6 @@
 import express from 'express';
+import { RollupService } from '../services/RollupService';
 import Controller from './Controller';
-import RollupService from '../services/RollupService';
 
 class RollupController extends Controller<RollupService> {
   constructor(service: RollupService) {

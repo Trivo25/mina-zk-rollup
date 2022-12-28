@@ -48,6 +48,7 @@
     "level": "^8.0.0",
     "mina-signer": "^1.1.0",
     "pg": "^8.7.3",
+    "proof-aggregator": "file:src/proof_aggregator",
     "snarkyjs": "^0.7.1"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { CircuitValue, MerkleTree, Field, Poseidon } from 'snarkyjs';
-import { AccountMerkleProof } from '../merkle_witness';
+import { AccountWitness } from './AccountStore';
 
 export default class KeyedDataStore<V extends CircuitValue> extends Map<
   bigint,
@@ -25,8 +25,8 @@ export default class KeyedDataStore<V extends CircuitValue> extends Map<
    * @param key Key of the element in the map
    * @returns Merkle path
    */
-  getProof(key: bigint): AccountMerkleProof {
-    return new AccountMerkleProof(this.merkleTree.getWitness(key));
+  getProof(key: bigint): AccountWitness {
+    return new AccountWitness(this.merkleTree.getWitness(key));
   }
 
   /**

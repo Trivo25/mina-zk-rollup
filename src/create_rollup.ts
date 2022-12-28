@@ -35,7 +35,7 @@ async function zkRollup(
 
   await isReady;
 
-  let { Prover: RollupProver, ProofClass } = await Prover(userContract);
+  let { Prover: RollupProver, ProofClass } = Prover(userContract);
   let compiledProver = await RollupProver.compile();
 
   const RollupZkapp = RollupContract<InstanceType<typeof ProofClass>>(feePayer);
