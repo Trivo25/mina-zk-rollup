@@ -1,4 +1,7 @@
 import { CircuitValue, prop, Field, Poseidon } from 'snarkyjs';
+import { AccountStore } from '../lib/data_store/AccountStore';
+import { Account } from './account';
+import { RollupTransaction } from './transaction';
 export {
   applyTransitionSimulation,
   verifyTransaction,
@@ -49,8 +52,8 @@ const applyTransitionSimulation = (
 
 const verifyTransaction = (
   tx: RollupTransaction,
-  sender: RollupAccount,
-  receiver: RollupAccount
+  sender: Account,
+  receiver: Account
 ) => {
   try {
     sender.publicKey.assertEquals(tx.from);
@@ -68,7 +71,7 @@ const verifyTransaction = (
 };
 
 const proverTest = (
-  stateTransition: RollupStateTransition,
+  stateTransition: StateTransition,
   batch: RollupTransaction[]
 ) => {
   // proving a batch of n tx goes as follows:

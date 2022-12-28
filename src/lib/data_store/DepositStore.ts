@@ -1,11 +1,12 @@
-import Config from '../../config';
-import { PublicKey } from 'snarkyjs';
+import { Field, MerkleWitness, PublicKey } from 'snarkyjs';
 import { RollupDeposit } from '../../proof_system/transaction';
 import KeyedMemoryStore from './KeyedMemoryStore';
 
-export default class DepositStore extends KeyedMemoryStore<RollupDeposit> {
+export { DepositStore, DepositWitness };
+
+class DepositStore extends KeyedMemoryStore<RollupDeposit> {
   constructor() {
-    super(Config.ledgerHeight);
+    super(8);
   }
 
   keyByPublicKey(pub: PublicKey): bigint | undefined {
@@ -14,12 +15,14 @@ export default class DepositStore extends KeyedMemoryStore<RollupDeposit> {
     }
     return undefined;
   }
+}
 
-  count(): number {
-    let n = 0;
-    for (let [key, v] of this.entries()) {
-      n++;
+class DepositWitness extends MerkleWitness(8) {
+  static empty() {
+    let w: any = [];
+    for (let index = 0; index < 8 - 1; index++) {
+      w.push({ isLeft: false, sibling: Field.zero });
     }
-    return n;
+    return new DepositWitness(w);
   }
 }

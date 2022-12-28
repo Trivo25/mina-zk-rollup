@@ -1,34 +1,24 @@
 /* eslint-disable no-unused-vars */
-import Service from './Service';
-import { EnumFinality, IDeposit, ITransaction } from '../../lib/models';
-import Config from '../../config';
-import { Field } from 'snarkyjs';
-import { Prover } from 'snarkyjs/dist/node/lib/proof_system';
+import { IDeposit, ITransaction } from '../../lib/models';
 import { logger } from '../../proof_aggregator/src';
 import {
-  RollupState,
-  proverTest,
-  applyTransitionSimulation,
-  StateTransition,
-} from '../../proof_system/state_transition';
-import {
   RollupTransaction,
-  TransactionBatch,
   RollupDeposit,
 } from '../../proof_system/transaction';
-import { Contract } from '../contract';
-import { DataStore } from '../data_store/DataStore';
 import Emitter from '../events/gobaleventhandler';
+import { GlobalState, Service } from './Service';
+
+export { RollupService };
 
 class RollupService extends Service {
   prover;
   contract;
 
   constructor(
-    store: DataStore,
+    store: GlobalState,
     eventHandler: typeof Emitter,
     prover: any,
-    contract: Contract
+    contract: any
   ) {
     super(store, eventHandler);
     this.prover = prover;
@@ -36,7 +26,7 @@ class RollupService extends Service {
   }
 
   async produceTransactionBatch() {
-    logger.info('Producing new rollup block..');
+    /*       logger.info('Producing new rollup block..');
 
     // have to copy tx pool before new ones land
     let appliedTxns: RollupTransaction[] = [...this.store.transactionPool];
@@ -53,24 +43,20 @@ class RollupService extends Service {
       current
     );
 
-    if (!Config.prover.produceProof) {
-      logger.log('Using dummy prover');
-      proverTest(stateTransition, appliedTxns);
-    } else {
-      logger.info('Using real prover');
-      logger.log('proof generation time');
-      console.time('t');
-      let proof = await Prover.proveTransactionBatch(
-        stateTransition,
-        TransactionBatch.fromElements(appliedTxns)
-      );
-      console.timeEnd('t');
-      //this.contract.submitStateTransition(proof);
-      logger.info('Transition proof submitted!');
-    }
+    logger.info('Using real prover');
+    logger.log('proof generation time');
+    console.time('t');
+    let proof = await Prover.proveTransactionBatch(
+      stateTransition,
+      TransactionBatch.fromElements(appliedTxns)
+    );
+    console.timeEnd('t');
+    //this.contract.submitStateTransition(proof);
+    logger.info('Transition proof submitted!');
+
     appliedTxns.forEach((tx) => (tx.state = EnumFinality.PROVEN));
     this.store.transactionHistory.push(...appliedTxns);
-    logger.info('New rollup block produced!');
+    logger.info('New rollup block produced!'); */
   }
 
   /**
@@ -88,12 +74,14 @@ class RollupService extends Service {
   }
 
   async processTransaction(tx: ITransaction): Promise<any> {
-    try {
+    /*       try {
       logger.info('Received new transaction');
 
       let rTx = RollupTransaction.fromInterface(tx);
 
-      let isValid = rTx.signature.verify(rTx.from, rTx.toFields()).toBoolean();
+      let isValid = rTx.signature
+        .verify(rTx.from, rTx.toFields())
+        .toBoolean();
       if (!isValid) throw new Error('Invalid signature.');
 
       try {
@@ -116,7 +104,7 @@ class RollupService extends Service {
     } catch (error) {
       console.log(error);
       return false;
-    }
+    } */
   }
 
   async processDeposit(tx: IDeposit): Promise<any> {
@@ -137,5 +125,3 @@ class RollupService extends Service {
     }
   }
 }
-
-export default RollupService;

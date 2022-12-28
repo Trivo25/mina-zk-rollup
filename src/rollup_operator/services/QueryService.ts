@@ -1,21 +1,14 @@
-import Service from './Service';
-import Config from '../../config';
-import { DataStore } from '../data_store/DataStore';
+import { Service, GlobalState } from './Service';
 import { EventEmitter } from 'events';
+
 class QueryService extends Service {
-  constructor(store: DataStore, eventHandler: EventEmitter) {
+  constructor(store: GlobalState, eventHandler: EventEmitter) {
     super(store, eventHandler);
   }
 
   getTransactionPool(): any[] {
     return this.store.transactionPool.map((tx) => {
-      return {
-        to: tx.to.toBase58(),
-        from: tx.from.toBase58(),
-        amount: tx.amount.toString(),
-        nonce: tx.nonce.toString(),
-        hash: tx.getBase58Hash(),
-      };
+      return JSON.stringify(tx);
     });
   }
 
@@ -34,34 +27,12 @@ class QueryService extends Service {
 
   getTransactionHistory(): any {
     return this.store.transactionHistory.map((tx) => {
-      return {
-        to: tx.to.toBase58(),
-        from: tx.from.toBase58(),
-        amount: tx.amount.toString(),
-        nonce: tx.nonce.toString(),
-        type: tx.type,
-        state: tx.state.toString(),
-        hash: tx.getBase58Hash(),
-      };
+      return JSON.stringify(tx);
     });
   }
 
   getTransactionHistoryForAddress(address: string): any {
-    return this.store.transactionHistory
-      .filter(
-        (tx) => tx.from.toBase58() == address || tx.to.toBase58() == address
-      )
-      .map((tx) => {
-        return {
-          to: tx.to.toBase58(),
-          from: tx.from.toBase58(),
-          amount: tx.amount.toString(),
-          nonce: tx.nonce.toString(),
-          type: tx.type,
-          state: tx.state.toString(),
-          hash: tx.getBase58Hash(),
-        };
-      });
+    return null;
   }
 
   getPendingDeposits(): any {
@@ -81,8 +52,8 @@ class QueryService extends Service {
   stats(): any {
     return {
       stateRoot: this.store.accountTree.getMerkleRoot()?.toString(),
-      ledgerHeight: Config.ledgerHeight,
-      depositHeight: Config.depositHeight,
+      ledgerHeight: 255,
+      depositHeight: 8,
       totalAccounts: this.store.accountTree.size,
       totalTransactions: this.store.transactionHistory.length,
     };

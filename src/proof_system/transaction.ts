@@ -12,8 +12,9 @@ import {
   PrivateKey,
   arrayProp,
 } from 'snarkyjs';
+import { AccountWitness } from '../lib/data_store/AccountStore';
+import { DepositWitness } from '../lib/data_store/DepositStore';
 import { base58Encode } from '../lib/helpers/base58';
-import { AccountMerkleProof, DepositMerkleProof } from '../lib/merkle_witness';
 import { EnumFinality, ITransaction, IDeposit } from '../lib/models';
 import { Account } from './account.js';
 
@@ -173,7 +174,7 @@ const dummyAccount = (): Account => {
     UInt64.from(0),
     UInt32.from(0),
     PrivateKey.random().toPublicKey(),
-    AccountMerkleProof.empty()
+    AccountWitness.empty()
   );
 };
 
@@ -206,7 +207,7 @@ class RollupDeposit extends CircuitValue {
   @prop signature: Signature;
 
   @prop leafIndex: Field;
-  @prop merkleProof: DepositMerkleProof;
+  @prop merkleProof: DepositWitness;
 
   @prop target: Account;
 
@@ -217,7 +218,7 @@ class RollupDeposit extends CircuitValue {
     tokenId: Field,
     signature: Signature,
     leafIndex: Field,
-    merkleProof: DepositMerkleProof,
+    merkleProof: DepositWitness,
     target: Account
   ) {
     super(publicKey, to, amount, tokenId, signature, merkleProof, target);
@@ -255,7 +256,7 @@ class RollupDeposit extends CircuitValue {
     tokenId: Field,
     signature: Signature,
     leafIndex: Field,
-    merkleProof: DepositMerkleProof,
+    merkleProof: DepositWitness,
     target: Account
   ) {
     return new RollupDeposit(
@@ -279,7 +280,7 @@ class RollupDeposit extends CircuitValue {
         Field(d.tokenId),
         Signature.fromJSON(d.signature)!,
         Field(d.index),
-        DepositMerkleProof.empty(),
+        DepositWitness.empty(),
         Account.empty()
       );
     } catch (error: any) {

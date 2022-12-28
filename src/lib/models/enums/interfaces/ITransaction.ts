@@ -1,5 +1,3 @@
-import { Signature } from 'snarkyjs';
-
 /**
  * Interface for REST API transactions.
  */

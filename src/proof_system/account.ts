@@ -8,9 +8,8 @@ import {
   Poseidon,
   Bool,
 } from 'snarkyjs';
+import { AccountWitness } from '../lib/data_store/AccountStore';
 import { base58Encode } from '../lib/helpers/base58';
-import { AccountMerkleProof } from '../lib/merkle_witness';
-
 export { Account };
 
 /**
@@ -25,7 +24,7 @@ class Account extends CircuitValue {
   @prop balance: UInt64;
   @prop nonce: UInt32;
   @prop publicKey: PublicKey;
-  @prop merkleProof: AccountMerkleProof;
+  @prop merkleProof: AccountWitness;
 
   address: string;
 
@@ -33,7 +32,7 @@ class Account extends CircuitValue {
     balance: UInt64,
     nonce: UInt32,
     publicKey: PublicKey,
-    merkleProof: AccountMerkleProof
+    merkleProof: AccountWitness
   ) {
     super(balance, nonce, publicKey, merkleProof);
     this.balance = balance;
@@ -88,7 +87,7 @@ class Account extends CircuitValue {
       UInt64.from(0),
       UInt32.from(0),
       PublicKey.empty(),
-      AccountMerkleProof.empty()
+      AccountWitness.empty()
     );
   }
 }

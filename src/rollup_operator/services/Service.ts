@@ -1,13 +1,28 @@
 import { EventEmitter } from 'events';
-import { DataStore } from '../data_store/DataStore';
+import { AccountStore } from '../../lib/data_store/AccountStore';
+import { DepositStore } from '../../lib/data_store/DepositStore';
+import { RollupState } from '../../proof_system/state_transition';
+import { Transaction } from '../../proof_system/transaction';
+
+export { Service };
+export type { GlobalState };
+
+interface GlobalState {
+  accountTree: AccountStore;
+  transactionPool: Transaction[];
+  transactionHistory: Transaction[];
+  pendingDeposits: DepositStore;
+  state: {
+    committed: RollupState;
+    current: RollupState;
+  };
+}
 
 class Service {
-  protected store: DataStore;
-  protected eventHandler: EventEmitter;
-  constructor(store: DataStore, eventHandler: EventEmitter) {
+  store: GlobalState;
+  eventHandler: EventEmitter;
+  constructor(store: GlobalState, eventHandler: EventEmitter) {
     this.store = store;
     this.eventHandler = eventHandler;
   }
 }
-
-export default Service;
