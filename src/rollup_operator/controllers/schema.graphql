@@ -17,43 +17,43 @@ type Query {
   getGlobalState: GlobalState
 }
 
-type ProofOrSignature {
-  proof: String!
-  signature: String!
+input ProofOrSignature {
+  proof: String
+  signature: String
 }
 
-type AuthRequired {
+input AuthRequired {
   a: String
 }
 
-type Permissions {
-  editState: AuthRequired!
-  send: AuthRequired!
-  receive: AuthRequired!
-  setDelegate: AuthRequired!
-  setPermissions: AuthRequired!
-  setVerificationKey: AuthRequired!
-  setZkappUri: AuthRequired!
-  editSequenceState: AuthRequired!
-  setTokenSymbol: AuthRequired!
-  incrementNonce: AuthRequired!
-  setVotingFor: AuthRequired!
+input Permissions {
+  editState: AuthRequired
+  send: AuthRequired
+  receive: AuthRequired
+  setDelegate: AuthRequired
+  setPermissions: AuthRequired
+  setVerificationKey: AuthRequired
+  setZkappUri: AuthRequired
+  editSequenceState: AuthRequired
+  setTokenSymbol: AuthRequired
+  incrementNonce: AuthRequired
+  setVotingFor: AuthRequired
 }
 
-type TimingInput {
-  initialMinimumBalance: String!
-  cliffTime: String!
-  cliffAmount: String!
-  vestingPeriod: String!
-  vestingIncrement: String!
+input TimingInput {
+  initialMinimumBalance: String
+  cliffTime: String
+  cliffAmount: String
+  vestingPeriod: String
+  vestingIncrement: String
 }
 
-type VerificationKey {
-  data: String!
-  hash: String!
+input VerificationKey {
+  data: String
+  hash: String
 }
 
-type Update {
+input Update {
   appState: [String]
   delegate: String
   verificationKey: VerificationKey
@@ -64,22 +64,22 @@ type Update {
   votingFor: String
 }
 
-type BalanceChange {
-  magnitude: String!
+input BalanceChange {
+  magnitude: Int!
   sgn: String!
 }
 
-type LowerUpper {
+input LowerUpper {
   lower: String!
   upper: String!
 }
 
-type EpochLedger {
+input EpochLedger {
   hash: String
   totalCurrency: LowerUpper
 }
 
-type EpochData {
+input EpochData {
   ledger: EpochLedger!
   seed: String
   startCheckpoint: String
@@ -87,7 +87,7 @@ type EpochData {
   epochLength: LowerUpper
 }
 
-type NetworkPreconditionInput {
+input NetworkPreconditionInput {
   snarkedLedgerHash: String
   timestamp: LowerUpper
   blockchainLength: LowerUpper
@@ -99,7 +99,7 @@ type NetworkPreconditionInput {
   nextEpochData: EpochData!
 }
 
-type AccountPreconditionInput {
+input AccountPreconditionInput {
   balance: LowerUpper
   nonce: LowerUpper
   receiptChainHash: String
@@ -110,50 +110,50 @@ type AccountPreconditionInput {
   isNew: Boolean
 }
 
-type Preconditions {
-  network: NetworkPreconditionInput!
-  account: AccountPreconditionInput!
+input Preconditions {
+  network: NetworkPreconditionInput
+  account: AccountPreconditionInput
 }
 
-type Body {
-  publicKey: String
-  tokenId: String
-  update: Update
-  balanceChange: BalanceChange
-  incrementNonce: Boolean
-  events: [[String]]
-  sequenceEvents: [[String]]
-  callData: String
-  callDepth: Int
-  preconditions: Preconditions
-  useFullCommitment: Boolean
-  caller: String
-  authorizationKind: String
+input Body {
+  publicKey: String!
+  tokenId: String!
+  update: Update!
+  balanceChange: BalanceChange!
+  incrementNonce: Boolean!
+  events: [[String!]!]!
+  sequenceEvents: [[String!]!]!
+  callData: String!
+  callDepth: Int!
+  preconditions: Preconditions!
+  useFullCommitment: Boolean!
+  caller: String!
+  authorizationKind: String!
 }
 
-type AccountUpdate {
-  Body: Body
-  authorization: ProofOrSignature
+input AccountUpdate {
+  body: Body!
+  authorization: ProofOrSignature!
 }
 
-type FeePayerBody {
-  publicKey: String
-  fee: Int
+input FeePayerBody {
+  publicKey: String!
+  fee: String!
   validUntil: Int
-  nonce: Int
+  nonce: String!
 }
 
-type FeePayer {
-  body: FeePayerBody
-  authorization: String
+input FeePayer {
+  body: FeePayerBody!
+  authorization: String!
 }
 
-type ZkappCommandInput {
-  feePayer: FeePayer
-  accountUpdates: [AccountUpdate]
-  memo: String
+input ZkappCommandInput {
+  feePayer: FeePayer!
+  accountUpdates: [AccountUpdate!]!
+  memo: String!
 }
 
 type Mutation {
-  sendZkapp(input: ZkappCommandInput): String
+  sendZkapp(input: ZkappCommandInput!): String
 }

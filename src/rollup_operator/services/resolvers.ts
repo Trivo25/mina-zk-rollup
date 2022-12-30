@@ -1,9 +1,19 @@
 import { RollupService } from './RollupService.js';
-import { Resolvers } from '../controllers/generated/graphql_types.js';
+import {
+  InputMaybe,
+  Maybe,
+  MutationSendZkappArgs,
+  RequireFields,
+  Resolver,
+  Resolvers as ResolversTypes,
+  ResolverTypeWrapper,
+  ZkappCommandInput,
+} from '../controllers/generated/graphql_types.js';
+import { ParentType } from 'aws-sdk/clients/organizations.js';
 
 export { Resolvers };
 
-function Resolvers(rs: RollupService): Resolvers {
+function Resolvers(rs?: RollupService): ResolversTypes {
   return {
     Query: {
       getGlobalState: () => {
@@ -20,6 +30,12 @@ function Resolvers(rs: RollupService): Resolvers {
             },
           },
         };
+      },
+    },
+    Mutation: {
+      sendZkapp: async (_: any, { input: x }: { input: ZkappCommandInput }) => {
+        console.log(JSON.stringify(x));
+        return 'xxxx';
       },
     },
   };
