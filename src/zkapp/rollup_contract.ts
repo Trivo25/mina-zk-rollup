@@ -21,11 +21,14 @@ import {
 
 export { RollupContract };
 
-function RollupContract(privateKey: string) {
+function RollupContract(privateKey: string, prover: any) {
   let priv = PrivateKey.fromBase58(privateKey);
   let pub = priv.toPublicKey();
 
-  /*   class RollupZkApp extends SmartContract {
+  let RollupProof = Experimental.ZkProgram.Proof(prover);
+  class RollupStateTransitionProof extends RollupProof {}
+
+  class RollupZkApp extends SmartContract {
     privileged = pub;
 
     @state(RollupState) currentState = State<RollupState>();
@@ -96,5 +99,6 @@ function RollupContract(privateKey: string) {
       //this.emitEvent('stateTransition', stateTransitionProof.publicInput);
     }
   }
- */
+
+  return RollupZkApp;
 }
