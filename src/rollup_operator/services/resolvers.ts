@@ -1,8 +1,9 @@
 import { RollupService } from './RollupService.js';
+import { Resolvers } from '../controllers/generated/graphql_types.js';
 
 export { Resolvers };
 
-function Resolvers(rs: RollupService) {
+function Resolvers(rs: RollupService): Resolvers {
   return {
     Query: {
       getGlobalState: () => {

@@ -16,3 +16,144 @@ type GlobalState {
 type Query {
   getGlobalState: GlobalState
 }
+
+type ProofOrSignature {
+  proof: String!
+  signature: String!
+}
+
+type AuthRequired {
+  a: String
+}
+
+type Permissions {
+  editState: AuthRequired!
+  send: AuthRequired!
+  receive: AuthRequired!
+  setDelegate: AuthRequired!
+  setPermissions: AuthRequired!
+  setVerificationKey: AuthRequired!
+  setZkappUri: AuthRequired!
+  editSequenceState: AuthRequired!
+  setTokenSymbol: AuthRequired!
+  incrementNonce: AuthRequired!
+  setVotingFor: AuthRequired!
+}
+
+type TimingInput {
+  initialMinimumBalance: String!
+  cliffTime: String!
+  cliffAmount: String!
+  vestingPeriod: String!
+  vestingIncrement: String!
+}
+
+type VerificationKey {
+  data: String!
+  hash: String!
+}
+
+type Update {
+  appState: [String]
+  delegate: String
+  verificationKey: VerificationKey
+  permissions: Permissions
+  zkappUri: String
+  tokenSymbol: String
+  timing: TimingInput
+  votingFor: String
+}
+
+type BalanceChange {
+  magnitude: String!
+  sgn: String!
+}
+
+type LowerUpper {
+  lower: String!
+  upper: String!
+}
+
+type EpochLedger {
+  hash: String
+  totalCurrency: LowerUpper
+}
+
+type EpochData {
+  ledger: EpochLedger!
+  seed: String
+  startCheckpoint: String
+  lockCheckpoint: String
+  epochLength: LowerUpper
+}
+
+type NetworkPreconditionInput {
+  snarkedLedgerHash: String
+  timestamp: LowerUpper
+  blockchainLength: LowerUpper
+  minWindowDensity: LowerUpper
+  totalCurrency: LowerUpper
+  globalSlotSinceHardFork: LowerUpper
+  globalSlotSinceGenesis: LowerUpper
+  stakingEpochData: EpochData!
+  nextEpochData: EpochData!
+}
+
+type AccountPreconditionInput {
+  balance: LowerUpper
+  nonce: LowerUpper
+  receiptChainHash: String
+  delegate: String
+  state: [String]
+  sequenceState: String
+  provedState: Boolean
+  isNew: Boolean
+}
+
+type Preconditions {
+  network: NetworkPreconditionInput!
+  account: AccountPreconditionInput!
+}
+
+type Body {
+  publicKey: String
+  tokenId: String
+  update: Update
+  balanceChange: BalanceChange
+  incrementNonce: Boolean
+  events: [[String]]
+  sequenceEvents: [[String]]
+  callData: String
+  callDepth: Int
+  preconditions: Preconditions
+  useFullCommitment: Boolean
+  caller: String
+  authorizationKind: String
+}
+
+type AccountUpdate {
+  Body: Body
+  authorization: ProofOrSignature
+}
+
+type FeePayerBody {
+  publicKey: String
+  fee: Int
+  validUntil: Int
+  nonce: Int
+}
+
+type FeePayer {
+  body: FeePayerBody
+  authorization: String
+}
+
+type ZkappCommandInput {
+  feePayer: FeePayer
+  accountUpdates: [AccountUpdate]
+  memo: String
+}
+
+type Mutation {
+  sendZkapp(input: ZkappCommandInput): String
+}
