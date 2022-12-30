@@ -27,6 +27,7 @@ import {
   RollupTransaction,
 } from './proof_system/transaction.js';
 import { RollupContract } from './zkapp/rollup_contract.js';
+import { logger } from './proof_aggregator/src/index.js';
 
 export { zkRollup };
 
@@ -52,9 +53,6 @@ async function zkRollup(
 
   const RollupZkapp = RollupContract(feePayer, RollupProver);
 
-  let priv = PrivateKey.random();
-  let pub = priv.toPublicKey();
-
   let compiledContract = await RollupZkapp.compile();
 
   let accountStore = new AccountStore();
@@ -77,10 +75,13 @@ async function zkRollup(
     },
   };
 
-  setupService(globalState, RollupProver, RollupZkapp);
+  let graphql = setupService(globalState, RollupProver, RollupZkapp);
 
   return {
-    start() {},
+    async start(port: number) {
+      await graphql.start(port);
+      logger.log(`Graphql server running on http://localhost:${port}/graphql`);
+    },
     deploy() {},
   };
 }

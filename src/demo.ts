@@ -22,5 +22,5 @@ class MyContract extends SmartContract {
 let feePayer = PrivateKey.random().toBase58();
 let contractAddress = PrivateKey.random().toBase58();
 
-await zkRollup(MyContract, feePayer, contractAddress);
-shutdown();
+const Rollup = await zkRollup(MyContract, feePayer, contractAddress);
+await Rollup.start(4000);

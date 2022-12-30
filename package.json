@@ -36,6 +36,8 @@
   "dependencies": {
     "@aws-sdk/client-ec2": "^3.159.0",
     "abstract-level": "^1.0.3",
+    "apollo-server-core": "^3.11.1",
+    "apollo-server-express": "^3.11.1",
     "aws-sdk": "^2.1204.0",
     "base-x": "^4.0.0",
     "body-parser": "^1.20.0",
@@ -43,7 +45,8 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.1",
-    "express": "^4.17.3",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
     "jayson": "^4.0.0",
     "level": "^8.0.0",
     "mina-signer": "^1.1.0",
