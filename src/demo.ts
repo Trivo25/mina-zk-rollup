@@ -4,7 +4,6 @@ import {
   method,
   Poseidon,
   PrivateKey,
-  shutdown,
   SmartContract,
 } from 'snarkyjs';
 import { zkRollup } from './create_rollup.js';

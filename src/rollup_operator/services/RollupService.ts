@@ -15,12 +15,12 @@ class RollupService extends Service {
   contract;
 
   constructor(
-    store: GlobalState,
+    globalState: GlobalState,
     eventHandler: typeof Emitter,
     prover: any,
     contract: any
   ) {
-    super(store, eventHandler);
+    super(globalState, eventHandler);
     this.prover = prover;
     this.contract = contract;
   }
@@ -114,10 +114,12 @@ class RollupService extends Service {
       let rTx = RollupDeposit.fromInterface(tx);
       rTx.signature.verify(rTx.publicKey, rTx.toFields()).assertTrue();
       // TODO: continue
-      if (this.store.pendingDeposits.get(BigInt(tx.index)) === undefined) {
+      if (
+        this.globalState.pendingDeposits.get(BigInt(tx.index)) === undefined
+      ) {
         throw new Error('Deposit slot already full');
       }
-      this.store.pendingDeposits.set(BigInt(tx.index), rTx);
+      this.globalState.pendingDeposits.set(BigInt(tx.index), rTx);
       return true;
     } catch (error) {
       console.log(error);

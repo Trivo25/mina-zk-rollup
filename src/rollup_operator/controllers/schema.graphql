@@ -1,0 +1,18 @@
+type Commitment {
+  pendingDepositsCommitment: String
+  accountDbCommitment: String
+}
+
+type State {
+  committed: Commitment
+  current: Commitment
+}
+
+type GlobalState {
+  pendingDeposits: [String]
+  state: State
+}
+
+type Query {
+  getGlobalState: GlobalState
+}

@@ -19,10 +19,10 @@ interface GlobalState {
 }
 
 class Service {
-  store: GlobalState;
+  globalState: GlobalState;
   eventHandler: EventEmitter;
-  constructor(store: GlobalState, eventHandler: EventEmitter) {
-    this.store = store;
+  constructor(globalState: GlobalState, eventHandler: EventEmitter) {
+    this.globalState = globalState;
     this.eventHandler = eventHandler;
   }
 }

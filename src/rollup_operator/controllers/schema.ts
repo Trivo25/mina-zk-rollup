@@ -1,15 +1,18 @@
 import { gql } from 'apollo-server-express';
+import fs from 'fs';
 
 export { Schema };
 
-const Schema = gql`
-  type Person {
-    id: ID!
-    name: String
-  }
-  #handle user commands
-  type Query {
-    getAllPeople: [Person] #will return multiple Person instances
-    getPerson(id: Int): Person #has an argument of 'id' of type Integer.
-  }
-`;
+const importGraphQL = (file: string) => {
+  return fs.readFileSync(file, 'utf-8');
+};
+
+const gqlWrapper = (...files: string[]) => {
+  return gql`
+    ${files}
+  `;
+};
+
+const s = importGraphQL('./src/rollup_operator/controllers/schema.graphql');
+
+const Schema = gqlWrapper(s);
