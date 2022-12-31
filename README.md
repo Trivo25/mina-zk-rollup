@@ -27,6 +27,8 @@ zkFusion is a **zkRollup framework** for zkApps on Mina Protocol.
 zkFusion is a modular zkRollup for Mina Protocol.
 The goal is the provide an easy to use framework for developers to kickstart their application - without having to worry about sequencing, throughput or scalability!
 
+`git submodule update --recursive`
+
 ## Contact
 
 Twitter: @zktrivo
