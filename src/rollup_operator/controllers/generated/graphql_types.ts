@@ -35,7 +35,7 @@ export type AuthRequired = {
 };
 
 export type BalanceChange = {
-  magnitude: Scalars['String'];
+  magnitude: Scalars['Int'];
   sgn: Scalars['String'];
 };
 

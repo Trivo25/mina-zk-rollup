@@ -2,19 +2,10 @@ import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import express from 'express';
-import {
-  Field,
-  isReady,
-  method,
-  Poseidon,
-  PrivateKey,
-  SmartContract,
-} from 'snarkyjs';
+import { isReady } from 'snarkyjs';
 import { zkRollup } from './create_rollup.js';
 import { Schema } from './rollup_operator/controllers/schema.js';
-import GlobalEventHandler from './rollup_operator/events/gobaleventhandler.js';
-import { Resolvers } from './rollup_operator/services/resolvers.js';
-import { RollupService } from './rollup_operator/services/RollupService.js';
+import { Resolvers } from './rollup_operator/controllers/resolvers.js';
 import http from 'http';
 
 await isReady;

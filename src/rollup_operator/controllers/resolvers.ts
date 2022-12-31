@@ -1,16 +1,8 @@
-import { RollupService } from './RollupService.js';
+import { RollupService } from '../services/RollupService.js';
 import {
-  InputMaybe,
-  Maybe,
-  MutationSendZkappArgs,
-  RequireFields,
-  Resolver,
   Resolvers as ResolversTypes,
-  ResolverTypeWrapper,
   ZkappCommandInput,
-} from '../controllers/generated/graphql_types.js';
-import { ParentType } from 'aws-sdk/clients/organizations.js';
-
+} from './generated/graphql_types.js';
 export { Resolvers };
 
 function Resolvers(rs?: RollupService): ResolversTypes {

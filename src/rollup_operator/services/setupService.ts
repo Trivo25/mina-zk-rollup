@@ -8,7 +8,7 @@ import http from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { Schema } from '../controllers/schema.js';
-import { Resolvers } from './resolvers.js';
+import { Resolvers } from '../controllers/resolvers.js';
 export { setupService };
 
 function setupService(
