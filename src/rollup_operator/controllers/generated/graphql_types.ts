@@ -15,44 +15,40 @@ export type Scalars = {
 };
 
 export type AccountPreconditionInput = {
-  balance?: InputMaybe<LowerUpper>;
+  balance?: InputMaybe<LowerUpperInput>;
   delegate?: InputMaybe<Scalars['String']>;
   isNew?: InputMaybe<Scalars['Boolean']>;
-  nonce?: InputMaybe<LowerUpper>;
+  nonce?: InputMaybe<LowerUpperInput>;
   provedState?: InputMaybe<Scalars['Boolean']>;
   receiptChainHash?: InputMaybe<Scalars['String']>;
   sequenceState?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
 
-export type AccountUpdate = {
-  authorization: ProofOrSignature;
-  body: Body;
-};
-
-export type AuthRequired = {
-  a?: InputMaybe<Scalars['String']>;
-};
-
-export type BalanceChange = {
-  magnitude: Scalars['Int'];
-  sgn: Scalars['String'];
-};
-
-export type Body = {
+export type AccountUpdateBodyInput = {
   authorizationKind: Scalars['String'];
-  balanceChange: BalanceChange;
+  balanceChange: BalanceChangeInput;
   callData: Scalars['String'];
   callDepth: Scalars['Int'];
   caller: Scalars['String'];
   events: Array<Array<Scalars['String']>>;
   incrementNonce: Scalars['Boolean'];
-  preconditions: Preconditions;
+  preconditions: PreconditionsInput;
   publicKey: Scalars['String'];
   sequenceEvents: Array<Array<Scalars['String']>>;
   tokenId: Scalars['String'];
   update: Update;
   useFullCommitment: Scalars['Boolean'];
+};
+
+export type AccountUpdateInput = {
+  authorization: ProofOrSignatureInput;
+  body: AccountUpdateBodyInput;
+};
+
+export type BalanceChangeInput = {
+  magnitude: Scalars['Int'];
+  sgn: Scalars['String'];
 };
 
 export type Commitment = {
@@ -61,29 +57,29 @@ export type Commitment = {
   pendingDepositsCommitment?: Maybe<Scalars['String']>;
 };
 
-export type EpochData = {
-  epochLength?: InputMaybe<LowerUpper>;
-  ledger: EpochLedger;
+export type EpochDataInput = {
+  epochLength?: InputMaybe<LowerUpperInput>;
+  ledger: EpochLedgerInput;
   lockCheckpoint?: InputMaybe<Scalars['String']>;
   seed?: InputMaybe<Scalars['String']>;
   startCheckpoint?: InputMaybe<Scalars['String']>;
 };
 
-export type EpochLedger = {
+export type EpochLedgerInput = {
   hash?: InputMaybe<Scalars['String']>;
-  totalCurrency?: InputMaybe<LowerUpper>;
+  totalCurrency?: InputMaybe<LowerUpperInput>;
 };
 
-export type FeePayer = {
-  authorization: Scalars['String'];
-  body: FeePayerBody;
-};
-
-export type FeePayerBody = {
+export type FeePayerBodyInput = {
   fee: Scalars['String'];
   nonce: Scalars['String'];
   publicKey: Scalars['String'];
   validUntil?: InputMaybe<Scalars['Int']>;
+};
+
+export type FeePayerInput = {
+  authorization: Scalars['String'];
+  body: FeePayerBodyInput;
 };
 
 export type GlobalState = {
@@ -92,7 +88,7 @@ export type GlobalState = {
   state?: Maybe<State>;
 };
 
-export type LowerUpper = {
+export type LowerUpperInput = {
   lower: Scalars['String'];
   upper: Scalars['String'];
 };
@@ -108,37 +104,37 @@ export type MutationSendZkappArgs = {
 };
 
 export type NetworkPreconditionInput = {
-  blockchainLength?: InputMaybe<LowerUpper>;
-  globalSlotSinceGenesis?: InputMaybe<LowerUpper>;
-  globalSlotSinceHardFork?: InputMaybe<LowerUpper>;
-  minWindowDensity?: InputMaybe<LowerUpper>;
-  nextEpochData: EpochData;
+  blockchainLength?: InputMaybe<LowerUpperInput>;
+  globalSlotSinceGenesis?: InputMaybe<LowerUpperInput>;
+  globalSlotSinceHardFork?: InputMaybe<LowerUpperInput>;
+  minWindowDensity?: InputMaybe<LowerUpperInput>;
+  nextEpochData: EpochDataInput;
   snarkedLedgerHash?: InputMaybe<Scalars['String']>;
-  stakingEpochData: EpochData;
-  timestamp?: InputMaybe<LowerUpper>;
-  totalCurrency?: InputMaybe<LowerUpper>;
+  stakingEpochData: EpochDataInput;
+  timestamp?: InputMaybe<LowerUpperInput>;
+  totalCurrency?: InputMaybe<LowerUpperInput>;
 };
 
-export type Permissions = {
-  editSequenceState?: InputMaybe<AuthRequired>;
-  editState?: InputMaybe<AuthRequired>;
-  incrementNonce?: InputMaybe<AuthRequired>;
-  receive?: InputMaybe<AuthRequired>;
-  send?: InputMaybe<AuthRequired>;
-  setDelegate?: InputMaybe<AuthRequired>;
-  setPermissions?: InputMaybe<AuthRequired>;
-  setTokenSymbol?: InputMaybe<AuthRequired>;
-  setVerificationKey?: InputMaybe<AuthRequired>;
-  setVotingFor?: InputMaybe<AuthRequired>;
-  setZkappUri?: InputMaybe<AuthRequired>;
+export type PermissionsInput = {
+  editSequenceState?: InputMaybe<Scalars['String']>;
+  editState?: InputMaybe<Scalars['String']>;
+  incrementNonce?: InputMaybe<Scalars['String']>;
+  receive?: InputMaybe<Scalars['String']>;
+  send?: InputMaybe<Scalars['String']>;
+  setDelegate?: InputMaybe<Scalars['String']>;
+  setPermissions?: InputMaybe<Scalars['String']>;
+  setTokenSymbol?: InputMaybe<Scalars['String']>;
+  setVerificationKey?: InputMaybe<Scalars['String']>;
+  setVotingFor?: InputMaybe<Scalars['String']>;
+  setZkappUri?: InputMaybe<Scalars['String']>;
 };
 
-export type Preconditions = {
+export type PreconditionsInput = {
   account?: InputMaybe<AccountPreconditionInput>;
   network?: InputMaybe<NetworkPreconditionInput>;
 };
 
-export type ProofOrSignature = {
+export type ProofOrSignatureInput = {
   proof?: InputMaybe<Scalars['String']>;
   signature?: InputMaybe<Scalars['String']>;
 };
@@ -165,22 +161,22 @@ export type TimingInput = {
 export type Update = {
   appState?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   delegate?: InputMaybe<Scalars['String']>;
-  permissions?: InputMaybe<Permissions>;
+  permissions?: InputMaybe<PermissionsInput>;
   timing?: InputMaybe<TimingInput>;
   tokenSymbol?: InputMaybe<Scalars['String']>;
-  verificationKey?: InputMaybe<VerificationKey>;
+  verificationKey?: InputMaybe<VerificationKeyInput>;
   votingFor?: InputMaybe<Scalars['String']>;
   zkappUri?: InputMaybe<Scalars['String']>;
 };
 
-export type VerificationKey = {
+export type VerificationKeyInput = {
   data?: InputMaybe<Scalars['String']>;
   hash?: InputMaybe<Scalars['String']>;
 };
 
 export type ZkappCommandInput = {
-  accountUpdates: Array<AccountUpdate>;
-  feePayer: FeePayer;
+  accountUpdates: Array<AccountUpdateInput>;
+  feePayer: FeePayerInput;
   memo: Scalars['String'];
 };
 
@@ -255,60 +251,58 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   AccountPreconditionInput: AccountPreconditionInput;
-  AccountUpdate: AccountUpdate;
-  AuthRequired: AuthRequired;
-  BalanceChange: BalanceChange;
-  Body: Body;
+  AccountUpdateBodyInput: AccountUpdateBodyInput;
+  AccountUpdateInput: AccountUpdateInput;
+  BalanceChangeInput: BalanceChangeInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Commitment: ResolverTypeWrapper<Commitment>;
-  EpochData: EpochData;
-  EpochLedger: EpochLedger;
-  FeePayer: FeePayer;
-  FeePayerBody: FeePayerBody;
+  EpochDataInput: EpochDataInput;
+  EpochLedgerInput: EpochLedgerInput;
+  FeePayerBodyInput: FeePayerBodyInput;
+  FeePayerInput: FeePayerInput;
   GlobalState: ResolverTypeWrapper<GlobalState>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  LowerUpper: LowerUpper;
+  LowerUpperInput: LowerUpperInput;
   Mutation: ResolverTypeWrapper<{}>;
   NetworkPreconditionInput: NetworkPreconditionInput;
-  Permissions: Permissions;
-  Preconditions: Preconditions;
-  ProofOrSignature: ProofOrSignature;
+  PermissionsInput: PermissionsInput;
+  PreconditionsInput: PreconditionsInput;
+  ProofOrSignatureInput: ProofOrSignatureInput;
   Query: ResolverTypeWrapper<{}>;
   State: ResolverTypeWrapper<State>;
   String: ResolverTypeWrapper<Scalars['String']>;
   TimingInput: TimingInput;
   Update: Update;
-  VerificationKey: VerificationKey;
+  VerificationKeyInput: VerificationKeyInput;
   ZkappCommandInput: ZkappCommandInput;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   AccountPreconditionInput: AccountPreconditionInput;
-  AccountUpdate: AccountUpdate;
-  AuthRequired: AuthRequired;
-  BalanceChange: BalanceChange;
-  Body: Body;
+  AccountUpdateBodyInput: AccountUpdateBodyInput;
+  AccountUpdateInput: AccountUpdateInput;
+  BalanceChangeInput: BalanceChangeInput;
   Boolean: Scalars['Boolean'];
   Commitment: Commitment;
-  EpochData: EpochData;
-  EpochLedger: EpochLedger;
-  FeePayer: FeePayer;
-  FeePayerBody: FeePayerBody;
+  EpochDataInput: EpochDataInput;
+  EpochLedgerInput: EpochLedgerInput;
+  FeePayerBodyInput: FeePayerBodyInput;
+  FeePayerInput: FeePayerInput;
   GlobalState: GlobalState;
   Int: Scalars['Int'];
-  LowerUpper: LowerUpper;
+  LowerUpperInput: LowerUpperInput;
   Mutation: {};
   NetworkPreconditionInput: NetworkPreconditionInput;
-  Permissions: Permissions;
-  Preconditions: Preconditions;
-  ProofOrSignature: ProofOrSignature;
+  PermissionsInput: PermissionsInput;
+  PreconditionsInput: PreconditionsInput;
+  ProofOrSignatureInput: ProofOrSignatureInput;
   Query: {};
   State: State;
   String: Scalars['String'];
   TimingInput: TimingInput;
   Update: Update;
-  VerificationKey: VerificationKey;
+  VerificationKeyInput: VerificationKeyInput;
   ZkappCommandInput: ZkappCommandInput;
 }>;
 

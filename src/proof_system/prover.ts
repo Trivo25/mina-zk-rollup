@@ -12,7 +12,7 @@ function Prover(userContract: typeof SmartContract) {
     methods: {
       proveTransactionBatch: {
         privateInputs: [ContractProof],
-
+        // @ts-ignore
         method(
           publicInput: StateTransition,
           p1: InstanceType<typeof ContractProof>

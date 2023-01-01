@@ -1,44 +1,49 @@
-import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
-import { ApolloServer } from 'apollo-server-express';
-import cors from 'cors';
-import express from 'express';
-import { isReady } from 'snarkyjs';
-import { zkRollup } from './create_rollup.js';
-import { Schema } from './rollup_operator/controllers/schema.js';
-import { Resolvers } from './rollup_operator/controllers/resolvers.js';
-import http from 'http';
+import {
+  AccountUpdate,
+  isReady,
+  SmartContract,
+  method,
+  Field,
+  PrivateKey,
+  Mina,
+} from 'snarkyjs';
 
 await isReady;
 
-/* class MyContract extends SmartContract {
+class MyContract extends SmartContract {
   @method update(x: Field) {
-    x.add(2).add(5).sub(2);
-    Poseidon.hash([Field.zero]).equals(Poseidon.hash([Field.zero]));
-    Poseidon.hash([Field.zero]).assertEquals(Poseidon.hash([Field.zero]));
+    x.assertEquals(1);
   }
 }
 
-let feePayer = PrivateKey.random().toBase58();
-let contractAddress = PrivateKey.random().toBase58();
+await MyContract.compile();
 
-const Rollup = await zkRollup(MyContract, feePayer, contractAddress);
-await Rollup.start(4000); */
+let Local = Mina.LocalBlockchain();
+Mina.setActiveInstance(Local);
 
-const app = express();
-app.use(cors());
-const httpServer = http.createServer(app);
+let feePayerKey = Local.testAccounts[0].privateKey;
+let feePayer = Local.testAccounts[0].publicKey;
+let zkappKey = PrivateKey.random();
+let zkappAddress = zkappKey.toPublicKey();
 
-const resolvers = Resolvers();
+let zkapp = new MyContract(zkappAddress);
+let tx;
 
-const graphql = new ApolloServer({
-  typeDefs: Schema,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-}) as any;
+tx = await Mina.transaction(feePayer, () => {
+  AccountUpdate.fundNewAccount(feePayer);
+  zkapp.deploy();
+});
+await tx.sign([feePayerKey, zkappKey]).send();
 
-await graphql.start();
-console.log('started');
-graphql.applyMiddleware({ app });
-await new Promise<void>((resolve) =>
-  httpServer.listen({ port: 4000 }, resolve)
-);
+tx = await Mina.transaction(feePayer, () => {
+  zkapp.update(Field(1));
+});
+await tx.sign([feePayerKey, zkappKey]);
+let [p1] = await tx.prove();
+
+let json = tx.transaction.accountUpdates[0].toJSON();
+let update = AccountUpdate.fromJSON(json);
+let pub = update.toPublicInput();
+console.log(JSON.stringify(pub));
+console.log(JSON.stringify(p1?.publicInput));
+console.log(JSON.stringify(update.toJSON()) == JSON.stringify(json));

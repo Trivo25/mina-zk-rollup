@@ -17,27 +17,26 @@ type Query {
   getGlobalState: GlobalState
 }
 
-input ProofOrSignature {
+# Input
+input ProofOrSignatureInput {
   proof: String
   signature: String
 }
 
-input AuthRequired {
-  a: String
-}
+#  'Signature' | 'Proof' | 'Either' | 'None' | 'Impossible';
 
-input Permissions {
-  editState: AuthRequired
-  send: AuthRequired
-  receive: AuthRequired
-  setDelegate: AuthRequired
-  setPermissions: AuthRequired
-  setVerificationKey: AuthRequired
-  setZkappUri: AuthRequired
-  editSequenceState: AuthRequired
-  setTokenSymbol: AuthRequired
-  incrementNonce: AuthRequired
-  setVotingFor: AuthRequired
+input PermissionsInput {
+  editState: String
+  send: String
+  receive: String
+  setDelegate: String
+  setPermissions: String
+  setVerificationKey: String
+  setZkappUri: String
+  editSequenceState: String
+  setTokenSymbol: String
+  incrementNonce: String
+  setVotingFor: String
 }
 
 input TimingInput {
@@ -48,7 +47,7 @@ input TimingInput {
   vestingIncrement: String
 }
 
-input VerificationKey {
+input VerificationKeyInput {
   data: String
   hash: String
 }
@@ -56,52 +55,52 @@ input VerificationKey {
 input Update {
   appState: [String]
   delegate: String
-  verificationKey: VerificationKey
-  permissions: Permissions
+  verificationKey: VerificationKeyInput
+  permissions: PermissionsInput
   zkappUri: String
   tokenSymbol: String
   timing: TimingInput
   votingFor: String
 }
 
-input BalanceChange {
+input BalanceChangeInput {
   magnitude: Int!
   sgn: String!
 }
 
-input LowerUpper {
+input LowerUpperInput {
   lower: String!
   upper: String!
 }
 
-input EpochLedger {
+input EpochLedgerInput {
   hash: String
-  totalCurrency: LowerUpper
+  totalCurrency: LowerUpperInput
 }
 
-input EpochData {
-  ledger: EpochLedger!
+input EpochDataInput {
+  ledger: EpochLedgerInput!
   seed: String
   startCheckpoint: String
   lockCheckpoint: String
-  epochLength: LowerUpper
+  epochLength: LowerUpperInput
 }
 
 input NetworkPreconditionInput {
   snarkedLedgerHash: String
-  timestamp: LowerUpper
-  blockchainLength: LowerUpper
-  minWindowDensity: LowerUpper
-  totalCurrency: LowerUpper
-  globalSlotSinceHardFork: LowerUpper
-  globalSlotSinceGenesis: LowerUpper
-  stakingEpochData: EpochData!
-  nextEpochData: EpochData!
+  timestamp: LowerUpperInput
+  blockchainLength: LowerUpperInput
+  minWindowDensity: LowerUpperInput
+  totalCurrency: LowerUpperInput
+  globalSlotSinceHardFork: LowerUpperInput
+  globalSlotSinceGenesis: LowerUpperInput
+  stakingEpochData: EpochDataInput!
+  nextEpochData: EpochDataInput!
 }
 
 input AccountPreconditionInput {
-  balance: LowerUpper
-  nonce: LowerUpper
+  balance: LowerUpperInput
+  nonce: LowerUpperInput
   receiptChainHash: String
   delegate: String
   state: [String]
@@ -110,47 +109,47 @@ input AccountPreconditionInput {
   isNew: Boolean
 }
 
-input Preconditions {
+input PreconditionsInput {
   network: NetworkPreconditionInput
   account: AccountPreconditionInput
 }
 
-input Body {
+input AccountUpdateBodyInput {
   publicKey: String!
   tokenId: String!
   update: Update!
-  balanceChange: BalanceChange!
+  balanceChange: BalanceChangeInput!
   incrementNonce: Boolean!
   events: [[String!]!]!
   sequenceEvents: [[String!]!]!
   callData: String!
   callDepth: Int!
-  preconditions: Preconditions!
+  preconditions: PreconditionsInput!
   useFullCommitment: Boolean!
   caller: String!
   authorizationKind: String!
 }
 
-input AccountUpdate {
-  body: Body!
-  authorization: ProofOrSignature!
+input AccountUpdateInput {
+  body: AccountUpdateBodyInput!
+  authorization: ProofOrSignatureInput!
 }
 
-input FeePayerBody {
+input FeePayerBodyInput {
   publicKey: String!
   fee: String!
   validUntil: Int
   nonce: String!
 }
 
-input FeePayer {
-  body: FeePayerBody!
+input FeePayerInput {
+  body: FeePayerBodyInput!
   authorization: String!
 }
 
 input ZkappCommandInput {
-  feePayer: FeePayer!
-  accountUpdates: [AccountUpdate!]!
+  feePayer: FeePayerInput!
+  accountUpdates: [AccountUpdateInput!]!
   memo: String!
 }
 

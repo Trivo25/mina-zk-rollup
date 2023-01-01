@@ -17,7 +17,9 @@ import { AccountWitness } from '../lib/data_store/AccountStore.js';
 import { DepositWitness } from '../lib/data_store/DepositStore.js';
 import { base58Encode } from '../lib/helpers/base58.js';
 import { EnumFinality, ITransaction, IDeposit } from '../lib/models/index.js';
-import { Account, AuthRequired } from './account.js';
+import { Account } from './account.js';
+
+type AuthRequired = any;
 
 export {
   AccountUpdate_,
