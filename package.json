@@ -14,6 +14,7 @@
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
+    "build-snarkyjs": "cd src/snarkyjs && npm run build && cd ..",
     "demo": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/demo",
     "demo:operator": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/rollup_operator/index.js",
     "demo:client": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/client_sdk/index.js",
@@ -53,7 +54,7 @@
     "mina-signer": "^1.1.0",
     "pg": "^8.7.3",
     "proof-aggregator": "file:src/proof_aggregator",
-    "snarkyjs": "^0.7.1"
+    "snarkyjs": "file:src/snarkyjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",

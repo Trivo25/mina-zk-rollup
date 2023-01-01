@@ -20,5 +20,10 @@
     "isolatedModules": false
   },
   "include": ["./src", "./benchmark"],
-  "exclude": ["./src/**/*.test.ts", "./build/**/*"]
+  "exclude": [
+    "./src/**/*.test.ts",
+    "./build/**/*",
+    "./src/snarkyjs",
+    "./src/proof_aggregator"
+  ]
 }
