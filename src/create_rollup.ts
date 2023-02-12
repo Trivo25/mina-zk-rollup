@@ -25,6 +25,13 @@ import { logger } from './proof_aggregator/src/index.js';
 
 export { zkRollup };
 
+/**
+ * This function allows one to spin-up an app-specific rollup that runs the provided smart contract.
+ * @param userContract Smart contract to run on the app-specific rollup.
+ * @param feePayer Fee payer that pays the transaction fees.
+ * @param contractAddress Target address to deploy the contract to.
+ * @returns A rollup!
+ */
 async function zkRollup(
   userContract: typeof SmartContract,
   feePayer: string,
