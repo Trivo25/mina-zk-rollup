@@ -16,8 +16,6 @@ function setupService(
   p: any,
   contract: typeof SmartContract
 ) {
-  /*   const server = express();
-  server.use(bodyParser.json()); */
   const app = express();
   app.use(cors());
   const httpServer = http.createServer(app);

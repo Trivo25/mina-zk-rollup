@@ -13,19 +13,13 @@ import {
   Permissions,
   Proof,
 } from 'snarkyjs';
-import {
-  RollupState,
-  StateTransition,
-} from './proof_system/state_transition.js';
+import { RollupState } from './proof_system/state_transition.js';
 import { Prover } from './proof_system/prover.js';
 import { DepositStore } from './lib/data_store/DepositStore.js';
 import { AccountStore } from './lib/data_store/AccountStore.js';
 import { GlobalState } from './rollup_operator/services/Service.js';
 import { setupService } from './rollup_operator/services/setupService.js';
-import {
-  RollupDeposit,
-  RollupTransaction,
-} from './proof_system/transaction.js';
+import { Transaction } from './proof_system/transaction.js';
 import { RollupContract } from './zkapp/rollup_contract.js';
 import { logger } from './proof_aggregator/src/index.js';
 
@@ -58,10 +52,13 @@ async function zkRollup(
   let accountStore = new AccountStore();
   let depositStore = new DepositStore();
 
+  let transactionPool: Transaction[] = [];
+  let transactionHistory: Transaction[] = [];
+
   let globalState: GlobalState = {
     accountTree: accountStore,
-    transactionPool: [],
-    transactionHistory: [],
+    transactionPool,
+    transactionHistory,
     pendingDeposits: depositStore,
     state: {
       committed: new RollupState(

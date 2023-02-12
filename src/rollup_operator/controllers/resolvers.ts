@@ -10,7 +10,7 @@ function Resolvers(rs?: RollupService): ResolversTypes {
     Query: {
       getGlobalState: () => {
         return {
-          pendingDeposits: ['idk'],
+          pendingDeposits: [''],
           state: {
             committed: {
               pendingDepositsCommitment: 'String',
