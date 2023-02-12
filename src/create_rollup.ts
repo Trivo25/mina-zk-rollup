@@ -42,7 +42,7 @@ async function zkRollup(
     depositHeight: 10,
     batchSize: 6,
   };
-  let graphql_endpoint = 'https://proxy.berkeley.minaexplorer.com/graphql';
+  let network_endpoint = 'https://proxy.berkeley.minaexplorer.com/graphql';
   let isDeployed = false;
 
   await isReady;
@@ -62,16 +62,19 @@ async function zkRollup(
   let transactionPool: Transaction[] = [];
   let transactionHistory: Transaction[] = [];
 
+  // this is also just temporary
   let globalState: GlobalState = {
     accountTree: accountStore,
     transactionPool,
     transactionHistory,
     pendingDeposits: depositStore,
     state: {
+      // represents the actual on-chain state
       committed: new RollupState(
         Field.zero,
         Field(accountStore.getMerkleRoot()!.toString()!)
       ),
+      // represents the current rollup state
       current: new RollupState(
         Field.zero,
         Field(accountStore.getMerkleRoot()!.toString()!)
@@ -79,11 +82,11 @@ async function zkRollup(
     },
   };
 
-  let graphql = setupService(globalState, RollupProver, RollupZkapp);
+  let rollup = setupService(globalState, RollupProver, RollupZkapp);
 
   return {
     async start(port: number) {
-      await graphql.start(port);
+      await rollup.start(port);
       logger.log(`Graphql server running on http://localhost:${port}/graphql`);
       console.error('Not further implemented');
     },

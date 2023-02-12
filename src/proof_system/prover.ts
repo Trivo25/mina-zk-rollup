@@ -6,6 +6,8 @@ export { Prover };
 function Prover(userContract: typeof SmartContract) {
   const ContractProof = userContract.Proof();
 
+  // this is the prover used to the prove the tx of the user contract
+  // most of the tx logic still TBD and exists on different branches for now
   const RollupProver = Experimental.ZkProgram({
     publicInput: StateTransition,
 
