@@ -85,7 +85,10 @@ async function zkRollup(
     async start(port: number) {
       await graphql.start(port);
       logger.log(`Graphql server running on http://localhost:${port}/graphql`);
+      console.error('Not further implemented');
     },
-    deploy() {},
+    async deploy() {
+      throw Error('Not implemented');
+    },
   };
 }
