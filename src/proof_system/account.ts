@@ -1,6 +1,4 @@
 import {
-  CircuitValue,
-  prop,
   UInt64,
   UInt32,
   PublicKey,
@@ -9,91 +7,11 @@ import {
   Bool,
   Struct,
 } from 'snarkyjs';
-import { AccountWitness } from '../lib/data_store/AccountStore.js';
-import { base58Encode } from '../lib/helpers/base58.js';
+import { Witness } from '../lib/data_store/KeyedMemoryStore.js';
+
 import { Permission } from './permissions.js';
-export { Account, Tuple };
-
-/**
- * An {@link Account} describes an account on the layer 2.
- * It's structure is divided into an "essential" part, and an "non-essential" part.
- * The essential part includes the most important properties an account has in order for it to be verified, this includes
- * `balance`, `nonce`, `publicKey` *soon more*
- * the non-essential part only includes some meta information or "nice-to-haves" like
- * `identifier` or `aliveSince`
- */
-class Account extends CircuitValue {
-  @prop balance: UInt64;
-  @prop nonce: UInt32;
-  @prop publicKey: PublicKey;
-  @prop merkleProof: AccountWitness;
-
-  address: string;
-
-  constructor(
-    balance: UInt64,
-    nonce: UInt32,
-    publicKey: PublicKey,
-    merkleProof: AccountWitness
-  ) {
-    super(balance, nonce, publicKey, merkleProof);
-    this.balance = balance;
-    this.nonce = nonce;
-    this.publicKey = publicKey;
-    this.merkleProof = merkleProof;
-    this.address = publicKey.toBase58();
-  }
-
-  getHash(): Field {
-    // there are some things we might not want to hash e.g. die merkle path
-    let preImage: Field[] = this.balance
-      .toFields()
-      .concat(this.nonce.toFields())
-      .concat(this.publicKey.toFields());
-    return Poseidon.hash(preImage);
-  }
-
-  toFields(): Field[] {
-    return this.balance
-      .toFields()
-      .concat(this.nonce.toFields())
-      .concat(this.publicKey.toFields());
-  }
-
-  getBase58Hash(): string {
-    return base58Encode(this.getHash().toString());
-  }
-
-  clone(): Account {
-    return new Account(
-      this.balance,
-      this.nonce,
-      this.publicKey,
-      this.merkleProof
-    );
-  }
-
-  getAddress(): string {
-    return this.publicKey.toBase58();
-  }
-
-  isEmpty(): Bool {
-    return this.publicKey
-      .equals(PublicKey.empty())
-      .and(this.balance.equals(UInt64.from(0)))
-      .and(this.nonce.equals(UInt32.from(0)));
-  }
-
-  static empty(): Account {
-    return new Account(
-      UInt64.from(0),
-      UInt32.from(0),
-      PublicKey.empty(),
-      AccountWitness.empty()
-    );
-  }
-}
-
+export { Account };
+/* 
 type Tuple<T, N extends number> = N extends N
   ? number extends N
     ? T[]
@@ -102,7 +20,7 @@ type Tuple<T, N extends number> = N extends N
 type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N
   ? R
   : _TupleOf<T, N, [T, ...R]>;
-
+ */
 let P = {
   constant: Bool,
   signatureNecessary: Bool,
@@ -119,7 +37,8 @@ const emptyState = () => ({
   value: Field(0),
 });
 
-class Account_ extends Struct({
+class Account extends Struct({
+  witness: Witness,
   publicKey: PublicKey,
   tokenId: Field,
   nonce: UInt32,
@@ -161,12 +80,17 @@ class Account_ extends Struct({
   verificationKey: { data: Field, hash: Field },
   provedState: Bool,
 }) {
-  static hash(a: Account_): Field {
-    return Poseidon.hash(Account_.toFields(a));
+  static hash(a: Account): Field {
+    return Poseidon.hash(Account.toFields(a));
+  }
+
+  hash(): Field {
+    return Account.hash(this);
   }
 
   static empty() {
-    return new Account_({
+    return new Account({
+      witness: Witness.empty(),
       publicKey: PublicKey.empty(),
       tokenId: Field.zero,
       nonce: UInt32.zero,
@@ -174,16 +98,7 @@ class Account_ extends Struct({
       tokenSymbol: '',
       zkappUri: '',
       inferredNonce: UInt32.zero,
-      zkappState: [
-        emptyState(),
-        emptyState(),
-        emptyState(),
-        emptyState(),
-        emptyState(),
-        emptyState(),
-        emptyState(),
-        emptyState(),
-      ],
+      zkappState: new Array(8).fill(emptyState),
       receiptChainHash: Field.zero,
       timing: {
         initialMinimumBalance: UInt64.zero,
@@ -213,9 +128,18 @@ class Account_ extends Struct({
       },
       epochDelegateAccount: PublicKey.empty(),
       delegateAccount: PublicKey.empty(),
-      sequenceEvents: new Array<Field>(8).fill(Field.zero),
+      sequenceEvents: new Array(8).fill(Field.zero),
       verificationKey: { data: Field.zero, hash: Field.zero },
       provedState: Bool(false),
     });
+  }
+
+  clone(): Account {
+    throw Error('TODO');
+  }
+
+  // workaround because we can not have static interface methods
+  toFields(): Field[] {
+    return Account.toFields(this);
   }
 }

@@ -1,11 +1,7 @@
-import {
-  CircuitValue,
-  MerkleTree,
-  Field,
-  Poseidon,
-  MerkleWitness,
-} from 'snarkyjs';
-class Witness extends MerkleWitness(8) {
+import { MerkleTree, Field, Poseidon, MerkleWitness } from 'snarkyjs';
+
+export { Witness, KeyedMemoryStore };
+class Witness extends MerkleWitness(255) {
   static empty() {
     let w: any = [];
     for (let index = 0; index < 8 - 1; index++) {
@@ -14,10 +10,12 @@ class Witness extends MerkleWitness(8) {
     return new Witness(w);
   }
 }
-export default class KeyedMemoryStore<V extends CircuitValue> extends Map<
-  bigint,
-  V
-> {
+
+class KeyedMemoryStore<
+  V extends {
+    toFields(): Field[];
+  }
+> extends Map<bigint, V> {
   merkleTree: MerkleTree;
 
   constructor(public readonly height: number) {

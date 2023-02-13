@@ -1,4 +1,4 @@
-import { CircuitValue, prop, Field, Poseidon } from 'snarkyjs';
+import { Field, Poseidon } from 'snarkyjs';
 import { AccountStore } from '../lib/data_store/AccountStore.js';
 import { Account } from './account.js';
 import { RollupTransaction } from './transaction.js';
@@ -25,25 +25,25 @@ const applyTransitionSimulation = (
   tx.from.assertEquals(sender.publicKey);
   tx.signature.verify(sender.publicKey, tx.toFields()).assertTrue();
 
-  tx.amount.assertLte(sender.balance);
+  tx.amount.assertLte(sender.balance.liquid);
   tx.nonce.assertEquals(sender.nonce);
 
   tx.sender = sender.clone();
   tx.receiver = receiver.clone();
 
-  tx.sender.merkleProof = store.getProof(senderIndex);
+  tx.sender.witness = store.getProof(senderIndex);
 
-  sender.balance = sender.balance.sub(tx.amount);
+  sender.balance.liquid = sender.balance.liquid.sub(tx.amount);
   sender.nonce = sender.nonce.add(1);
   // calculate updates to the state tree
 
   store.set(senderIndex, sender);
 
   // move over to the receiver
-  tx.receiver.merkleProof = store.getProof(receiverIndex);
+  tx.receiver.witness = store.getProof(receiverIndex);
 
   // apply change to the receiver
-  receiver.balance = receiver.balance.add(tx.amount);
+  receiver.balance.liquid = receiver.balance.liquid.add(tx.amount);
 
   store.set(receiverIndex, receiver);
 
@@ -80,30 +80,28 @@ const proverTest = (
 
   batch.forEach((tx: RollupTransaction, i: number) => {
     // is the sender in the state root?
-    let expectedSenderRoot = tx.sender.merkleProof.calculateRoot(
-      tx.sender.getHash()
-    );
+    let expectedSenderRoot = tx.sender.witness.calculateRoot(tx.sender.hash());
 
     expectedSenderRoot.assertEquals(intermediateStateRoot);
 
     tx.signature.verify(tx.sender!.publicKey, tx.toFields()).assertTrue();
     // make sure the sender has the funds!
-    tx.amount.assertLte(tx.sender!.balance);
+    tx.amount.assertLte(tx.sender!.balance.liquid);
     tx.nonce.assertEquals(tx.sender!.nonce);
 
     // apply changes to the sender account
 
-    tx.sender!.balance = tx.sender!.balance.sub(tx.amount);
+    tx.sender!.balance.liquid = tx.sender!.balance.liquid.sub(tx.amount);
     tx.sender!.nonce = tx.sender!.nonce.add(1);
 
     // calculate updates to the state tree
 
-    let tempRoot = tx.sender.merkleProof.calculateRoot(tx.sender.getHash());
+    let tempRoot = tx.sender.witness.calculateRoot(tx.sender.hash());
 
     // move over to the receiver
 
-    let expectedReceiverRoot = tx.receiver.merkleProof.calculateRoot(
-      tx.receiver.getHash()
+    let expectedReceiverRoot = tx.receiver.witness.calculateRoot(
+      tx.receiver.hash()
     );
 
     //doing some induction stuff:
@@ -114,10 +112,10 @@ const proverTest = (
     expectedReceiverRoot.assertEquals(tempRoot);
 
     // apply change to the receiver
-    tx.receiver!.balance = tx.receiver!.balance.add(tx.amount);
+    tx.receiver!.balance.liquid = tx.receiver!.balance.liquid.add(tx.amount);
 
-    intermediateStateRoot = tx.receiver.merkleProof.calculateRoot(
-      tx.receiver.getHash()
+    intermediateStateRoot = tx.receiver.witness.calculateRoot(
+      tx.receiver.hash()
     );
   });
 
