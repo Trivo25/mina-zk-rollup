@@ -1,4 +1,4 @@
-import { Field, Poseidon } from 'snarkyjs';
+import { Field, Poseidon, Struct } from 'snarkyjs';
 import { AccountStore } from '../lib/data_store/AccountStore.js';
 import { Account } from './account.js';
 import { RollupTransaction } from './transaction.js';
@@ -125,16 +125,17 @@ const proverTest = (
     intermediateStateRoot
   );
 };
-class RollupState extends CircuitValue {
-  @prop pendingDepositsCommitment: Field;
-  @prop accountDbCommitment: Field;
-  constructor(pendingDepositsCommitment: Field, accountDbCommitment: Field) {
-    super(pendingDepositsCommitment, accountDbCommitment);
-    this.pendingDepositsCommitment = pendingDepositsCommitment;
-    this.accountDbCommitment = accountDbCommitment;
+
+class RollupState extends Struct({
+  pendingDepositsCommitment: Field,
+  accountDbCommitment: Field,
+}) {
+  static hash(s: RollupState): Field {
+    return Poseidon.hash(RollupState.toFields(s));
   }
-  getHash(): Field {
-    return Poseidon.hash(this.toFields());
+
+  hash(): Field {
+    return RollupState.hash(this);
   }
 }
 /**
@@ -142,16 +143,15 @@ class RollupState extends CircuitValue {
  * the rollup operator updates the current state of the the layer 2 by providing a series of
  * proofs that attest correct execution of transactions.
  */
-class StateTransition extends CircuitValue {
-  @prop source: RollupState;
-  @prop target: RollupState;
-  constructor(source: RollupState, target: RollupState) {
-    super(source, target);
-    this.source = source;
-    this.target = target;
+class StateTransition extends Struct({
+  source: RollupState,
+  target: RollupState,
+}) {
+  static hash(s: StateTransition): Field {
+    return Poseidon.hash(StateTransition.toFields(s));
   }
 
-  getHash(): Field {
-    return Poseidon.hash(this.toFields());
+  hash(): Field {
+    return StateTransition.hash(this);
   }
 }

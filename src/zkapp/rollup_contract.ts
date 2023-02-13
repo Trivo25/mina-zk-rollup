@@ -1,12 +1,12 @@
 import {
   DeployArgs,
-  method,
   SmartContract,
-  state,
   State,
   Permissions,
   Signature,
   Field,
+  state,
+  method,
   PrivateKey,
   Experimental,
 } from 'snarkyjs';
@@ -70,7 +70,10 @@ function RollupContract(privateKey: string, prover: any) {
       this.balance.addInPlace(deposit.amount);
       this.emitEvent('deposit', deposit);
 
-      let newState = new RollupState(newRoot, currentState.accountDbCommitment);
+      let newState = new RollupState({
+        pendingDepositsCommitment: newRoot,
+        accountDbCommitment: currentState.accountDbCommitment,
+      });
       this.currentState.set(newState);
     }
 
@@ -78,7 +81,7 @@ function RollupContract(privateKey: string, prover: any) {
       let currentState = this.currentState.get();
       this.currentState.assertEquals(currentState);
 
-      let tempRoot = tx.sender.merkleProof.calculateRoot(tx.sender.getHash());
+      let tempRoot = tx.sender.witness.calculateRoot(tx.sender.hash());
       tempRoot.assertEquals(currentState.accountDbCommitment);
 
       //  ! TODO

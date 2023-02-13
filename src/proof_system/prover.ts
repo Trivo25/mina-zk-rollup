@@ -20,7 +20,7 @@ function Prover(userContract: typeof SmartContract) {
           p1: InstanceType<typeof ContractProof>
         ) {
           p1.verify();
-          publicInput.assertEquals(publicInput);
+          publicInput.hash().assertEquals(publicInput.hash());
         },
       },
     },
