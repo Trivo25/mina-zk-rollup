@@ -5,19 +5,15 @@ import {
   Permissions,
   Signature,
   Field,
-  state,
-  method,
   PrivateKey,
   Experimental,
+  state,
+  method,
 } from 'snarkyjs';
 import {
   RollupState,
   StateTransition,
 } from '../proof_system/state_transition.js';
-import {
-  RollupDeposit,
-  RollupTransaction,
-} from '../proof_system/transaction.js';
 
 export { RollupContract };
 
@@ -37,8 +33,8 @@ function RollupContract(privateKey: string, prover: any) {
 
     events = {
       stateTransition: StateTransition,
-      deposit: RollupDeposit,
-      forceWithdraw: RollupTransaction,
+      deposit: Field, // TODO
+      forceWithdraw: Field, // TODO
     };
 
     deploy(args: DeployArgs) {
@@ -50,7 +46,7 @@ function RollupContract(privateKey: string, prover: any) {
       });
     }
 
-    @method deposit(deposit: RollupDeposit) {
+    /*     @method deposit(deposit: RollupDeposit) {
       deposit.signature.verify(deposit.publicKey, deposit.toFields());
 
       let currentState = this.currentState.get();
@@ -75,9 +71,9 @@ function RollupContract(privateKey: string, prover: any) {
         accountDbCommitment: currentState.accountDbCommitment,
       });
       this.currentState.set(newState);
-    }
+    } */
 
-    @method forceWithdraw(tx: RollupTransaction) {
+    /*     @method forceWithdraw(tx: RollupTransaction) {
       let currentState = this.currentState.get();
       this.currentState.assertEquals(currentState);
 
@@ -88,7 +84,7 @@ function RollupContract(privateKey: string, prover: any) {
 
       // apply amount diff and transition to new state
       // emit event
-    }
+    } */
 
     @method verifyBatch(
       stateTransitionProof: RollupStateTransitionProof,

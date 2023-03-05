@@ -1,10 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { IDeposit, ITransaction } from '../../lib/models/index.js';
 import { logger } from '../../proof_aggregator/src/index.js';
-import {
-  RollupTransaction,
-  RollupDeposit,
-} from '../../proof_system/transaction.js';
 import Emitter from '../events/gobaleventhandler.js';
 import { GlobalState, Service } from './Service.js';
 
@@ -64,14 +60,14 @@ class RollupService extends Service {
    * @param tx tx signature to verify
    * @returns true if signature is valid
    */
-  async verify(tx: ITransaction): Promise<boolean> {
+  /*   async verify(tx: ITransaction): Promise<boolean> {
     try {
       let rTx = RollupTransaction.fromInterface(tx);
       return rTx.signature.verify(rTx.from, rTx.toFields()).toBoolean();
     } catch (error) {
       return false;
     }
-  }
+  } */
 
   async processTransaction(tx: ITransaction): Promise<any> {
     /*       try {
@@ -107,7 +103,7 @@ class RollupService extends Service {
     } */
   }
 
-  async processDeposit(tx: IDeposit): Promise<any> {
+  /*   async processDeposit(tx: IDeposit): Promise<any> {
     try {
       logger.info('Received new deposit');
 
@@ -125,5 +121,5 @@ class RollupService extends Service {
       console.log(error);
       return false;
     }
-  }
+  } */
 }

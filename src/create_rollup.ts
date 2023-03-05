@@ -62,6 +62,8 @@ async function zkRollup(
   let transactionPool: Transaction[] = [];
   let transactionHistory: Transaction[] = [];
 
+  let root = accountStore.getMerkleRoot()!.toString()!;
+
   // this is also just temporary
   let globalState: GlobalState = {
     accountTree: accountStore,
@@ -70,15 +72,15 @@ async function zkRollup(
     pendingDeposits: depositStore,
     state: {
       // represents the actual on-chain state
-      committed: new RollupState(
-        Field.zero,
-        Field(accountStore.getMerkleRoot()!.toString()!)
-      ),
+      committed: new RollupState({
+        accountDbCommitment: Field(0),
+        pendingDepositsCommitment: Field(0),
+      }),
       // represents the current rollup state
-      current: new RollupState(
-        Field.zero,
-        Field(accountStore.getMerkleRoot()!.toString()!)
-      ),
+      current: new RollupState({
+        accountDbCommitment: Field(0),
+        pendingDepositsCommitment: Field(0),
+      }),
     },
   };
 
