@@ -1,124 +1,64 @@
-import {  AccountUpdate, Bool, Circuit, Field, Poseidon, SmartContract, Struct, UInt32, UInt64 } from 'snarkyjs';
+import {
+  AccountUpdate,
+  Bool,
+  Circuit,
+  Field,
+  Poseidon,
+  SmartContract,
+  Struct,
+  UInt32,
+  UInt64,
+} from 'snarkyjs';
 import { Account } from './account';
 
 export { StateTransition, RollupState, NetworkState, getVerifier };
 
-const DefaultUInt32 = {
-  isSome: Bool(false),
-  value: {
-    lower: UInt32.from(0),
-    upper: UInt32.from(0),
-  },
-};
-
-const DefaultUInt64 = {
-  isSome: Bool(false),
-  value: {
-    lower: UInt64.from(0),
-    upper: UInt64.from(0),
-  },
-};
-
-const DefaultField = {
-  isSome: Bool(false),
-  value: Field(0),
-};
-
 const EpochDefault = {
-  epochLength: DefaultUInt32,
+  epochLength: UInt32.from(0),
   ledger: {
-    hash: DefaultField,
-    totalCurrency: DefaultUInt64,
+    hash: Field(0),
+    totalCurrency: UInt64.from(0),
   },
-  lockCheckpoint: DefaultField,
-  seed: DefaultField,
-  startCheckpoint: DefaultField,
+  lockCheckpoint: Field(0),
+  seed: Field(0),
+  startCheckpoint: Field(0),
 };
 class NetworkState extends Struct({
-  
-    snarkedLedgerHash: { isSome: Bool, value: Field },
-    blockchainLength: {
-      isSome: Bool,
-      value: {
-        lower: UInt32,
-        upper: UInt32,
-      },
+  snarkedLedgerHash: Field,
+  blockchainLength: UInt32,
+  minWindowDensity: UInt32,
+  totalCurrency: UInt64,
+  globalSlotSinceGenesis: UInt32,
+  stakingEpochData: {
+    ledger: {
+      hash: Field,
+      totalCurrency: UInt64,
     },
-    minWindowDensity: {
-      isSome: Bool,
-      value: {
-        lower: UInt32,
-        upper: UInt32,
-      },
+    seed: Field,
+    startCheckpoint: Field,
+    lockCheckpoint: Field,
+    epochLength: UInt32,
+  },
+  nextEpochData: {
+    ledger: {
+      hash: Field,
+      totalCurrency: UInt64,
     },
-    totalCurrency: {
-      isSome: Bool,
-      value: {
-        lower: UInt64,
-        upper: UInt64,
-      },
-    },
-    globalSlotSinceGenesis: {
-      isSome: Bool,
-      value: {
-        lower: UInt32,
-        upper: UInt32,
-      },
-    },
-    stakingEpochData: {
-      ledger: {
-        hash: { isSome: Bool, value: Field },
-        totalCurrency: {
-          isSome: Bool,
-          value: {
-            lower: UInt64,
-            upper: UInt64,
-          },
-        },
-      },
-      seed: { isSome: Bool, value: Field },
-      startCheckpoint: { isSome: Bool, value: Field },
-      lockCheckpoint: { isSome: Bool, value: Field },
-      epochLength: {
-        isSome: Bool,
-        value: {
-          lower: UInt32,
-          upper: UInt32,
-        },
-      },
-    },
-    nextEpochData: {
-      ledger: {
-        hash: { isSome: Bool, value: Field },
-        totalCurrency: {
-          isSome: Bool,
-          value: {
-            lower: UInt64,
-            upper: UInt64,
-          },
-        },
-      },
-      seed: { isSome: Bool, value: Field },
-      startCheckpoint: { isSome: Bool, value: Field },
-      lockCheckpoint: { isSome: Bool, value: Field },
-      epochLength: {
-        isSome: Bool,
-        value: {
-          lower: UInt32,
-          upper: UInt32,
-        },
-      },
-    },,
+    seed: Field,
+    startCheckpoint: Field,
+    lockCheckpoint: Field,
+    epochLength: UInt32,
+  },
 }) {
   static empty() {
     return new NetworkState({
-      globalSlotSinceGenesis: DefaultUInt32,
-      snarkedLedgerHash: DefaultField,
+      globalSlotSinceGenesis: UInt32.from(0),
+      snarkedLedgerHash: Field(0),
       nextEpochData: EpochDefault,
       stakingEpochData: EpochDefault,
-      blockchainLength: DefaultUInt32,
-      minWindowDensity: DefaultUInt32,
-      totalCurrency: DefaultUInt64,
+      blockchainLength: UInt32.from(0),
+      minWindowDensity: UInt32.from(0),
+      totalCurrency: UInt64.from(0),
     });
   }
 }
@@ -155,9 +95,8 @@ class StateTransition extends Struct({
   }
 }
 
-
 function getVerifier(Contract: typeof SmartContract) {
-  class ContractProof extends Contract.Proof() {};
+  class ContractProof extends Contract.Proof() {}
 
   return function verifyAccountUpdate(
     publicState: StateTransition,
@@ -166,15 +105,15 @@ function getVerifier(Contract: typeof SmartContract) {
     account: Account
   ) {
     const body = accountUpdate.body;
-  
+
     // verify proof and check that the hash matches
     proof.verify();
     accountUpdate.hash().assertEquals(proof.publicInput.accountUpdate);
-  
+
     // check that the public key and tokenid matches
     body.publicKey.assertEquals(account.publicKey);
     body.tokenId.assertEquals(account.tokenId);
-  
+
     // check that the account has enough balance, if the account is supposed to transfer funds
     let balanceChangeValid = Circuit.if(
       body.balanceChange.sgn.isPositive(),
@@ -182,15 +121,15 @@ function getVerifier(Contract: typeof SmartContract) {
       account.balance.total.greaterThanOrEqual(body.balanceChange.magnitude)
     );
     balanceChangeValid.assertTrue('Not enough balance');
-  
+
     // TODO: Events, will skip for now
     // TODO: Actions, will skip for now
-    // TODO mayUseToken - not sure
+    // TODO: mayUseToken - not sure
     // TODO: callData - not sure
     // TODO: callDepth - not sure
-  
+
     const accountPreconditions = body.preconditions.account;
-  
+
     // i could use boolean algebra directly, but i would rather not to keep it readable
     // IF valus is set THEN check if preconditions matches ELSE throw
     Circuit.if(
@@ -204,32 +143,34 @@ function getVerifier(Contract: typeof SmartContract) {
         ),
       Bool(true)
     ).assertTrue("Preconditions don't match - Balance!");
-  
+
     Circuit.if(
       accountPreconditions.nonce.isSome,
       accountPreconditions.nonce.value.lower
         .lessThanOrEqual(account.nonce)
         .and(
-          accountPreconditions.nonce.value.upper.greaterThanOrEqual(account.nonce)
+          accountPreconditions.nonce.value.upper.greaterThanOrEqual(
+            account.nonce
+          )
         ),
       Bool(true)
     ).assertTrue("Preconditions don't match - Nonce!");
-  
+
     Circuit.if(
       accountPreconditions.receiptChainHash.isSome,
       accountPreconditions.receiptChainHash.value.equals(
         account.receiptChainHash
       ),
-  
+
       Bool(true)
     ).assertTrue("Preconditions don't match - receiptChainHash!");
-  
+
     Circuit.if(
       accountPreconditions.delegate.isSome,
       accountPreconditions.delegate.value.equals(account.delegateAccount),
       Bool(true)
     ).assertTrue("Preconditions don't match - delegate!");
-  
+
     let statePreconditions = Bool(true);
     for (let i = 0; i < 8; i++) {
       let p = accountPreconditions.state[i];
@@ -241,31 +182,137 @@ function getVerifier(Contract: typeof SmartContract) {
       );
     }
     statePreconditions.assertTrue("Preconditions don't match - state!");
-  
+
     // TODO: sequence state
-  
+
     Circuit.if(
       accountPreconditions.provedState.isSome,
       accountPreconditions.provedState.value.equals(account.provedState),
       Bool(true)
     ).assertTrue("Preconditions don't match - provedState!");
-  
+
     Circuit.if(
       accountPreconditions.isNew.isSome,
       accountPreconditions.isNew.value.equals(account.isNew),
       Bool(true)
     ).assertTrue("Preconditions don't match - isNew!");
-  
+
     const networkPreconditions = body.preconditions.network;
-  
+
     Circuit.if(
       networkPreconditions.snarkedLedgerHash.isSome,
       networkPreconditions.snarkedLedgerHash.value.equals(
-        publicState.source.network.snarkedLedgerHash.value
+        publicState.source.network.snarkedLedgerHash
       ),
       Bool(true)
-    ).assertTrue("Preconditions don't match - provedState!");
-  
+    ).assertTrue("Preconditions don't match - snarkedLedgerHash!");
+
+    Circuit.if(
+      networkPreconditions.blockchainLength.isSome,
+      networkPreconditions.blockchainLength.value.lower
+        .greaterThanOrEqual(publicState.source.network.blockchainLength)
+        .and(
+          networkPreconditions.blockchainLength.value.upper.lessThanOrEqual(
+            publicState.source.network.blockchainLength
+          )
+        ),
+      Bool(true)
+    ).assertTrue("Preconditions don't match - blockchainLength!");
+
+    Circuit.if(
+      networkPreconditions.minWindowDensity.isSome,
+      networkPreconditions.minWindowDensity.value.lower
+        .greaterThanOrEqual(publicState.source.network.minWindowDensity)
+        .and(
+          networkPreconditions.minWindowDensity.value.upper.lessThanOrEqual(
+            publicState.source.network.minWindowDensity
+          )
+        ),
+      Bool(true)
+    ).assertTrue("Preconditions don't match - minWindowDensity!");
+
+    Circuit.if(
+      networkPreconditions.totalCurrency.isSome,
+      networkPreconditions.totalCurrency.value.lower
+        .greaterThanOrEqual(publicState.source.network.totalCurrency)
+        .and(
+          networkPreconditions.totalCurrency.value.upper.lessThanOrEqual(
+            publicState.source.network.totalCurrency
+          )
+        ),
+      Bool(true)
+    ).assertTrue("Preconditions don't match - totalCurrency!");
+
+    // TODO remaining precondition checks
     // TODO: valid while
-  }
+
+    //checking permissions
+
+    // TODO: abstract
+    let stateChange = Bool(false);
+    for (let i = 0; i < 8; i++) {
+      let p = body.update.appState[i];
+      stateChange = stateChange.or(p.isSome);
+    }
+
+    // TODO: verify pseudo dynamically what type of auth is given
+    const authIsProof = Bool(true);
+
+    isTypeProof(account.permissions.editState).assertEquals(authIsProof);
+
+    isTypeImpossible(account.permissions.editState).assertFalse();
+
+    // TODO: continue
+  };
+}
+
+function isTypeProofOrSignature({
+  constant,
+  signatureNecessary,
+  signatureSufficient,
+}: {
+  constant: Bool;
+  signatureNecessary: Bool;
+  signatureSufficient: Bool;
+}) {
+  return constant.not().and(signatureNecessary.not()).and(signatureSufficient);
+}
+
+function isTypeImpossible({
+  constant,
+  signatureNecessary,
+  signatureSufficient,
+}: {
+  constant: Bool;
+  signatureNecessary: Bool;
+  signatureSufficient: Bool;
+}) {
+  return constant.and(signatureNecessary).and(signatureSufficient.not());
+}
+
+function isTypeSignature({
+  constant,
+  signatureNecessary,
+  signatureSufficient,
+}: {
+  constant: Bool;
+  signatureNecessary: Bool;
+  signatureSufficient: Bool;
+}) {
+  return constant.not().and(signatureNecessary).and(signatureSufficient);
+}
+
+function isTypeProof({
+  constant,
+  signatureNecessary,
+  signatureSufficient,
+}: {
+  constant: Bool;
+  signatureNecessary: Bool;
+  signatureSufficient: Bool;
+}) {
+  return constant
+    .not()
+    .and(signatureNecessary.not())
+    .and(signatureSufficient.not());
 }
