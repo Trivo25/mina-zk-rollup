@@ -13,7 +13,7 @@ import {
   Permissions,
   Proof,
 } from 'snarkyjs';
-import { RollupState } from './proof_system/state_transition.js';
+import { NetworkState, RollupState } from './proof_system/state_transition.js';
 import { Prover } from './proof_system/prover.js';
 import { DepositStore } from './lib/data_store/DepositStore.js';
 import { AccountStore } from './lib/data_store/AccountStore.js';
@@ -75,11 +75,13 @@ async function zkRollup(
       committed: new RollupState({
         accountDbCommitment: Field(0),
         pendingDepositsCommitment: Field(0),
+        network: NetworkState.empty(),
       }),
       // represents the current rollup state
       current: new RollupState({
         accountDbCommitment: Field(0),
         pendingDepositsCommitment: Field(0),
+        network: NetworkState.empty(),
       }),
     },
   };

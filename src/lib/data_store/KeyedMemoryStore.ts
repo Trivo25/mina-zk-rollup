@@ -4,7 +4,7 @@ export { Witness, KeyedMemoryStore };
 class Witness extends MerkleWitness(255) {
   static empty() {
     let w: any = [];
-    for (let index = 0; index < 8 - 1; index++) {
+    for (let index = 0; index < 255 - 1; index++) {
       w.push({ isLeft: false, sibling: Field.zero });
     }
     return new Witness(w);

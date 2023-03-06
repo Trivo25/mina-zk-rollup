@@ -38,7 +38,6 @@ const emptyState = () => ({
 });
 
 class Account extends Struct({
-  witness: Witness,
   publicKey: PublicKey,
   tokenId: Field,
   nonce: UInt32,
@@ -79,6 +78,7 @@ class Account extends Struct({
   sequenceEvents: [Field, Field, Field, Field, Field, Field, Field, Field],
   verificationKey: { data: Field, hash: Field },
   provedState: Bool,
+  isNew: Bool,
 }) {
   static hash(a: Account): Field {
     return Poseidon.hash(Account.toFields(a));
@@ -90,7 +90,6 @@ class Account extends Struct({
 
   static empty() {
     return new Account({
-      witness: Witness.empty(),
       publicKey: PublicKey.empty(),
       tokenId: Field.zero,
       nonce: UInt32.zero,
@@ -98,7 +97,7 @@ class Account extends Struct({
       tokenSymbol: '',
       zkappUri: '',
       inferredNonce: UInt32.zero,
-      zkappState: new Array(8).fill(emptyState),
+      zkappState: new Array(8).fill(emptyState()),
       receiptChainHash: Field.zero,
       timing: {
         initialMinimumBalance: UInt64.zero,
@@ -131,6 +130,7 @@ class Account extends Struct({
       sequenceEvents: new Array(8).fill(Field.zero),
       verificationKey: { data: Field.zero, hash: Field.zero },
       provedState: Bool(false),
+      isNew: Bool(true),
     });
   }
 
