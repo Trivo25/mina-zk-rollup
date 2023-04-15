@@ -1,0 +1,158 @@
+type Commitment {
+  pendingDepositsCommitment: String
+  accountDbCommitment: String
+}
+
+type State {
+  committed: Commitment
+  current: Commitment
+}
+
+type GlobalState {
+  pendingDeposits: [String]
+  state: State
+}
+
+type Query {
+  getGlobalState: GlobalState
+}
+
+# Input
+input ProofOrSignatureInput {
+  proof: String
+  signature: String
+}
+
+#  'Signature' | 'Proof' | 'Either' | 'None' | 'Impossible';
+
+input PermissionsInput {
+  editState: String
+  send: String
+  receive: String
+  setDelegate: String
+  setPermissions: String
+  setVerificationKey: String
+  setZkappUri: String
+  editSequenceState: String
+  setTokenSymbol: String
+  incrementNonce: String
+  setVotingFor: String
+}
+
+input TimingInput {
+  initialMinimumBalance: String
+  cliffTime: String
+  cliffAmount: String
+  vestingPeriod: String
+  vestingIncrement: String
+}
+
+input VerificationKeyInput {
+  data: String
+  hash: String
+}
+
+input Update {
+  appState: [String]
+  delegate: String
+  verificationKey: VerificationKeyInput
+  permissions: PermissionsInput
+  zkappUri: String
+  tokenSymbol: String
+  timing: TimingInput
+  votingFor: String
+}
+
+input BalanceChangeInput {
+  magnitude: Int!
+  sgn: String!
+}
+
+input LowerUpperInput {
+  lower: String!
+  upper: String!
+}
+
+input EpochLedgerInput {
+  hash: String
+  totalCurrency: LowerUpperInput
+}
+
+input EpochDataInput {
+  ledger: EpochLedgerInput!
+  seed: String
+  startCheckpoint: String
+  lockCheckpoint: String
+  epochLength: LowerUpperInput
+}
+
+input NetworkPreconditionInput {
+  snarkedLedgerHash: String
+  timestamp: LowerUpperInput
+  blockchainLength: LowerUpperInput
+  minWindowDensity: LowerUpperInput
+  totalCurrency: LowerUpperInput
+  globalSlotSinceHardFork: LowerUpperInput
+  globalSlotSinceGenesis: LowerUpperInput
+  stakingEpochData: EpochDataInput!
+  nextEpochData: EpochDataInput!
+}
+
+input AccountPreconditionInput {
+  balance: LowerUpperInput
+  nonce: LowerUpperInput
+  receiptChainHash: String
+  delegate: String
+  state: [String]
+  sequenceState: String
+  provedState: Boolean
+  isNew: Boolean
+}
+
+input PreconditionsInput {
+  network: NetworkPreconditionInput
+  account: AccountPreconditionInput
+}
+
+input AccountUpdateBodyInput {
+  publicKey: String!
+  tokenId: String!
+  update: Update!
+  balanceChange: BalanceChangeInput!
+  incrementNonce: Boolean!
+  events: [[String!]!]!
+  sequenceEvents: [[String!]!]!
+  callData: String!
+  callDepth: Int!
+  preconditions: PreconditionsInput!
+  useFullCommitment: Boolean!
+  caller: String!
+  authorizationKind: String!
+}
+
+input AccountUpdateInput {
+  body: AccountUpdateBodyInput!
+  authorization: ProofOrSignatureInput!
+}
+
+input FeePayerBodyInput {
+  publicKey: String!
+  fee: String!
+  validUntil: Int
+  nonce: String!
+}
+
+input FeePayerInput {
+  body: FeePayerBodyInput!
+  authorization: String!
+}
+
+input ZkappCommandInput {
+  feePayer: FeePayerInput!
+  accountUpdates: [AccountUpdateInput!]!
+  memo: String!
+}
+
+type Mutation {
+  sendZkapp(input: ZkappCommandInput!): String
+}

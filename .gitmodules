@@ -1,0 +1,6 @@
+[submodule "src/proof_aggregator"]
+	path = src/proof_aggregator
+	url = https://github.com/Trivo25/proof_aggregator
+[submodule "src/snarkyjs"]
+	path = src/snarkyjs
+	url = https://github.com/o1-labs/snarkyjs

@@ -1,4 +1,4 @@
-import ITransaction from './ITransaction';
+import ITransaction from './ITransaction.js';
 
 /**
  * Interface for REST API transactions.

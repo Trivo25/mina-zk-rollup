@@ -1,4 +1,4 @@
-import { RollupState } from '../../proof_system';
+import { RollupState } from '../../proof_system/state_transition.js';
 
 export class Block {
   stateBefore: RollupState;

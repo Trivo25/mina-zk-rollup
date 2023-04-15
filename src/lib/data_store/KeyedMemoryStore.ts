@@ -1,9 +1,21 @@
-import { Field, CircuitValue, Poseidon } from 'snarkyjs';
-import { MerkleTree, AccountMerkleProof } from '../merkle_proof';
-export default class KeyedDataStore<V extends CircuitValue> extends Map<
-  bigint,
-  V
-> {
+import { MerkleTree, Field, Poseidon, MerkleWitness } from 'snarkyjs';
+
+export { Witness, KeyedMemoryStore };
+class Witness extends MerkleWitness(255) {
+  static empty() {
+    let w: any = [];
+    for (let index = 0; index < 255 - 1; index++) {
+      w.push({ isLeft: false, sibling: Field.zero });
+    }
+    return new Witness(w);
+  }
+}
+
+class KeyedMemoryStore<
+  V extends {
+    toFields(): Field[];
+  }
+> extends Map<bigint, V> {
   merkleTree: MerkleTree;
 
   constructor(public readonly height: number) {
@@ -24,8 +36,8 @@ export default class KeyedDataStore<V extends CircuitValue> extends Map<
    * @param key Key of the element in the map
    * @returns Merkle path
    */
-  getProof(key: bigint): AccountMerkleProof {
-    return new AccountMerkleProof(this.merkleTree.getWitness(key));
+  getProof(key: bigint): Witness {
+    return new Witness(this.merkleTree.getWitness(key));
   }
 
   /**

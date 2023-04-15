@@ -1,11 +1,12 @@
-import { PublicKey } from 'snarkyjs';
-import { RollupAccount } from '../../proof_system';
-import KeyedMemoryStore from './KeyedMemoryStore';
-import Config from '../../config/config';
+import { Field, MerkleWitness, PublicKey } from 'snarkyjs';
+import { KeyedMemoryStore } from './KeyedMemoryStore.js';
+import { Account } from '../../proof_system/account.js';
 
-export default class AccountStore extends KeyedMemoryStore<RollupAccount> {
+export { AccountStore, AccountWitness };
+
+class AccountStore extends KeyedMemoryStore<Account> {
   constructor() {
-    super(Config.ledgerHeight);
+    super(255);
   }
 
   keyByPublicKey(pub: PublicKey): bigint | undefined {
@@ -13,5 +14,15 @@ export default class AccountStore extends KeyedMemoryStore<RollupAccount> {
       if (v.publicKey.equals(pub).toBoolean()) return key;
     }
     return undefined;
+  }
+}
+
+class AccountWitness extends MerkleWitness(255) {
+  static empty() {
+    let w: any = [];
+    for (let index = 0; index < 255 - 1; index++) {
+      w.push({ isLeft: false, sibling: Field.zero });
+    }
+    return new AccountWitness(w);
   }
 }
