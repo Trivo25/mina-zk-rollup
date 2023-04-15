@@ -15,6 +15,7 @@
   "types": "build/src/index.d.ts",
   "scripts": {
     "build-snarkyjs": "cd src/snarkyjs && npm run build && cd ..",
+    "build-proof_aggregator": "cd src/proof_aggregator && npm run build && cd ..",
     "demo": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/demo",
     "demo:operator": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/rollup_operator/index.js",
     "demo:client": "npx tsc -p tsconfig.json && node --no-warnings --experimental-specifier-resolution=node ./build/src/client_sdk/index.js",
