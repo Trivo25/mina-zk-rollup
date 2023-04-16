@@ -15,9 +15,7 @@ jobs:
         run: |
           git submodule update --init --recursive
           npm ci
-          npm run build-snarkyjs
-          npm run build-proof_aggregator
-          npm run build --if-present
+          npm run build-all
           npm run integration
         env:
           CI: true
