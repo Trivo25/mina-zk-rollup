@@ -6,8 +6,10 @@ import {
   Field,
   PrivateKey,
   Mina,
-  Experimental,
+  Proof,
   UInt64,
+  Permission,
+  ZkappPublicInput,
 } from 'snarkyjs';
 import { Account } from './proof_system/account';
 import {
@@ -30,6 +32,22 @@ await MyContract.compile();
 let Local = Mina.LocalBlockchain();
 Mina.setActiveInstance(Local);
 
+function RollupClient({
+  sequencer,
+  mina,
+}: {
+  sequencer: string;
+  mina: string;
+}) {
+  return {
+    Network: Mina.Network(mina),
+    sendTx: async (
+      tx: Mina.Transaction,
+      proofs: (Proof<ZkappPublicInput> | undefined)[]
+    ) => {},
+  };
+}
+
 let feePayerKey = Local.testAccounts[0].privateKey;
 let feePayer = Local.testAccounts[0].publicKey;
 let zkappKey = PrivateKey.random();
@@ -46,15 +64,10 @@ await tx.sign([feePayerKey, zkappKey]).send();
 
 tx = await Mina.transaction(feePayer, () => {
   zkapp.update(Field(1));
-  let u = AccountUpdate.create(zkappAddress);
-  u.send({
-    to: PrivateKey.random().toPublicKey(),
-    amount: 10,
-  });
-  u.requireSignature();
 });
 await tx.sign([feePayerKey, zkappKey]);
-let [p1] = await tx.prove();
+let pis = await tx.prove();
+let [p1] = pis;
 
 class ContractProof extends MyContract.Proof() {}
 
@@ -62,6 +75,13 @@ let proof: ContractProof = ContractProof.fromJSON(p1!.toJSON())!;
 proof.verify();
 
 let update = tx.transaction.accountUpdates[0];
+
+let { Network, sendTx } = RollupClient({
+  sequencer: '',
+  mina: '',
+});
+
+await sendTx(tx, pis);
 
 /* const RollupProver = Experimental.ZkProgram({
   publicInput: Field,
@@ -97,13 +117,14 @@ let acc = Account.empty();
 acc.publicKey = update.body.publicKey;
 acc.tokenId = update.body.tokenId;
 acc.balance.total = UInt64.from(500);
-
+acc.permissions.editState = Permission.proof();
 const State = new RollupState({
   accountDbCommitment: Field(0),
   pendingDepositsCommitment: Field(0),
   network: NetworkState.empty(),
 });
 
+console.log('verifier');
 const verifier = getVerifier(MyContract);
 verifier(
   new StateTransition({ source: State, target: State }),

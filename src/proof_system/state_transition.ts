@@ -105,14 +105,16 @@ function getVerifier(Contract: typeof SmartContract) {
     account: Account
   ) {
     const body = accountUpdate.body;
-
+    console.log(1);
     // verify proof and check that the hash matches
     proof.verify();
     accountUpdate.hash().assertEquals(proof.publicInput.accountUpdate);
+    console.log(2);
 
     // check that the public key and tokenid matches
     body.publicKey.assertEquals(account.publicKey);
     body.tokenId.assertEquals(account.tokenId);
+    console.log(3);
 
     // check that the account has enough balance, if the account is supposed to transfer funds
     let balanceChangeValid = Circuit.if(
@@ -120,6 +122,7 @@ function getVerifier(Contract: typeof SmartContract) {
       Bool(true),
       account.balance.total.greaterThanOrEqual(body.balanceChange.magnitude)
     );
+
     balanceChangeValid.assertTrue('Not enough balance');
 
     // TODO: Events, will skip for now
@@ -257,10 +260,14 @@ function getVerifier(Contract: typeof SmartContract) {
 
     // TODO: verify pseudo dynamically what type of auth is given
     const authIsProof = Bool(true);
+    isTypeProof(account.permissions.editState).assertEquals(
+      authIsProof,
+      'Authorization is of type proofm but AccountUpdate had different authorization'
+    );
 
-    isTypeProof(account.permissions.editState).assertEquals(authIsProof);
-
-    isTypeImpossible(account.permissions.editState).assertFalse();
+    isTypeImpossible(account.permissions.editState).assertFalse(
+      'Authorization is impossible'
+    );
 
     // TODO: continue
   };

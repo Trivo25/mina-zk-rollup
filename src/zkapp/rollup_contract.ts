@@ -22,8 +22,9 @@ function RollupContract(privateKey: string, prover: any) {
   let pub = priv.toPublicKey();
 
   // make typing better
-  let RollupProof = Experimental.ZkProgram.Proof(prover);
-  class RollupStateTransitionProof extends RollupProof {}
+  class RollupStateTransitionProof extends Experimental.ZkProgram.Proof(
+    prover
+  ) {}
 
   // this is used in order to "hard code" the verifier circuit of the prover
   class RollupZkApp extends SmartContract {
@@ -90,15 +91,12 @@ function RollupContract(privateKey: string, prover: any) {
       stateTransitionProof: RollupStateTransitionProof,
       sig: Signature
     ) {
-      stateTransitionProof.verify();
-      let currentState = this.currentState.get();
-      this.currentState.assertEquals(currentState);
-
+      //stateTransitionProof.verify();
+      //let currentState = this.currentState.get();
+      //this.currentState.assertEquals(currentState);
       // ! TODO: make work once recursion is fixed
-
       //currentState.assertEquals(stateTransitionProof.publicInput.source);
       //this.currentState.set(stateTransitionProof.publicInput.target);
-
       //this.emitEvent('stateTransition', stateTransitionProof.publicInput);
     }
   }

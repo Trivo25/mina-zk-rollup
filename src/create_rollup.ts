@@ -1,18 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {
-  DeployArgs,
-  Experimental,
-  Field,
-  isReady,
-  method,
-  PrivateKey,
-  Signature,
-  SmartContract,
-  state,
-  State,
-  Permissions,
-  Proof,
-} from 'snarkyjs';
+import { Field, isReady, SmartContract } from 'snarkyjs';
 import { NetworkState, RollupState } from './proof_system/state_transition.js';
 import { Prover } from './proof_system/prover.js';
 import { DepositStore } from './lib/data_store/DepositStore.js';
@@ -49,21 +36,22 @@ async function zkRollup(
 
   await userContract.compile();
 
+  console.log(1);
   let { RollupProver, ProofClass, PublicInputType } = Prover(userContract);
   let compiledProver = await RollupProver.compile();
-
+  console.log(2);
   const RollupZkapp = RollupContract(feePayer, RollupProver);
-
+  console.log(3);
   let compiledContract = await RollupZkapp.compile();
-
+  console.log(4);
   let accountStore = new AccountStore();
   let depositStore = new DepositStore();
 
   let transactionPool: Transaction[] = [];
   let transactionHistory: Transaction[] = [];
 
-  let root = accountStore.getMerkleRoot()!.toString()!;
-
+  let accountRoot = accountStore.getMerkleRoot()!;
+  let depositRoot = depositStore.getMerkleRoot()!;
   // this is also just temporary
   let globalState: GlobalState = {
     accountTree: accountStore,
@@ -73,14 +61,14 @@ async function zkRollup(
     state: {
       // represents the actual on-chain state
       committed: new RollupState({
-        accountDbCommitment: Field(0),
-        pendingDepositsCommitment: Field(0),
+        accountDbCommitment: accountRoot,
+        pendingDepositsCommitment: depositRoot,
         network: NetworkState.empty(),
       }),
       // represents the current rollup state
       current: new RollupState({
-        accountDbCommitment: Field(0),
-        pendingDepositsCommitment: Field(0),
+        accountDbCommitment: accountRoot,
+        pendingDepositsCommitment: depositRoot,
         network: NetworkState.empty(),
       }),
     },
@@ -93,6 +81,7 @@ async function zkRollup(
       await rollup.start(port);
       logger.log(`Graphql server running on http://localhost:${port}/graphql`);
       console.error('Not further implemented');
+      return new Promise(() => {});
     },
     async deploy() {
       throw Error('Not implemented');

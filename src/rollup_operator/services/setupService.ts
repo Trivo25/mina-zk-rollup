@@ -28,15 +28,13 @@ function setupService(
     typeDefs: Schema,
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  }) as any;
+  });
 
   return {
     async start(port: number) {
       await graphql.start();
       graphql.applyMiddleware({ app });
-      await new Promise<void>((resolve) =>
-        httpServer.listen({ port }, resolve)
-      );
+      httpServer.listen({ port });
     },
   };
 }
