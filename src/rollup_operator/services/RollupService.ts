@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { IDeposit, ITransaction } from '../../lib/models/index.js';
 import { logger } from '../../proof_aggregator/src/index.js';
+import { Transaction } from '../../proof_system/transaction.js';
+import { ZkappCommandInput } from '../controllers/generated/graphql_types.js';
 import Emitter from '../events/gobaleventhandler.js';
 import { GlobalState, Service } from './Service.js';
 
@@ -69,38 +71,14 @@ class RollupService extends Service {
     }
   } */
 
-  async processTransaction(tx: ITransaction): Promise<any> {
-    /*       try {
+  async processTransaction(input: ZkappCommandInput): Promise<any> {
+    try {
       logger.info('Received new transaction');
 
-      let rTx = RollupTransaction.fromInterface(tx);
-
-      let isValid = rTx.signature
-        .verify(rTx.from, rTx.toFields())
-        .toBoolean();
-      if (!isValid) throw new Error('Invalid signature.');
-
-      try {
-        let aTx = applyTransitionSimulation(rTx, this.store.accountTree);
-        this.store.transactionPool.push(aTx);
-      } catch (error) {
-        rTx.state = EnumFinality.REJECTED;
-        this.store.transactionHistory.push(rTx);
-        logger.warn('Skipping invalid transaction');
-      }
-
-      logger.info(
-        `Got ${this.store.transactionPool.length} transactions in pool`
-      );
-
-      if (this.store.transactionPool.length >= Config.batchSize) {
-        await this.produceTransactionBatch();
-      }
-      return true;
+      let tx_ = Transaction.fromZkAppCommand(input);
     } catch (error) {
       console.log(error);
-      return false;
-    } */
+    }
   }
 
   /*   async processDeposit(tx: IDeposit): Promise<any> {

@@ -26,16 +26,17 @@ export type AccountPreconditionInput = {
 };
 
 export type AccountUpdateBodyInput = {
-  authorizationKind: Scalars['String'];
+  actions: Array<Array<Scalars['String']>>;
+  authorizationKind: AuthorizationKindInput;
   balanceChange: BalanceChangeInput;
   callData: Scalars['String'];
   callDepth: Scalars['Int'];
-  caller: Scalars['String'];
   events: Array<Array<Scalars['String']>>;
+  implicitAccountCreationFee: Scalars['Boolean'];
   incrementNonce: Scalars['Boolean'];
+  mayUseToken: MayUseToken;
   preconditions: PreconditionsInput;
   publicKey: Scalars['String'];
-  sequenceEvents: Array<Array<Scalars['String']>>;
   tokenId: Scalars['String'];
   update: Update;
   useFullCommitment: Scalars['Boolean'];
@@ -46,8 +47,14 @@ export type AccountUpdateInput = {
   body: AccountUpdateBodyInput;
 };
 
+export type AuthorizationKindInput = {
+  isProved: Scalars['Boolean'];
+  isSigned: Scalars['Boolean'];
+  verificationKeyHash?: InputMaybe<Scalars['String']>;
+};
+
 export type BalanceChangeInput = {
-  magnitude: Scalars['Int'];
+  magnitude: Scalars['String'];
   sgn: Scalars['String'];
 };
 
@@ -93,6 +100,11 @@ export type LowerUpperInput = {
   upper: Scalars['String'];
 };
 
+export type MayUseToken = {
+  inheritFromParent: Scalars['Boolean'];
+  parentsOwnToken: Scalars['Boolean'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   sendZkapp?: Maybe<Scalars['String']>;
@@ -116,6 +128,7 @@ export type NetworkPreconditionInput = {
 };
 
 export type PermissionsInput = {
+  access?: InputMaybe<Scalars['String']>;
   editSequenceState?: InputMaybe<Scalars['String']>;
   editState?: InputMaybe<Scalars['String']>;
   incrementNonce?: InputMaybe<Scalars['String']>;
@@ -123,6 +136,7 @@ export type PermissionsInput = {
   send?: InputMaybe<Scalars['String']>;
   setDelegate?: InputMaybe<Scalars['String']>;
   setPermissions?: InputMaybe<Scalars['String']>;
+  setTiming?: InputMaybe<Scalars['String']>;
   setTokenSymbol?: InputMaybe<Scalars['String']>;
   setVerificationKey?: InputMaybe<Scalars['String']>;
   setVotingFor?: InputMaybe<Scalars['String']>;
@@ -132,6 +146,7 @@ export type PermissionsInput = {
 export type PreconditionsInput = {
   account?: InputMaybe<AccountPreconditionInput>;
   network?: InputMaybe<NetworkPreconditionInput>;
+  validWhile?: InputMaybe<ValidWhilePreconditionInput>;
 };
 
 export type Proof = {
@@ -167,7 +182,7 @@ export type TimingInput = {
 };
 
 export type Update = {
-  appState?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  appState: Array<InputMaybe<Scalars['String']>>;
   delegate?: InputMaybe<Scalars['String']>;
   permissions?: InputMaybe<PermissionsInput>;
   timing?: InputMaybe<TimingInput>;
@@ -175,6 +190,11 @@ export type Update = {
   verificationKey?: InputMaybe<VerificationKeyInput>;
   votingFor?: InputMaybe<Scalars['String']>;
   zkappUri?: InputMaybe<Scalars['String']>;
+};
+
+export type ValidWhilePreconditionInput = {
+  lower?: InputMaybe<Scalars['String']>;
+  upper?: InputMaybe<Scalars['String']>;
 };
 
 export type VerificationKeyInput = {
@@ -262,6 +282,7 @@ export type ResolversTypes = ResolversObject<{
   AccountPreconditionInput: AccountPreconditionInput;
   AccountUpdateBodyInput: AccountUpdateBodyInput;
   AccountUpdateInput: AccountUpdateInput;
+  AuthorizationKindInput: AuthorizationKindInput;
   BalanceChangeInput: BalanceChangeInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Commitment: ResolverTypeWrapper<Commitment>;
@@ -272,6 +293,7 @@ export type ResolversTypes = ResolversObject<{
   GlobalState: ResolverTypeWrapper<GlobalState>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   LowerUpperInput: LowerUpperInput;
+  MayUseToken: MayUseToken;
   Mutation: ResolverTypeWrapper<{}>;
   NetworkPreconditionInput: NetworkPreconditionInput;
   PermissionsInput: PermissionsInput;
@@ -284,6 +306,7 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>;
   TimingInput: TimingInput;
   Update: Update;
+  ValidWhilePreconditionInput: ValidWhilePreconditionInput;
   VerificationKeyInput: VerificationKeyInput;
   ZkappCommandInput: ZkappCommandInput;
 }>;
@@ -293,6 +316,7 @@ export type ResolversParentTypes = ResolversObject<{
   AccountPreconditionInput: AccountPreconditionInput;
   AccountUpdateBodyInput: AccountUpdateBodyInput;
   AccountUpdateInput: AccountUpdateInput;
+  AuthorizationKindInput: AuthorizationKindInput;
   BalanceChangeInput: BalanceChangeInput;
   Boolean: Scalars['Boolean'];
   Commitment: Commitment;
@@ -303,6 +327,7 @@ export type ResolversParentTypes = ResolversObject<{
   GlobalState: GlobalState;
   Int: Scalars['Int'];
   LowerUpperInput: LowerUpperInput;
+  MayUseToken: MayUseToken;
   Mutation: {};
   NetworkPreconditionInput: NetworkPreconditionInput;
   PermissionsInput: PermissionsInput;
@@ -315,6 +340,7 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'];
   TimingInput: TimingInput;
   Update: Update;
+  ValidWhilePreconditionInput: ValidWhilePreconditionInput;
   VerificationKeyInput: VerificationKeyInput;
   ZkappCommandInput: ZkappCommandInput;
 }>;

@@ -19,13 +19,3 @@ const Sequencer = await zkRollup(
   feePayerKey.toBase58(),
   contractKey.toBase58()
 );
-
-let sequencerPromise = Sequencer.start(3000);
-
-async function run() {
-  console.log('yes');
-
-  return new Promise(() => {});
-}
-
-await Promise.all([sequencerPromise, run()]);

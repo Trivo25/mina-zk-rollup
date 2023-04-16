@@ -86,5 +86,6 @@ async function zkRollup(
     async deploy() {
       throw Error('Not implemented');
     },
+    rs: rollup.rs,
   };
 }

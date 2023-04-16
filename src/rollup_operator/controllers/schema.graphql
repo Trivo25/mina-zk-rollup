@@ -27,6 +27,7 @@ input ProofOrSignatureInput {
 
 input PermissionsInput {
   editState: String
+  access: String
   send: String
   receive: String
   setDelegate: String
@@ -37,6 +38,7 @@ input PermissionsInput {
   setTokenSymbol: String
   incrementNonce: String
   setVotingFor: String
+  setTiming: String
 }
 
 input TimingInput {
@@ -53,7 +55,7 @@ input VerificationKeyInput {
 }
 
 input Update {
-  appState: [String]
+  appState: [String]!
   delegate: String
   verificationKey: VerificationKeyInput
   permissions: PermissionsInput
@@ -64,7 +66,7 @@ input Update {
 }
 
 input BalanceChangeInput {
-  magnitude: Int!
+  magnitude: String!
   sgn: String!
 }
 
@@ -109,9 +111,21 @@ input AccountPreconditionInput {
   isNew: Boolean
 }
 
+input ValidWhilePreconditionInput {
+  lower: String
+  upper: String
+}
+
 input PreconditionsInput {
   network: NetworkPreconditionInput
   account: AccountPreconditionInput
+  validWhile: ValidWhilePreconditionInput
+}
+
+input AuthorizationKindInput {
+  isSigned: Boolean!
+  isProved: Boolean!
+  verificationKeyHash: String
 }
 
 input AccountUpdateBodyInput {
@@ -121,13 +135,19 @@ input AccountUpdateBodyInput {
   balanceChange: BalanceChangeInput!
   incrementNonce: Boolean!
   events: [[String!]!]!
-  sequenceEvents: [[String!]!]!
+  actions: [[String!]!]!
   callData: String!
   callDepth: Int!
   preconditions: PreconditionsInput!
   useFullCommitment: Boolean!
-  caller: String!
-  authorizationKind: String!
+  implicitAccountCreationFee: Boolean!
+  mayUseToken: MayUseToken!
+  authorizationKind: AuthorizationKindInput!
+}
+
+input MayUseToken {
+  parentsOwnToken: Boolean!
+  inheritFromParent: Boolean!
 }
 
 input AccountUpdateInput {

@@ -36,5 +36,6 @@ function setupService(
       graphql.applyMiddleware({ app });
       httpServer.listen({ port });
     },
+    rs,
   };
 }
