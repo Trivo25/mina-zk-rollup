@@ -68,7 +68,7 @@ tx = await Mina.transaction(feePayer, () => {
 await tx.sign([feePayerKey, zkappKey]);
 let pis = await tx.prove();
 let [p1] = pis;
-
+console.log(p1?.toJSON());
 class ContractProof extends MyContract.Proof() {}
 
 let proof: ContractProof = ContractProof.fromJSON(p1!.toJSON())!;

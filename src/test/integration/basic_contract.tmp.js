@@ -558,5 +558,10 @@ await MyContract.compile();
 var feePayerKey = PrivateKey2.random();
 var contractKey = PrivateKey2.random();
 var Sequencer = await zkRollup(MyContract, feePayerKey.toBase58(), contractKey.toBase58());
-await Sequencer.start(3e3);
-console.log("furter");
+var sequencerPromise = Sequencer.start(3e3);
+async function run() {
+  console.log("yes");
+  return new Promise(() => {
+  });
+}
+await Promise.all([sequencerPromise, run()]);

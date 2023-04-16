@@ -20,4 +20,12 @@ const Sequencer = await zkRollup(
   contractKey.toBase58()
 );
 
-await Sequencer.start(3000);
+let sequencerPromise = Sequencer.start(3000);
+
+async function run() {
+  console.log('yes');
+
+  return new Promise(() => {});
+}
+
+await Promise.all([sequencerPromise, run()]);

@@ -134,6 +134,14 @@ export type PreconditionsInput = {
   network?: InputMaybe<NetworkPreconditionInput>;
 };
 
+export type Proof = {
+  maxProofsVerified: Scalars['String'];
+  proof: Scalars['String'];
+  publicInput: Array<Scalars['String']>;
+};
+
+export type ProofOrNull = {};
+
 export type ProofOrSignatureInput = {
   proof?: InputMaybe<Scalars['String']>;
   signature?: InputMaybe<Scalars['String']>;
@@ -178,6 +186,7 @@ export type ZkappCommandInput = {
   accountUpdates: Array<AccountUpdateInput>;
   feePayer: FeePayerInput;
   memo: Scalars['String'];
+  proofs?: InputMaybe<Array<InputMaybe<Proof>>>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -267,6 +276,8 @@ export type ResolversTypes = ResolversObject<{
   NetworkPreconditionInput: NetworkPreconditionInput;
   PermissionsInput: PermissionsInput;
   PreconditionsInput: PreconditionsInput;
+  Proof: Proof;
+  ProofOrNull: ;
   ProofOrSignatureInput: ProofOrSignatureInput;
   Query: ResolverTypeWrapper<{}>;
   State: ResolverTypeWrapper<State>;
@@ -296,6 +307,8 @@ export type ResolversParentTypes = ResolversObject<{
   NetworkPreconditionInput: NetworkPreconditionInput;
   PermissionsInput: PermissionsInput;
   PreconditionsInput: PreconditionsInput;
+  Proof: Proof;
+  ProofOrNull: ;
   ProofOrSignatureInput: ProofOrSignatureInput;
   Query: {};
   State: State;
@@ -322,6 +335,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   sendZkapp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationSendZkappArgs, 'input'>>;
 }>;
 
+export type ProofOrNullResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProofOrNull'] = ResolversParentTypes['ProofOrNull']> = ResolversObject<{
+  __resolveType: TypeResolveFn<, ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getGlobalState?: Resolver<Maybe<ResolversTypes['GlobalState']>, ParentType, ContextType>;
 }>;
@@ -336,6 +353,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Commitment?: CommitmentResolvers<ContextType>;
   GlobalState?: GlobalStateResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  ProofOrNull?: ProofOrNullResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   State?: StateResolvers<ContextType>;
 }>;

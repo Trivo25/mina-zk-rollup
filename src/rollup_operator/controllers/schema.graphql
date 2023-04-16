@@ -147,7 +147,16 @@ input FeePayerInput {
   authorization: String!
 }
 
+input Proof {
+  publicInput: [String!]!
+  maxProofsVerified: String!
+  proof: String!
+}
+
+union ProofOrNull
+
 input ZkappCommandInput {
+  proofs: [Proof]
   feePayer: FeePayerInput!
   accountUpdates: [AccountUpdateInput!]!
   memo: String!
